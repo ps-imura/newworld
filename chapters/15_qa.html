@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head><script>(function(){var ok=false;try{ok=localStorage.getItem("guidebook-access-granted-v1")==="true";}catch(e){}if(!ok){var depth=location.pathname.indexOf("/chapters/")>=0?"../":"./";var back=encodeURIComponent(location.pathname+location.search+location.hash);location.replace(depth+"gate.html?back="+back);}})();</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第15章 つまずいた時の Q&amp;A — AI運用指南書</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/guidebook.css">
+<script src="../assets/guidebook.js" defer></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="inner">
+    <div class="brand"><a href="../index.html" style="color:inherit;">AI運用指南書</a></div>
+    <div class="nav">第15章 / 全15章 — 最終章</div>
+  </div>
+</header>
+
+<main>
+  <nav class="chapter-nav">
+    <a class="prev" href="./14_remote.html">第14章 リモート運用</a>
+    <a class="toc" href="../index.html">目次</a>
+    <span class="next"></span>
+  </nav>
+
+  <header class="chapter-header">
+    <span class="num">CHAPTER 15</span>
+    <h1>つまずいた時の Q&amp;A</h1>
+  </header>
+
+  <div class="goal">
+    <div class="label">この章のゴール</div>
+    <div class="content">
+      よくあるトラブルを先回りして知っておく。<br>
+      <strong>AI に質問するときのコツ</strong>を身につけて、自力で抜け出せる場面を増やす。
+    </div>
+  </div>
+
+  <h2>その前に：AI に質問するコツ</h2>
+
+  <h3>① 「事実」と「感想」を分けて伝える</h3>
+  <p>
+    「うまくいきません」だけでは AI も状況が分かりません。次の3つに分けて伝えましょう：
+  </p>
+  <ul>
+    <li><strong>何をやろうとしたか</strong>（実行したコマンド・期待していた結果）</li>
+    <li><strong>実際に起きたこと</strong>（画面に表示されたメッセージ・出てきたエラー）</li>
+    <li><strong>自分の予想</strong>（「ここが原因かも」と思っていること、無くてもOK）</li>
+  </ul>
+
+  <h3>② エラーメッセージは <strong>そのまま</strong>貼り付ける</h3>
+  <p>
+    要約しようとして「エラーが出た」とだけ伝えるのは厳禁。
+    エラーメッセージには原因のヒントが詰まっているので、<strong>全文をそのままコピペ</strong>してください。
+  </p>
+
+  <h3>③ 自分のレベルを伝える</h3>
+  <div class="ai-prompt">
+    <div class="quote">
+      私は今この指南書の第◯章を進めている初心者です。<br>
+      ターミナル経験はほぼ無く、専門用語は知らないので、その前提で教えてください。
+    </div>
+  </div>
+
+  <h3>④ 解決したら、何だったか自分にまとめる</h3>
+  <p>
+    解決したら、その日のうちに「何が起きていて、どう直したか」を一行メモしておきましょう。
+    数日後、同じ問題に当たった自分を救ってくれます。
+  </p>
+
+  <h2>よくあるエラーと対処</h2>
+
+  <h3>command not found</h3>
+  <p>「打ったコマンドが見つからない」状態。原因は主に2つ：</p>
+  <ul>
+    <li><strong>スペルミス</strong>：<code class="inline">claud</code>（最後の e がない）など。打ち直す</li>
+    <li><strong>インストールがされていない／パスが通っていない</strong>：第4章のインストール手順を再確認。<code class="inline">brew --version</code> や <code class="inline">node --version</code> から確認</li>
+  </ul>
+
+  <h3>permission denied</h3>
+  <p>「権限がなくて実行できない」状態。よくあるパターン：</p>
+  <ul>
+    <li>システムフォルダ（<code class="inline">/usr/...</code> など）を触ろうとしている → そもそも触らない方がよい場所</li>
+    <li>ファイルが読み取り専用になっている → ファイルの権限を見るか、Claude に状況を貼り付けて相談</li>
+  </ul>
+  <div class="warn">
+    <strong><code class="inline">sudo</code> を付けて再実行するのは絶対に最後の手段</strong>。第7章を読み返してから判断してください。
+  </div>
+
+  <h3>No such file or directory</h3>
+  <p>「そんなファイル／フォルダない」状態。</p>
+  <ul>
+    <li><code class="inline">pwd</code>（今いる場所を表示）で、自分の現在地を確認</li>
+    <li><code class="inline">ls</code> で、いま見える範囲を確認</li>
+    <li>パスのスペルミス、大文字小文字、フォルダ階層の見間違いを疑う</li>
+  </ul>
+
+  <h3>fatal: not a git repository</h3>
+  <p>「ここは git で管理しているフォルダじゃない」状態。</p>
+  <ul>
+    <li>正しい案件フォルダにいるか <code class="inline">pwd</code> で確認</li>
+    <li>新規フォルダなら <code class="inline">git init</code> をする</li>
+  </ul>
+
+  <h3>「すでに使われています」「already exists」</h3>
+  <p>同じ名前のファイル・リポジトリ・プロジェクトが既にある状態。別の名前を選ぶか、上書きしてよいか慎重に判断。</p>
+
+  <h2>シーン別「困った」の対処</h2>
+
+  <h3>Claude Code が起動しない</h3>
+  <ul>
+    <li><code class="inline">claude --version</code> で動くか確認</li>
+    <li>動かないなら第4章のインストール再確認</li>
+    <li>最新の Anthropic アカウントでログイン状態か確認（<code class="inline">claude</code> 起動時にエラーメッセージを読む）</li>
+  </ul>
+
+  <h3>Claude が会話を覚えていない</h3>
+  <ul>
+    <li>違うフォルダで <code class="inline">claude --continue</code> を実行している → 元のフォルダに <code class="inline">cd</code> して再実行</li>
+    <li>「No conversation found to continue」と出る → そのフォルダで初めて起動した状態。<code class="inline">claude</code>（オプション無し）で新規開始</li>
+  </ul>
+
+  <h3>ブラウザでファイルを開いても変更が反映されない</h3>
+  <ul>
+    <li>ファイルを<strong>保存</strong>したか確認（<code class="inline">command + S</code>）</li>
+    <li>ブラウザを<strong>強制更新</strong>（<code class="inline">command + shift + R</code>）</li>
+    <li>正しい URL（フォルダ構造）を見ているか確認</li>
+  </ul>
+
+  <h3>「これ、勝手に書き換わったかも？」</h3>
+  <ul>
+    <li>git で履歴を取っていれば、いつでも戻せる：<code class="inline">git log</code> → <code class="inline">git diff</code> で確認</li>
+    <li>git の履歴がなければ Time Machine から戻せる場合あり</li>
+    <li><strong>慌てて何度も保存しない</strong>。状況を確認してから動く</li>
+  </ul>
+
+  <h3>AI に頼んだのに、想定と違う出力が返ってきた</h3>
+  <ul>
+    <li>「いまのは取り消して、こうしたい」と<strong>追加注文</strong>を入れる</li>
+    <li>頼み方を1つずつ・具体的に書き直す</li>
+    <li>「以下の制約を守ってください」と前置きして、要件をリスト形式で提示する</li>
+  </ul>
+
+  <h3>会社のセキュリティで Homebrew が入らない</h3>
+  <ul>
+    <li>管理者制限がかかっている可能性</li>
+    <li>社内の情シス担当に「開発業務で Homebrew が必要」と相談</li>
+  </ul>
+
+  <h2>「どうしても解決しない」時のエスカレーション</h2>
+  <p>順番に試してみてください：</p>
+  <ol class="steps">
+    <li>その章をもう一度ゆっくり最初から読み直す（飛ばし読みを疑う）</li>
+    <li>本章（第13章）の該当項目を読み直す</li>
+    <li>Claude に状況を全部貼り付けて相談（事実 + エラー + やったこと）</li>
+    <li>社内のメンター・先輩エンジニアに連絡</li>
+    <li>情シス・社内ヘルプデスクへ</li>
+  </ol>
+
+  <div class="tip">
+    エラーで詰まった時間は<strong>「無駄」ではなく「経験値」</strong>。
+    解決した方法はメモして、次に同じことが起きたら3分で抜け出せる自分にしていきましょう。
+  </div>
+
+  <h2>もうちょっとレベルアップしたい時に</h2>
+  <ul>
+    <li>Claude Code の公式ドキュメントを眺める：<code class="inline">https://docs.claude.com/claude-code</code></li>
+    <li>HTML / CSS の基礎を体系的に学ぶ：MDN Web Docs（<code class="inline">https://developer.mozilla.org/ja/</code>）</li>
+    <li>git の使い方をもう少し深く：<code class="inline">https://git-scm.com/book/ja/v2</code></li>
+    <li>困った時はまず Claude に「これ、どこから学ぶのが効率的？」と聞いてみる</li>
+  </ul>
+
+  <div class="imura-yell">
+    <p>
+      最後にもう一回だけ言わせてくれ。
+      <strong>知らないことが出てきたら即 ChatGPT か Gemini か Claude に聞け</strong>。
+      <strong>キーボードは見るな、トラックパッドは触るな、トラックボールで動け</strong>。
+      この 2 つを徹底するだけで、3 ヶ月後の景色が変わる。本当に変わる。
+    </p>
+    <p>
+      逆に、これを軽視して半年後に「なんで自分は伸びないんだろう」と悩むやつを、何人も見てきた。
+      だから今、しつこく言っている。
+    </p>
+  </div>
+
+  <h2>ここまで読んだあなたへ</h2>
+  <p>
+    お疲れ様でした。最後まで読み切ったあなたは、もう「ターミナル未経験者」ではありません。
+    AI と一緒に開発できる人の <strong>入り口に立っている</strong>状態です。
+  </p>
+  <p>
+    ここから先は、実案件で実際に手を動かして、失敗を重ねて、その都度 AI に聞いて、自分のメモを増やしていく。
+    そうやってあなた自身の<strong>運用スタイル</strong>ができていきます。
+  </p>
+  <p>
+    Poolside での開発業務、楽しんでください。
+  </p>
+
+  <hr>
+  <p>
+    本指南書の内容について、改善提案・誤字脱字・分かりにくい箇所のフィードバックは、社内の指南書メンテナ担当（または最初に渡してくれた先輩）まで気軽にどうぞ。
+  </p>
+
+  <nav class="chapter-nav">
+    <a class="prev" href="./14_remote.html">第14章 リモート運用</a>
+    <a class="toc" href="../index.html">目次</a>
+    <span class="next"></span>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  Poolside · AI運用指南書 · 第15章 — 完
+</footer>
+
+</body>
+</html>

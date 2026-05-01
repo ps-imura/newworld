@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head><script>(function(){var ok=false;try{ok=localStorage.getItem("guidebook-access-granted-v1")==="true";}catch(e){}if(!ok){var depth=location.pathname.indexOf("/chapters/")>=0?"../":"./";var back=encodeURIComponent(location.pathname+location.search+location.hash);location.replace(depth+"gate.html?back="+back);}})();</script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>第11章 GitHub — AI運用指南書</title>
+<link href="../assets/style.css" rel="stylesheet"/>
+<link href="../assets/guidebook.css" rel="stylesheet"/>
+<script defer="" src="../assets/guidebook.js"></script>
+</head>
+<body>
+<header class="site-header">
+<div class="inner">
+<div class="brand"><a href="../index.html" style="color:inherit;">AI運用指南書</a></div>
+<div class="nav">第11章 / 全15章</div>
+</div>
+</header>
+<main>
+<nav class="chapter-nav">
+<a class="prev" href="./10_hello_js.html">第10章 JavaScript</a>
+<a class="toc" href="../index.html">目次</a>
+<a class="next" href="./12_firebase.html">第12章 Firebase</a>
+</nav>
+<header class="chapter-header">
+<span class="num">CHAPTER 11</span>
+<h1>関連ツール解説：GitHub</h1>
+</header>
+<div class="goal">
+<div class="label">この章のゴール</div>
+<div class="content">
+      GitHub が何のためのサービスか分かる。<br/>
+      自分のアカウントを作って、ここまで作った Hello World プロジェクトを<strong>インターネット上に公開</strong>する。<br/>
+      git の最低限の使い方（add / commit / push）を体験する。
+    </div>
+</div>
+<h2>GitHub って何？</h2>
+<p>
+    GitHub（ギットハブ）は、<strong>世界中のエンジニアがコードを保管・共有するためのサービス</strong>です。マイクロソフト傘下の会社が運営しています。
+  </p>
+<ul>
+<li>自分のコードをインターネット上に保存できる（バックアップ）</li>
+<li>コードの変更履歴をすべて残せる（過去のどの状態にも戻れる）</li>
+<li>他の人と共同で同じコードを編集できる</li>
+<li>無料で使える範囲が大きい</li>
+</ul>
+<section class="term-deck">
+<h3>絶対に覚える：GitHub の必須用語</h3>
+<p class="lead-text">
+      GitHub は<strong>用語が一気に増えるところ</strong>です。ここで一度しっかり覚えておくと、後の章や実務で迷子にならずに済みます。
+      最初は分からなくて当然なので、出てきた時にまたここに戻ってきて読み返してください。
+    </p>
+<div class="terms">
+<div class="term-card">
+<div class="term-name"><span class="en">Repository (Repo)</span><span class="ja">リポジトリ／リポ</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>1つのプロジェクトの<strong>「コードと履歴の入れ物」</strong></dd>
+<dt>たとえると</dt>
+<dd><strong>1冊の本</strong>のようなもの。中身（コード）と、書き直した履歴（コミット）が全部入っている</dd>
+<dt>関連</dt>
+<dd>Public / Private / clone / fork</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Commit</span><span class="ja">コミット</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>変更内容を「ここでセーブします」と<strong>履歴に刻む</strong>操作</dd>
+<dt>たとえると</dt>
+<dd>ゲームの<strong>セーブポイント</strong>。何かあった時、このセーブまでいつでも戻れる。メッセージを必ず付ける（「ここで何をやったか」のメモ）</dd>
+<dt>関連</dt>
+<dd>git add / git commit -m "..."</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Branch</span><span class="ja">ブランチ／枝</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>本流から枝分かれした<strong>作業ライン</strong></dd>
+<dt>たとえると</dt>
+<dd>本流が「会社の決定版マニュアル」、ブランチが「自分の作業用コピー」。本流を壊さずに自由に試せて、うまくいったら本流に戻せる</dd>
+<dt>関連</dt>
+<dd>main / feature ブランチ / merge</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">main</span><span class="ja">メイン</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>リポジトリの<strong>本流ブランチ</strong>。最終版・公開版が置かれる場所</dd>
+<dt>たとえると</dt>
+<dd>会社の<strong>正式な決定版マニュアル</strong>。ここを直接編集するのは危険。ブランチを切ってから直す</dd>
+<dt>関連</dt>
+<dd>master（昔の呼び名）/ main / branch / merge</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Push</span><span class="ja">プッシュ／押し上げ</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>自分の Mac の変更を、<strong>GitHub サーバーに送り上げる</strong>操作</dd>
+<dt>たとえると</dt>
+<dd>書いた原稿を<strong>クラウドに同期する</strong>。これをして初めて、他の人やインターネットから見えるようになる</dd>
+<dt>関連</dt>
+<dd>git push / pull の対義語</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Pull</span><span class="ja">プル／引き寄せ</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>GitHub サーバーの最新版を、<strong>自分の Mac に持ってくる</strong>操作</dd>
+<dt>たとえると</dt>
+<dd>クラウドから<strong>最新原稿をダウンロード</strong>。push の反対</dd>
+<dt>関連</dt>
+<dd>git pull / push の対義語</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Clone</span><span class="ja">クローン／丸ごと複製</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>GitHub にあるリポジトリを、<strong>自分の Mac に丸ごとコピー</strong>する操作</dd>
+<dt>たとえると</dt>
+<dd>図書館にある本を<strong>家に複製して持ち帰る</strong>感じ。履歴も丸ごと付いてくる</dd>
+<dt>関連</dt>
+<dd>git clone &lt;URL&gt;</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Merge</span><span class="ja">マージ／合流</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>枝分かれしたブランチを、<strong>本流（main など）に取り込む</strong>操作</dd>
+<dt>たとえると</dt>
+<dd>自分の作業コピーで完成した内容を、<strong>正式版マニュアルに反映</strong>する。ここで初めて「採用」される</dd>
+<dt>関連</dt>
+<dd>Pull Request / コンフリクト（競合）</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Pull Request (PR)</span><span class="ja">プルリクエスト</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>「自分のブランチを main に merge していい？」という<strong>申請</strong></dd>
+<dt>たとえると</dt>
+<dd>「この修正、本流に取り込んでくれませんか」という<strong>稟議書</strong>。チームメンバーが内容を見てから承認する</dd>
+<dt>関連</dt>
+<dd>レビュー / approve / merge</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Fork</span><span class="ja">フォーク／分家</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>他人のリポジトリを、<strong>自分のアカウント配下にコピー</strong>して独立して触れるようにする操作</dd>
+<dt>たとえると</dt>
+<dd>他社の本を「<strong>自分の手元で改変できるバージョン</strong>として複製」する。本家には影響しない</dd>
+<dt>関連</dt>
+<dd>OSS への貢献 / clone との違い</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">.gitignore</span><span class="ja">ギット イグノア</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>「<strong>このファイルは GitHub に上げないでね</strong>」と git に伝える設定ファイル</dd>
+<dt>たとえると</dt>
+<dd>会社外秘の書類を入れる「持ち出し禁止リスト」。第7章で扱う <code class="inline">.env</code> の保護にも必須</dd>
+<dt>関連</dt>
+<dd>.env / セキュリティ</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Conflict</span><span class="ja">コンフリクト／競合</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>同じファイルの同じ場所を<strong>複数人が同時に書き換えた時に起きる衝突</strong></dd>
+<dt>たとえると</dt>
+<dd>同じ書類を 2 人が別々に直してきた時、「どっちを採用するか？」を git が聞いてくる状態。慌てず、AI に状況を貼り付けて聞けばOK</dd>
+<dt>関連</dt>
+<dd>merge / 解決 / git status</dd>
+</dl>
+</div>
+</div>
+<p style="margin-top: var(--space-4); font-size: 12px; color: var(--ink-mute);">
+      ※ 全部いっぺんに覚えなくて大丈夫。<strong>「リポジトリ／コミット／push／main／branch／merge／PR」の7つ</strong>を最初の目標に。残りは出てきた時に戻ってきてください。
+    </p>
+</section>
+<img alt="イラスト⑧：git のブランチ・push・pull・merge の関係図" class="guide-illustration" src="../assets/illustrations/illust_08_git_flow.png"/>
+<h2>git と GitHub の違い</h2>
+<table>
+<tr><th>名前</th><th>正体</th></tr>
+<tr><td><strong>git</strong></td><td>あなたの Mac の中で動く、変更履歴を管理する仕組み（ツール）</td></tr>
+<tr><td><strong>GitHub</strong></td><td>git で管理しているコードをインターネット上に置けるサービス</td></tr>
+</table>
+<p>
+    第4章で <code class="inline">brew install git</code> で git は入れていますね。これで「履歴を管理」する道具は揃っています。
+    GitHub はそれを「世界に共有する場所」と思ってください。
+  </p>
+<h2>Step 1：GitHub アカウントを作る</h2>
+<ol class="steps">
+<li>
+      ブラウザで <code class="inline">https://github.com</code> にアクセス
+    </li>
+<li>
+      右上の「Sign up」を押す
+    </li>
+<li>
+      メール、パスワード、ユーザー名（半角英数字、全世界で重複しない名前）を登録
+    </li>
+<li>
+      メール認証を済ませる
+    </li>
+<li>
+      無料プラン（Free）でOK。質問項目はすべてスキップして構わない
+    </li>
+</ol>
+<div class="warn">
+    会社の業務で使う場合、ユーザー名は<strong>個人特定されない無難な名前</strong>がおすすめです（社名そのものや本名フルネームは避ける）。
+    社内の規定がある場合はそれに従ってください。
+  </div>
+<h2>Step 2：Mac の git に「あなたの名前」を教える</h2>
+<p>
+    git でコミット（保存）するときに、誰が変更したかを記録します。最初に1回だけ設定します。
+  </p>
+<pre class="code" data-lang="terminal">git config --global user.name "あなたのGitHubユーザー名"
+git config --global user.email "github登録メールアドレス"</pre>
+<p>確認：</p>
+<pre class="code" data-lang="terminal">git config --global user.name
+git config --global user.email</pre>
+<p>登録した値が表示されればOK。</p>
+<h2>Step 3：プロジェクトを git で管理する</h2>
+<p>第10章まで作ってきた Hello World フォルダで作業します。</p>
+<pre class="code" data-lang="terminal">cd <span data-var="devroot">~/dev</span>/hello-world</pre>
+<h3>3-1. 履歴管理を開始する</h3>
+<pre class="code" data-lang="terminal">git init</pre>
+<p>
+    隠しフォルダ <code class="inline">.git/</code> ができます（普段は見えないが、ここに履歴が保存される）。
+  </p>
+<h3>3-2. <code class="inline">.gitignore</code> を置く</h3>
+<p>
+    第7章で説明した「上げないファイルの宣言」。Claude に頼んで作ってもらってOK。
+  </p>
+<div class="ai-prompt">
+<div class="quote">
+      このフォルダ用の最小の .gitignore を作ってください。<br/>
+      Mac の .DS_Store と、もし将来 .env を作るとしたらそれも除外できる内容で。
+    </div>
+</div>
+<h3>3-3. 「変更を保存します」と宣言する</h3>
+<pre class="code" data-lang="terminal">git add .
+git commit -m "first commit: hello world"</pre>
+<ul>
+<li><code class="inline">git add .</code> で「このフォルダの全ファイルを保存対象に追加」</li>
+<li><code class="inline">git commit -m "..."</code> で「保存実行＋メッセージ」</li>
+</ul>
+<div class="tip">
+    コミットメッセージは「何のために変更したか」を短く書きます。後で履歴を見返した時の手がかりになります。<br/>
+    例：「first commit」「ヘッダー追加」「ボタンの色を修正」など。
+  </div>
+<h2>つまずきポイント：Public（公開）と Private（非公開）はどっちを選ぶ？</h2>
+<p>
+    リポジトリを作る画面では、必ず <strong>Public（公開）</strong> か <strong>Private（非公開）</strong> を選ばされます。
+    ここで多くの初心者が手が止まります。「自分のコードを世界中に晒して大丈夫なの？」と。
+    結論から言うと、<strong>本書の練習は Public で問題ありません</strong>。なぜ問題ないのか・逆に Private にすべきはどんな時か、ここでしっかり整理します。
+  </p>
+<h3>まず違いを表で整理</h3>
+<table>
+<tr><th>項目</th><th>Public（公開）</th><th>Private（非公開）</th></tr>
+<tr><td>誰が見られる？</td><td><strong>世界中の誰でも</strong>、ログイン不要で見られる</td><td>あなたと、招待した人だけ</td></tr>
+<tr><td>検索エンジンに出る？</td><td>出る（Google などで見つかる）</td><td>出ない</td></tr>
+<tr><td>GitHub Pages（無料公開）</td><td><strong>使える</strong></td><td>無料プランでは使えない（Pro 等の有料プランが必要）</td></tr>
+<tr><td>料金</td><td>無料</td><td>無料（個人）</td></tr>
+<tr><td>あとから切替</td><td>いつでも Private にできる</td><td>いつでも Public にできる</td></tr>
+</table>
+<h3>なぜ本書では Public を勧めているのか</h3>
+<p>「練習なら Public でOK」と書いている理由は4つあります。</p>
+<h4>① そもそも公開して困る内容ではない</h4>
+<p>
+    本書の Hello World は <strong>世界中のエンジニアが最初に作って公開している、ある意味"伝統行事"</strong> のようなものです。
+    GitHub で <code class="inline">hello world</code> と検索すれば、何百万件もの似たリポジトリが出てきます。
+    そして<strong>誰もそれを見て笑いません</strong>。むしろ「最初の一歩をちゃんと踏んだんだな」と前向きに受け止められます。
+  </p>
+<h4>② Public だからこそ無料で公開ページが持てる（GitHub Pages）</h4>
+<p>
+    GitHub Pages（自分のサイトをインターネットで公開する仕組み）は、無料プランの場合 <strong>Public リポジトリでしか使えません</strong>。
+    Private で同じことをやるには有料プラン（GitHub Pro 等）が必要です。
+    練習段階でいきなり課金する理由は無いので、Public 一択。<br/>
+<strong>業務で GitHub Pro が必要になった時は、必ず居村に相談</strong>してから契約を（第1章の「お約束」参照）。
+  </p>
+<h4>③ 自分のポートフォリオの "最初の1歩" になる</h4>
+<p>
+    GitHub のプロフィールページには、Public リポジトリの一覧が並びます。
+    これは将来、社内外で「この人、何を作ってきた人なのか」を伝えるちょっとした名刺代わりになります。
+    小さな練習の積み重ねが、いつか自分の歴史になります。
+  </p>
+<h4>④ "公開"と言っても、実際は誰も見に来ない</h4>
+<p>
+    正直に言うと、新人の練習リポジトリを世界中の人が探して見に来ることは<strong>ほぼありません</strong>。
+    URL を直接知らせない限り、たまたま見つけて読まれることもまずありません。
+    「Public」というワードの響きに身構えすぎる必要はないです。
+  </p>
+<h3>逆に：Private を選ぶべき要件</h3>
+<p>次のいずれかに当てはまる時は、<strong>迷わず Private</strong> を選んでください。</p>
+<ul>
+<li><strong>業務のソースコード</strong>を扱う（社内サイト、クライアント案件、社内ツール）</li>
+<li><strong>機密情報・取引先情報</strong>がコードや設定・ファイル名に含まれている／含まれる可能性がある</li>
+<li><strong>NDA（守秘義務契約）</strong> が結ばれた案件</li>
+<li><strong>未発表の企画・プロダクト</strong>の試作（リリース前のもの）</li>
+<li><strong>個人情報</strong>を扱うアプリのテストコード（ダミーデータでも紛らわしい）</li>
+<li><strong>API キー・認証情報</strong>を扱う段階のコード（漏れたら即事故）</li>
+<li>「公開して問題ないか自信がない」時 — <strong>迷ったら Private</strong>。後から Public に変える方が圧倒的に安全</li>
+</ul>
+<div class="warn">
+    一度 Public に上げてしまった機密情報は、後から Private に戻しても <strong>「他人に見られた可能性」は消えません</strong>。
+    その情報は、もう外に出たものとして扱う必要があります（API キーなら即無効化、など）。<br/>
+    だから「<strong>公開していい内容か不明なら、最初から Private</strong>」が鉄則です。
+  </div>
+<h3>不安への回答（よくある質問）</h3>
+<dl class="glossary">
+<dt>Q. 自分の本名やメールアドレスは表示されますか？</dt>
+<dd>GitHub のユーザー名（自分で付けたハンドル）は出ますが、本名・メールは設定で隠せます。git のコミットに記録されるメールも、GitHub の "noreply" メールに置き換えれば本物は出ません。詳しくは Claude に聞くのが早いです。</dd>
+<dt>Q. Public にしたコードを他人がコピーして悪用しないの？</dt>
+<dd>コピーされること自体は防げません。ただし Hello World レベルの練習コードを悪用するシーンは想像しにくいです。本格的に「コピーの条件を制御したい」段階で初めて、LICENSE ファイルを置く話になります。</dd>
+<dt>Q. 会社アカウントで Public 練習用リポジトリを作って大丈夫？</dt>
+<dd>会社の規定によります。多くの場合、<strong>個人練習用は個人アカウントで／業務関連は会社の Organization で</strong>と分けるのが安全です。社内ルールは情シスや上長に確認しましょう。</dd>
+<dt>Q. リポジトリ全体を消したい時は？</dt>
+<dd>Settings 画面の最下部「Danger Zone」にある「Delete this repository」で完全削除できます。ただし他人が fork（複製）していた場合、その複製までは消せません。</dd>
+</dl>
+<h3>結論：本書を進める間の方針</h3>
+<div class="note">
+<ul>
+<li><strong>本書の練習リポジトリは Public で OK</strong> — 機密が無いから</li>
+<li><strong>業務に関わるものは Private 必須</strong> — 第7章のセキュリティ章を必ず再確認</li>
+<li><strong>迷ったら Private</strong> — 後から Public にする方が圧倒的に安全</li>
+<li><strong>Public 公開前は必ず中身を確認</strong> — API キー／機密情報／個人情報が混入していないか</li>
+</ul>
+</div>
+<div class="ai-prompt">
+<div class="quote">
+      これから Public リポジトリにする予定のフォルダの中身を確認してください。<br/>
+      APIキー、パスワード、機密情報、取引先名、個人情報など、<strong>Public にしてはいけないもの</strong>が含まれていないか、初心者向けにチェックして教えてください。
+    </div>
+</div>
+<h2>Step 4：GitHub にリポジトリを作る</h2>
+<p>「リポジトリ」はコードの入れ物のこと。リポと略されることも。</p>
+<ol class="steps">
+<li>GitHub にログインした状態で、右上の「+」→「New repository」</li>
+<li>Repository name に <code class="inline">hello-world</code> と入力</li>
+<li>Public（公開）か Private（非公開）を選ぶ — <strong>本書の練習は Public で OK</strong>（理由は前のセクション参照）</li>
+<li>その他のオプション（README、.gitignore など）は<strong>すべて空のまま</strong></li>
+<li>Create repository を押す</li>
+</ol>
+<h2>Step 5：手元のコードを GitHub に上げる（push）</h2>
+<p>
+    リポジトリ作成後の画面に、コマンドの案内が出ています。<br/>
+    「…or push an existing repository from the command line」のところに表示されているコマンドをコピペして実行してください。
+    だいたいこんな感じ：
+  </p>
+<pre class="code" data-lang="terminal">git branch -M main
+git remote add origin https://github.com/あなたのID/hello-world.git
+git push -u origin main</pre>
+<p>
+    初回の push でブラウザが開いて GitHub の認証を求められることがあります。
+    画面の指示に従ってログインを完了してください。
+  </p>
+<p>
+    成功すると、GitHub のページを更新するとファイルが並んでいるはずです。
+    あなたの最初のコードがインターネットに置かれた瞬間です。
+  </p>
+<h2>Step 6：GitHub Pages で公開する</h2>
+<ol class="steps">
+<li>リポジトリのページで「Settings」（歯車）を開く</li>
+<li>左メニューから「Pages」を選択</li>
+<li>「Build and deployment」の Source で「Deploy from a branch」を選択</li>
+<li>Branch のところで「main」「/ (root)」を選んで Save</li>
+<li>少し待つと、URL（<code class="inline">https://&lt;ID&gt;.github.io/hello-world/</code>）が表示される</li>
+</ol>
+<p>
+    その URL を踏むと、あなたが作った Hello World が世界中から見られます！
+  </p>
+<h2>2回目以降の更新の流れ</h2>
+<p>ファイルを直したら、同じサイクルを繰り返します：</p>
+<pre class="code" data-lang="terminal">git add .
+git commit -m "見出しの色を変えた"
+git push</pre>
+<p>
+    数十秒〜数分で、公開ページに反映されます。
+  </p>
+<h2>困った時の AI 相談例</h2>
+<div class="ai-prompt">
+<div class="quote">
+      git push を実行したらこういうエラーが出ました。初心者向けに、原因と対処を教えてください。<br/>
+<code class="inline">[エラー全文を貼り付け]</code>
+</div>
+</div>
+<div class="ai-prompt">
+<div class="quote">
+      間違ってコミットしたファイルを、最後のコミットから取り消したいです。git の安全なやり方で教えてください。
+    </div>
+</div>
+<h2>第7章で言ったセキュリティの話、再確認</h2>
+<div class="warn">
+    GitHub の Public リポジトリは <strong>世界中の誰でも見られます</strong>。<br/>
+    機密情報・APIキー・社内固有の名称を含むファイルを上げないよう、push 前に必ず内容を確認してください。<br/>
+    心配な時は Claude に「このフォルダ、GitHub に上げて大丈夫？危なそうなファイルあったら教えて」と聞くのも有効です。
+  </div>
+<div class="imura-yell">
+<p>
+      git のコマンドこそ<strong>手打ちが理想</strong>だ。
+      最初の数日はコピペで構わないが、3 周目には <code class="inline">git add .</code> → <code class="inline">git commit -m "..."</code> → <code class="inline">git push</code> を、何も見ずに打てる自分を目指せ。
+    </p>
+<p>
+      指がコマンドを覚えると、頭の余裕が「次に何を作るか」に回せる。これがエンジニアの基礎体力だ。
+      ちなみに git のコマンドは英語の動詞そのものなので、覚えやすい。<strong>add（追加）→ commit（保存）→ push（送る）</strong>。これだけだ。
+    </p>
+</div>
+<h2>git のよく使うコマンドまとめ</h2>
+<table>
+<tr><th>コマンド</th><th>意味</th></tr>
+<tr><td><code class="inline">git status</code></td><td>今の変更状況を見る</td></tr>
+<tr><td><code class="inline">git add .</code></td><td>変更を保存対象に追加</td></tr>
+<tr><td><code class="inline">git commit -m "メッセージ"</code></td><td>セーブポイントを作る</td></tr>
+<tr><td><code class="inline">git push</code></td><td>GitHub にアップロード</td></tr>
+<tr><td><code class="inline">git log</code></td><td>過去のコミット履歴を見る</td></tr>
+<tr><td><code class="inline">git diff</code></td><td>前回コミットからの差分を見る</td></tr>
+</table>
+<p>これら全部、Claude に「これって何？」「使い方は？」と聞いて構いません。</p>
+<h2>本章のチェックリスト</h2>
+<p>
+    すべてチェックを付けると「次の章へ」のリンクが解放されます。
+  </p>
+<ul class="checklist" data-checklist-id="ch11">
+<li><label><input type="checkbox"/> GitHub アカウントを作った</label></li>
+<li><label><input type="checkbox"/> git の名前・メール設定をした</label></li>
+<li><label><input type="checkbox"/> hello-world フォルダを <code class="inline">git init</code> した</label></li>
+<li><label><input type="checkbox"/> <code class="inline">.gitignore</code> を作った</label></li>
+<li><label><input type="checkbox"/> commit して、GitHub にリポジトリを作って push した</label></li>
+<li><label><input type="checkbox"/> GitHub Pages で URL アクセス可能になった</label></li>
+</ul>
+<p class="checklist-status">チェック 0 / 6</p>
+<h2>次の章へ</h2>
+<p>
+    GitHub Pages 以外にも、Web サイトを公開する手段があります。
+    次の第12章では Firebase を紹介します。Poolside の他案件で出てくるので、知っておくと便利です。
+  </p>
+<nav class="chapter-nav">
+<a class="prev" href="./10_hello_js.html">第10章 JavaScript</a>
+<a class="toc" href="../index.html">目次</a>
+<a class="next" href="./12_firebase.html">第12章 Firebase</a>
+</nav>
+</main>
+<footer class="site-footer">
+  Poolside · AI運用指南書 · 第11章
+</footer>
+</body>
+</html>

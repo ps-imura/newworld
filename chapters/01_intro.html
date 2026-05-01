@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head><script>(function(){var ok=false;try{ok=localStorage.getItem("guidebook-access-granted-v1")==="true";}catch(e){}if(!ok){var depth=location.pathname.indexOf("/chapters/")>=0?"../":"./";var back=encodeURIComponent(location.pathname+location.search+location.hash);location.replace(depth+"gate.html?back="+back);}})();</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第1章 はじめに — AI運用指南書</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/guidebook.css">
+<script src="../assets/guidebook.js" defer></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="inner">
+    <div class="brand"><a href="../index.html" style="color:inherit;">AI運用指南書</a></div>
+    <div class="nav">第1章 / 全15章</div>
+  </div>
+</header>
+
+<main>
+  <nav class="chapter-nav">
+    <span class="prev"></span>
+    <a class="toc" href="../index.html">目次</a>
+    <a class="next" href="./02_what_is_claude_code.html">第2章 Claude Code とは</a>
+  </nav>
+
+  <header class="chapter-header">
+    <span class="num">CHAPTER 01</span>
+    <h1>はじめに：この指南書の使い方</h1>
+  </header>
+
+  <div class="goal">
+    <div class="label">この章のゴール</div>
+    <div class="content">
+      この指南書が何のためのもので、どんな順番で読めばよいかが分かる。<br>
+      自分が今どの位置にいて、最終的に何ができるようになるのか、見通しを持てる状態になる。
+    </div>
+  </div>
+
+  <h2>この指南書は誰のためか</h2>
+  <p>
+    この指南書は、<strong>株式会社 Poolside の仲間として、信頼を寄せている若手</strong>の育成を目的に書かれています。
+    <strong>Claude Code（クロード コード）</strong>と<strong>Cursor（カーソル）</strong>を使いこなし、AI を相棒に開発を進められるようになることがゴールです。
+  </p>
+  <p>
+    社外公開を前提とした一般向けのチュートリアルではなく、<strong>あなた個人に向けた、上長からの実地の手引き</strong>として渡しているものです。
+    だからこそ、遠慮のない物言いも、業務に直結する具体例も、率直に書いています。
+  </p>
+  <p>
+    前提知識は要りません。次のような状態の人を想定して書いています。
+  </p>
+  <ul>
+    <li>プログラミングをしたことがない</li>
+    <li>「ターミナル」と聞いてもピンと来ない</li>
+    <li>Mac は普段使っているが、Finder（フォルダを開いたり閉じたりする画面）以外はほぼ触っていない</li>
+    <li>「AI を業務に使う」と言われたが、何から始めればいいのか分からない</li>
+  </ul>
+
+  <h2>この指南書を読み終えると何ができるか</h2>
+  <ol>
+    <li>Mac のターミナルを怖がらずに開けるようになる</li>
+    <li>Claude Code と Cursor を自分の Mac にインストールできる</li>
+    <li>Claude Code に話しかけて、簡単な作業を頼めるようになる</li>
+    <li>HTML / CSS / JavaScript を AI と相談しながら書ける</li>
+    <li>作った Web ページを GitHub または Firebase で <strong>インターネットに公開</strong>できる</li>
+    <li>AI を使う上で気をつけるべきこと（機密情報・リスク）が分かる</li>
+  </ol>
+  <p>
+    最後の項目は地味に見えますが、業務で AI を使うなら最重要です。第7章で詳しく扱います。
+  </p>
+
+  <h2>読む順番について</h2>
+  <p>
+    基本は <strong>1章から順番に読む</strong>ことをおすすめします。とくに第3章〜第7章までは、
+    後の実装練習で必要になる土台なので飛ばさないでください。
+  </p>
+  <p>
+    すでにターミナルや Mac の操作に慣れている方は、第3章を飛ばして第4章のインストールから始めても構いません。
+  </p>
+
+  <div class="note">
+    実装練習（第8〜10章）は、頭で理解するより<strong>実際に手を動かす</strong>ことが大事です。
+    この指南書を読みながら、Cursor や Claude Code の画面を別ウィンドウで開いて、コマンドや手順を真似してみてください。
+  </div>
+
+  <h2>本書のお約束</h2>
+  <ul>
+    <li>命令口調にはしません。一緒に進めるつもりで書いています</li>
+    <li>専門用語が出てきた時は、その場で1〜2行で噛み砕きます</li>
+    <li>「フォルダ」と「ディレクトリ」は <strong>「フォルダ」</strong>に統一します（実は同じもの）</li>
+    <li>コマンド例は <strong>そのままコピーして貼り付ければ動く</strong>形で書きます</li>
+    <li>うまくいかなかった時のフォローを各章末・第15章に用意しています</li>
+  </ul>
+
+  <div class="danger">
+    <strong>料金・有料プラン関連の判断は、必ず居村に相談</strong>してください。<br>
+    本書を進める中で「Pro プラン」「Blaze プラン」「API 従量課金」などの選択肢が出てきます。
+    無料枠だけで進められるものを基本としていますが、業務で本格運用する段階では有料プランが必要になることもあります。
+    <strong>個人で勝手に有料プランへ切り替えない</strong>こと。事前に居村と相談して、契約・予算・利用範囲を決めてから動いてください。<br>
+    （会社経費の取り扱い、退職時の引き継ぎ、セキュリティ面で関わる重要事項です）
+  </div>
+
+  <h2>大事な心得：コピペは入口、手打ちは目標</h2>
+  <p>
+    本書ではあえて、コマンドや AI への指示文（プロンプト）を <strong>コピペでそのまま動かせる</strong> 形で書いています。
+    最初の段階でタイプミスや細かい記号で詰まる経験は、学習意欲を削ってしまうからです。<strong>慣れるまでは堂々とコピペで進めてください</strong>。
+  </p>
+
+  <div class="note">
+    ただし、本来の理想は<strong>簡単なコマンドや指示文を、自分の頭から自然に手で打てるようになる</strong>ことです。<br>
+    コピペだけで進めていると、「何をやっているか」が頭に残りづらく、応用やトラブル対処の力が育ちにくくなります。
+  </div>
+
+  <p>
+    なので、本書を進めながら以下を意識してみてください：
+  </p>
+  <ul>
+    <li>何度か出てきたコマンド（<code class="inline">cd</code> / <code class="inline">ls</code> / <code class="inline">git add</code> / <code class="inline">git commit</code> など）は、<strong>見ないで打てるよう少しずつ素振り</strong>する</li>
+    <li>AI に頼む時のプロンプトも、ある程度パターンが見えてきたら自分の言葉で書いてみる</li>
+    <li>打ち間違えても何も壊れません。<strong>「打ち間違いを直す経験」が一番の上達近道</strong>です</li>
+  </ul>
+
+  <p>
+    最初は全部コピペでいい。慣れてきたら少しずつ手を動かす。半年後に「あの頃は全部コピペだったな」と笑えるようになるのが目標です。
+  </p>
+
+  <h2>大事な心得：知らない言葉が出たら、即 AI に聞け</h2>
+  <p>
+    本書はできるだけ平易に書いていますが、それでも<strong>知らない言葉や、よく分からない箇所は必ず出てきます</strong>。
+    なぜなら、<strong>あなたはまだ素人だからです</strong>。これは恥ずかしいことではありません。むしろ当然です。
+  </p>
+
+  <p>
+    ただし、いまの時代の素人と昔の素人では決定的に違うことがあります。
+    <strong>あなたには ChatGPT・Gemini・Claude といった超優秀な相棒がいる</strong>ことです。
+    分からない単語や概念に出くわしたら、考え込まず、<strong>1秒でも早く AI に聞いてください</strong>。
+    Google 検索で記事を漁るより、AI に聞くほうが圧倒的に早く・自分のレベルに合わせて答えてくれます。
+  </p>
+
+  <div class="ai-prompt">
+    <div class="quote">
+      「Homebrew」って何？小学生にもわかるように、たとえ話を交えて教えてください。
+    </div>
+  </div>
+
+  <div class="ai-prompt">
+    <div class="quote">
+      Mac の「パスを通す」ってどういう意味？なぜ必要なのかも含めて、絵で例えるように解説してください。
+    </div>
+  </div>
+
+  <div class="ai-prompt">
+    <div class="quote">
+      git の「コミット」を、料理の手順に例えて教えてください。
+    </div>
+  </div>
+
+  <p>
+    質問は<strong>恥ずかしがらないでください</strong>。むしろ、知らないことを即 AI に投げて潰せる人ほど、早く一人前になります。
+    ここで遠慮するより、聞きまくって 1 ヶ月で「分かる人」に化ける方が、結果的に評価されます。
+  </p>
+
+  <div class="tip">
+    AI に聞いて出てきた答えがピンと来なかったら、「もう一回、もっと簡単に」「中学生でも分かるように」「絵で描けるように」と<strong>同じ質問を表現を変えて</strong>投げ直しましょう。AI は何度聞いても怒りません。
+  </div>
+
+  <h2>つまずいた時</h2>
+  <p>
+    詰まったら、まず深呼吸してください。プログラミングは「動かない時間」のほうが「動いている時間」より圧倒的に長いものです。
+    そして、それを <strong>解決していく過程そのものが学習</strong>になります。
+  </p>
+  <p>
+    本書の進行で詰まった時は、以下の順で対処してください：
+  </p>
+  <ol class="steps">
+    <li>その章のページをもう一度ゆっくり読み返す（飛ばし読みしている可能性が大きい）</li>
+    <li>第13章「Q&amp;A」に同じ症状がないか探す</li>
+    <li>Claude Code 自体に「こういうエラーが出た」と<strong>そのまま</strong>貼り付けて聞く</li>
+    <li>それでも解決しないときは、社内のメンター・先輩エンジニアに声をかける</li>
+  </ol>
+
+  <div class="tip">
+    AI に質問する時は、見栄を張らず、<strong>「初心者なので」「分からないので」</strong>と素直に書きましょう。AI はその前提を踏まえて返してくれます。
+  </div>
+
+  <div class="mentor-message">
+    <span class="label">監修：居村より</span>
+
+    <p>
+      この指南書を作って渡している、上長の居村です。Poolside の代表をやっています。
+    </p>
+
+    <p>
+      なぜわざわざ手作りの指南書を用意しているか、ひとこと書いておきます。
+    </p>
+
+    <p>
+      これからの仕事は、<strong>AI と組めるか・組めないか</strong>で生産性が 3 倍にも 10 倍にも変わる時代に入っていきます。
+      映像・音声・イベント・システムを横断する Poolside のような現場ではなおさらです。
+      AI を相棒にできる人ほど「考える時間」と「手を動かす時間」のバランスが取れて、本当にやりたい創造的な仕事に集中できるようになります。
+    </p>
+
+    <p>
+      ただし、AI 運用は<strong>最初の壁が高い</strong>のも事実です。ターミナル、npm、git——この入口で止まってしまう人が多すぎる。
+      せっかく良いセンスやアイデアを持っている人が、最初の段差で諦めてしまうのは、本当にもったいない。
+    </p>
+
+    <p>
+      だから、その<strong>最初の段差を一緒に超えるためのガイド</strong>として、これを用意しました。
+      読み終わる頃には、あなたの仕事の進め方は確実に一段変わります。
+      そして、ここを超えた人だけが見える景色は、間違いなく面白いです。
+    </p>
+
+    <p>
+      ついでに、ぶっちゃけ自己紹介もしておきます。
+      私自身は<strong>モラハラ・パワハラ気質を多少引きずった昭和の男</strong>です。
+      ストレートすぎる物言いや、容赦のないツッコミに、最初は面食らうこともあると思います。
+      ただ、それは全部<strong>あなたが進化していくための「犠牲」</strong>だと思って受け止めてほしい。
+      甘やかして放っておくほうが、長い目で見ると失礼だと本気で信じているからです。
+      鍛えるべきところは厳しく、伸ばすべきところは惜しまず本気で。スタンスはそれだけです。
+    </p>
+
+    <p>
+      詰まったら遠慮なく聞いてください。<strong>一緒に詰まったところを潰していくのも、上司の仕事</strong>です。
+      最初は誰だって初心者でした。慌てず、自分のペースで、でも止まらずに進んでいきましょう。
+    </p>
+
+    <span class="signature">— 居村</span>
+  </div>
+
+  <h2>準備ができたら</h2>
+  <p>
+    では、次の章に進みましょう。まずは Claude Code と Cursor が「そもそも何なのか」を整理します。
+  </p>
+
+  <nav class="chapter-nav">
+    <span class="prev"></span>
+    <a class="toc" href="../index.html">目次</a>
+    <a class="next" href="./02_what_is_claude_code.html">第2章 Claude Code とは</a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  Poolside · AI運用指南書 · 第1章
+</footer>
+
+</body>
+</html>

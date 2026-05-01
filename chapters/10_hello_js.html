@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head><script>(function(){var ok=false;try{ok=localStorage.getItem("guidebook-access-granted-v1")==="true";}catch(e){}if(!ok){var depth=location.pathname.indexOf("/chapters/")>=0?"../":"./";var back=encodeURIComponent(location.pathname+location.search+location.hash);location.replace(depth+"gate.html?back="+back);}})();</script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>第10章 実装練習③ JavaScript アニメーション — AI運用指南書</title>
+<link href="../assets/style.css" rel="stylesheet"/>
+<link href="../assets/guidebook.css" rel="stylesheet"/>
+<script defer="" src="../assets/guidebook.js"></script>
+</head>
+<body>
+<header class="site-header">
+<div class="inner">
+<div class="brand"><a href="../index.html" style="color:inherit;">AI運用指南書</a></div>
+<div class="nav">第10章 / 全15章</div>
+</div>
+</header>
+<main>
+<nav class="chapter-nav">
+<a class="prev" href="./09_hello_css.html">第9章 CSS 練習</a>
+<a class="toc" href="../index.html">目次</a>
+<a class="next" href="./11_github.html">第11章 GitHub</a>
+</nav>
+<header class="chapter-header">
+<span class="num">CHAPTER 10</span>
+<h1>実装練習③：JavaScript でアニメーション（AI と相談）</h1>
+</header>
+<div class="goal">
+<div class="label">この章のゴール</div>
+<div class="content">
+      Hello World にアニメーション（動き）を付ける。<br/>
+      JavaScript の最小の使い方を体験する。<strong>AI と相談しながら、動くものを作る感覚をさらに深める</strong>。
+    </div>
+</div>
+<h2>JavaScript って何？</h2>
+<p>
+    JavaScript（ジャバスクリプト）は、Web ページに <strong>動き・反応・対話性</strong>を加えるためのプログラミング言語です。
+  </p>
+<p>
+    HTML が「内容」、CSS が「見た目」だとすると、JavaScript は「動作」です。
+  </p>
+<ul>
+<li>ボタンを押したら何かが起きる</li>
+<li>時間経過でアニメーションする</li>
+<li>入力した文字に反応する</li>
+<li>サーバーからデータを取ってきて表示する</li>
+</ul>
+<p>
+    本章ではこのうち <strong>「時間経過でアニメーションする」</strong>を体験します。
+  </p>
+<section class="term-deck">
+<h3>絶対に覚える：JavaScript の用語</h3>
+<p class="lead-text">
+      JavaScript は「やれること」が広いため用語も多いですが、最初は<strong>変数 / 関数 / イベント / コンソール</strong>の4つだけでOKです。
+    </p>
+<div class="terms">
+<div class="term-card">
+<div class="term-name"><span class="en">Variable</span><span class="ja">変数</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>値に名前を付けて<strong>取り出せるようにする入れ物</strong>。<code class="inline">const x = 10</code> のように書く</dd>
+<dt>たとえると</dt>
+<dd>箱に名前を貼って中身を入れる感覚。<code class="inline">const</code>＝中身を変えない／<code class="inline">let</code>＝あとで変える</dd>
+<dt>関連</dt>
+<dd>const / let / var（古い）</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Function</span><span class="ja">関数</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>一連の処理を<strong>名前を付けてまとめたもの</strong>。あとから何度でも呼び出せる</dd>
+<dt>たとえると</dt>
+<dd>「料理レシピを名前付きで保存」しておく感覚。「カレーを作る」と言えばその工程が走る</dd>
+<dt>関連</dt>
+<dd>function / 引数 / 戻り値</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Event</span><span class="ja">イベント</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>ユーザーや時間によって<strong>「何かが起きる」きっかけ</strong>。例：クリック、キー入力、画面表示</dd>
+<dt>たとえると</dt>
+<dd>「ベルが鳴ったら反応する」のベル。これを聞き取るのが <code class="inline">addEventListener</code></dd>
+<dt>関連</dt>
+<dd>click / keydown / load</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Event Listener</span><span class="ja">イベントリスナー</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>そのイベントが起きた時に<strong>「これを実行してね」と登録する仕組み</strong></dd>
+<dt>たとえると</dt>
+<dd>「ベルが鳴ったら冷蔵庫を開ける」と耳をすませる係。<code class="inline">btn.addEventListener("click", function () { ... })</code></dd>
+<dt>関連</dt>
+<dd>addEventListener / コールバック</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Console</span><span class="ja">コンソール</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>ブラウザに付いている<strong>「JS の動作確認用ターミナル」</strong></dd>
+<dt>たとえると</dt>
+<dd>JS 開発の最強の友。<code class="inline">console.log(x)</code> で値を覗ける。<code class="inline">option + command + I</code> で開く（DevTools の中）</dd>
+<dt>関連</dt>
+<dd>DevTools / console.log / エラーメッセージ</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">DevTools</span><span class="ja">デヴツール／開発者ツール</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>ブラウザの<strong>裏側を覗く道具</strong>（HTML / CSS / JS / 通信を確認できる）</dd>
+<dt>たとえると</dt>
+<dd>クルマのボンネットを開ける。動きが変な時、まずここを開いて状況を確認する</dd>
+<dt>関連</dt>
+<dd>Console / Elements / Network</dd>
+</dl>
+</div>
+</div>
+</section>
+<h2>準備：第9章のフォルダで続ける</h2>
+<pre class="code" data-lang="terminal">cd <span data-var="devroot">~/dev</span>/hello-world
+claude --continue</pre>
+<h2>Step 1：シンプルなアニメーションを依頼</h2>
+<div class="ai-prompt">
+<div class="quote">
+      Hello, World! の文字に、ページを開いた時にふわっとフェードイン（だんだん表示）するアニメーションを付けたいです。<br/>
+      ・1.5秒くらいの時間をかけて<br/>
+      ・最初は透明、最後にはくっきり表示<br/>
+      JavaScript と CSS のどちらで実現するのが初心者向けに分かりやすいか、教えてください。<br/>
+      その上で、実装案を提示してください。
+    </div>
+</div>
+<p>
+    Claude は「これは CSS だけで実現できます」と提案してくることが多いはずです。
+    まずはそれを採用してみましょう。
+  </p>
+<h3>CSS のみで実装した場合の例</h3>
+<pre class="code" data-lang="css">@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+h1 {
+  animation: fadeIn 1.5s ease-in;
+}</pre>
+<p>
+    保存してブラウザを<strong>強制更新</strong>（<code class="inline">command + shift + R</code>）して、動きを確認してください。
+  </p>
+<h2>Step 2：JavaScript を使ってもっと凝らせる</h2>
+<p>次は JavaScript の出番です。ボタンを押すと文字が動く、にしてみましょう。</p>
+<div class="ai-prompt">
+<div class="quote">
+      Hello, World! の下に「もう一度」というボタンを置いてください。<br/>
+      ボタンを押すと、Hello, World! の文字がもう一度フェードインのアニメーションをやり直す、という動きにしてください。<br/>
+      JavaScript は別ファイル script.js に書いてください。<br/>
+      初心者向けに、JS のコードに各行のコメントを添えてくれると嬉しいです。
+    </div>
+</div>
+<p>
+    Claude が3つの変更案を出してくれるはずです：
+  </p>
+<ul>
+<li><code class="inline">index.html</code> にボタンを追加 / <code class="inline">&lt;script&gt;</code> タグで JS を読み込む</li>
+<li><code class="inline">style.css</code> の調整（ボタンの見た目）</li>
+<li><code class="inline">script.js</code> を新規作成</li>
+</ul>
+<h3>script.js の中身（例）</h3>
+<pre class="code" data-lang="javascript">// 「もう一度」ボタンが押された時の動作を登録
+const btn = document.getElementById("replay-btn");
+const h1 = document.querySelector("h1");
+
+btn.addEventListener("click", function () {
+  // いったんアニメーションをリセット
+  h1.style.animation = "none";
+  // 強制的にレイアウトを更新（DOM のおまじない）
+  void h1.offsetWidth;
+  // アニメーションを再付与
+  h1.style.animation = "fadeIn 1.5s ease-in";
+});</pre>
+<img alt="イラスト⑦：イベントリスナーの仕組み図" class="guide-illustration" src="../assets/illustrations/illust_07_event_listener.png"/>
+<h2>Step 3：動作確認</h2>
+<p>
+    ブラウザを更新して、ボタンを押すと文字が再度フェードインすれば成功です。
+  </p>
+<h2>Step 4：意味の分からない行を解説してもらう</h2>
+<p>
+    上の例には <code class="inline">void h1.offsetWidth;</code> という不思議な行があります。
+    こういう「えっ、これ何？」を放置しないのが上達の最短ルート。
+  </p>
+<div class="ai-prompt">
+<div class="quote">
+      script.js の中の「void h1.offsetWidth;」が何のために書いてあるのか、初心者向けに教えてください。<br/>
+      これが無いと何が起きるのですか？
+    </div>
+</div>
+<h2>Step 5：自分で何か1つ変えてみる</h2>
+<p>
+    手を動かす練習として、自分で何か1個だけ変えてみましょう。例えば：
+  </p>
+<ul>
+<li>アニメーション時間を 1.5s から 3s にしてゆっくりにする</li>
+<li>フェードインだけでなく、上から下にスライドしてくる動きを加える</li>
+<li>ボタンの色を変えてみる</li>
+</ul>
+<p>
+    もちろん、迷ったら AI に「こういう動きにしたいけど、どこを変えればいい？」と相談してOKです。
+  </p>
+<h2>Step 6：「公開」もう一歩進めて考える</h2>
+<p>
+    第8章で説明した GitHub Pages で公開するなら、CSS と JS のファイルも一緒に上げる必要があります。
+    第11章でリポジトリ化のときに、フォルダごと上げるので問題ありません。
+  </p>
+<h2>AI 相談で覚えておきたい3つのテクニック</h2>
+<h3>① 「全部一気に」ではなく「1機能ずつ」頼む</h3>
+<p>
+    「ヘッダーとフッターと記事一覧を一気に作って」ではなく、「まずヘッダーから」「次にフッター」と段階的に頼むと、各段階で確認しながら進められます。
+  </p>
+<h3>② 動かない時は「画面でこう見えている」まで説明する</h3>
+<p>
+    「ボタンを押しても何も起きない」だけでは原因が分かりません。<br/>
+    「ボタンを押すと、ブラウザの右下に何か小さい印が一瞬出る」「コンソールには『undefined』と出ている」のように、<strong>見えている事実</strong>を全部伝えると AI も特定しやすくなります。
+  </p>
+<h3>③ コードを動かす前に「確認のお願い」を入れる</h3>
+<div class="ai-prompt">
+<div class="quote">
+      この実装を進める前に、ファイル変更の前後の差分を表で見せてください。<br/>
+      内容を確認してから OK を出します。
+    </div>
+</div>
+<h2>本章のチェックリスト</h2>
+<p>
+    すべてチェックを付けると「次の章へ」のリンクが解放されます。
+  </p>
+<ul class="checklist" data-checklist-id="ch10">
+<li><label><input type="checkbox"/> Hello World にフェードインを付けた</label></li>
+<li><label><input type="checkbox"/> ボタンを押すとアニメーションを再生できる</label></li>
+<li><label><input type="checkbox"/> JavaScript の最小の構造（<code class="inline">document.getElementById</code> や <code class="inline">addEventListener</code>）を見た</label></li>
+<li><label><input type="checkbox"/> 分からない行を AI に解説してもらった</label></li>
+<li><label><input type="checkbox"/> 自分で1個だけ変更を入れて、動作を確認した</label></li>
+</ul>
+<p class="checklist-status">チェック 0 / 5</p>
+<h2>次の章へ</h2>
+<p>
+    実装練習が一段落しました。次の第11章では、ここまで作ったファイルを <strong>GitHub に上げて、世界に公開</strong>するところまで進めます。
+  </p>
+<nav class="chapter-nav">
+<a class="prev" href="./09_hello_css.html">第9章 CSS 練習</a>
+<a class="toc" href="../index.html">目次</a>
+<a class="next" href="./11_github.html">第11章 GitHub</a>
+</nav>
+</main>
+<footer class="site-footer">
+  Poolside · AI運用指南書 · 第10章
+</footer>
+</body>
+</html>

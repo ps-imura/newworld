@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head><script>(function(){var ok=false;try{ok=localStorage.getItem("guidebook-access-granted-v1")==="true";}catch(e){}if(!ok){var depth=location.pathname.indexOf("/chapters/")>=0?"../":"./";var back=encodeURIComponent(location.pathname+location.search+location.hash);location.replace(depth+"gate.html?back="+back);}})();</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI運用指南書 — Poolside 新人向け</title>
+<link rel="stylesheet" href="./assets/style.css">
+<link rel="stylesheet" href="./assets/guidebook.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="inner">
+    <div class="brand">AI運用指南書 <span class="sub">Poolside 新人向け</span></div>
+    <div class="nav">v0.1 初稿</div>
+  </div>
+</header>
+
+<main>
+  <h1>AI運用指南書</h1>
+  <p class="lead">
+    この指南書は、株式会社 Poolside の新人が、Claude Code と Cursor を使って AI と協働しながら開発できるようになるためのガイドです。<br>
+    ターミナルもプログラミングも初めて、という前提で書いています。<strong>順番に読んでも、必要な章だけ拾い読みしてもどちらでも構いません</strong>。
+  </p>
+
+  <div class="goal">
+    <div class="label">この指南書のゴール</div>
+    <div class="content">
+      最終章まで読み終えると、Claude Code と Cursor の基本操作ができ、AI と相談しながら簡単な Web ページ（HTML / CSS / JavaScript）を作って、<strong>実際にインターネット上に公開</strong>できる状態になります。
+    </div>
+  </div>
+
+  <h2>目次</h2>
+  <ol class="toc-list">
+    <li>
+      <span class="num">01</span>
+      <div>
+        <a class="title" href="./chapters/01_intro.html">はじめに：この指南書の使い方</a>
+        <span class="desc">この指南書をどう読むか／何ができるようになるか／読む前に知っておきたいこと</span>
+      </div>
+    </li>
+    <li>
+      <span class="num">02</span>
+      <div>
+        <a class="title" href="./chapters/02_what_is_claude_code.html">Claude Code とは何か／Cursor との関係</a>
+        <span class="desc">そもそも何の道具なのか。Claude / Claude Code / Cursor の違いをやさしく整理</span>
+      </div>
+    </li>
+    <li>
+      <span class="num">03</span>
+      <div>
+        <a class="title" href="./chapters/03_terminal_basics.html">ターミナルとは何か（Mac の基本）</a>
+        <span class="desc">「黒い画面」と呼ばれている、文字で Mac を操作するための窓を初めて開く</span>
+      </div>
+    </li>
+    <li>
+      <span class="num">04</span>
+      <div>
+        <a class="title" href="./chapters/04_install.html">インストール手順</a>
+        <span class="desc">Claude Code・Cursor・周辺ツールを自分の Mac に入れる</span>
+      </div>
+    </li>
+    <li>
+      <span class="num">05</span>
+      <div>
+        <a class="title" href="./chapters/05_after_install.html">インストール後の注意点</a>
+        <span class="desc">最初にやっておくべき設定／陥りやすい初期トラブル</span>
+      </div>
+    </li>
+    <li>
+      <span class="num">06</span>
+      <div>
+        <a class="title" href="./chapters/06_first_use.html">初めて使ってみる（最小の対話）</a>
+        <span class="desc">Claude Code を起動して、最初の会話と最初のファイル作成までを体験する</span>
+      </div>
+    </li>
+    <li>
+      <span class="num">07</span>
+      <div>
+        <a class="title" href="./chapters/07_security.html">AI 運用上のセキュリティ</a>
+        <span class="desc">機密情報の扱い／開発フォルダの置き場所／リスクヘッジ — 必読</span>
+      </div>
+    </li>
+    <li>
+      <span class="num">08</span>
+      <div>
+        <a class="title" href="./chapters/08_hello_html.html">実装練習①：HTML で Hello World</a>
+        <span class="desc">人生最初の Web ページを作って、サーバーに上げる（HTML の最小説明含む）</span>
+      </div>
+    </li>
+    <li>
+      <span class="num">09</span>
+      <div>
+        <a class="title" href="./chapters/09_hello_css.html">実装練習②：CSS で整える（AI と相談）</a>
+        <span class="desc">Hello World に色や余白を付ける。CSS の指示は AI に頼んでみる</span>
+      </div>
+    </li>
+    <li>
+      <span class="num">10</span>
+      <div>
+        <a class="title" href="./chapters/10_hello_js.html">実装練習③：JavaScript でアニメーション（AI と相談）</a>
+        <span class="desc">Hello World を動かす。JS の書き方も AI と相談しながら</span>
+      </div>
+    </li>
+    <li>
+      <span class="num">11</span>
+      <div>
+        <a class="title" href="./chapters/11_github.html">関連ツール解説：GitHub</a>
+        <span class="desc">作ったコードをインターネット上に保管する仕組み／チームで共有するための土台</span>
+      </div>
+    </li>
+    <li>
+      <span class="num">12</span>
+      <div>
+        <a class="title" href="./chapters/12_firebase.html">関連ツール解説：Firebase</a>
+        <span class="desc">作った Web ページを公開する別の選択肢。GitHub Pages との違いも</span>
+      </div>
+    </li>
+    <li>
+      <span class="num">13</span>
+      <div>
+        <a class="title" href="./chapters/13_advanced.html">Claude Code を使い倒す（ルール／エージェント／スキル）</a>
+        <span class="desc">CLAUDE.md でルール固定／自分用エージェントの作成／スキルの活用まで実演</span>
+      </div>
+    </li>
+    <li>
+      <span class="num">14</span>
+      <div>
+        <a class="title" href="./chapters/14_remote.html">リモート運用 — 出先からスマホで AI に動いてもらう</a>
+        <span class="desc">Claude モバイルアプリ／claude.ai/code（Web 版）／GitHub × Claude Code</span>
+      </div>
+    </li>
+    <li>
+      <span class="num">15</span>
+      <div>
+        <a class="title" href="./chapters/15_qa.html">つまずいた時の Q&amp;A</a>
+        <span class="desc">よくあるエラーメッセージと対処／AI に質問するときのコツ</span>
+      </div>
+    </li>
+  </ol>
+
+  <h2>読み進め方の目安</h2>
+  <p>所要時間はあくまで目安。詰まったら焦らず戻って構いません。</p>
+  <table>
+    <tr><th>段階</th><th>章</th><th>所要時間（目安）</th></tr>
+    <tr><td>導入</td><td>01〜02</td><td>15分</td></tr>
+    <tr><td>環境準備</td><td>03〜06</td><td>1〜2時間</td></tr>
+    <tr><td>セキュリティ理解</td><td>07</td><td>30分</td></tr>
+    <tr><td>実装練習</td><td>08〜10</td><td>2〜4時間</td></tr>
+    <tr><td>関連ツール</td><td>11〜12</td><td>1〜2時間</td></tr>
+    <tr><td>応用・運用</td><td>13〜14</td><td>1〜2時間</td></tr>
+    <tr><td>逆引き・困った時</td><td>15</td><td>必要時に都度</td></tr>
+  </table>
+
+  <h2>本書での約束ごと</h2>
+  <dl class="glossary">
+    <dt>「コマンド」とは</dt>
+    <dd>ターミナルに打ち込んで Mac に何かをさせるための文字列のこと。本書では <code class="inline">$ ls</code> のような形で書く（先頭の <code class="inline">$</code> はプロンプト記号で、入力しなくてよい）。</dd>
+
+    <dt>「フォルダ」と「ディレクトリ」</dt>
+    <dd>同じものです。Mac の画面上では「フォルダ」、ターミナル上では「ディレクトリ」と呼ばれることが多い。本書では原則 <strong>「フォルダ」</strong> に統一します。</dd>
+
+    <dt>「AI に頼んでみよう」と書いてある場所</dt>
+    <dd>Claude Code に貼り付けてみるとよい指示文（プロンプト）を載せてあります。コピペして実行してみて、返ってくる答えと自分の手元を見比べると理解が早くなります。</dd>
+
+    <dt>つまずいた時</dt>
+    <dd>第13章「Q&amp;A」によくあるトラブルと対処法をまとめています。先にそこを開いてみてください。</dd>
+  </dl>
+
+  <h2>更新履歴</h2>
+  <ul>
+    <li>2026-05-01：初稿作成（v0.1）</li>
+  </ul>
+</main>
+
+<footer class="site-footer">
+  Poolside · AI運用指南書 · v0.1 初稿
+</footer>
+
+</body>
+</html>

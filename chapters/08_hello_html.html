@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head><script>(function(){var ok=false;try{ok=localStorage.getItem("guidebook-access-granted-v1")==="true";}catch(e){}if(!ok){var depth=location.pathname.indexOf("/chapters/")>=0?"../":"./";var back=encodeURIComponent(location.pathname+location.search+location.hash);location.replace(depth+"gate.html?back="+back);}})();</script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>第8章 実装練習① HTML Hello World — AI運用指南書</title>
+<link href="../assets/style.css" rel="stylesheet"/>
+<link href="../assets/guidebook.css" rel="stylesheet"/>
+<script defer="" src="../assets/guidebook.js"></script>
+</head>
+<body>
+<header class="site-header">
+<div class="inner">
+<div class="brand"><a href="../index.html" style="color:inherit;">AI運用指南書</a></div>
+<div class="nav">第8章 / 全15章</div>
+</div>
+</header>
+<main>
+<nav class="chapter-nav">
+<a class="prev" href="./07_security.html">第7章 セキュリティ</a>
+<a class="toc" href="../index.html">目次</a>
+<a class="next" href="./09_hello_css.html">第9章 CSS 練習</a>
+</nav>
+<header class="chapter-header">
+<span class="num">CHAPTER 08</span>
+<h1>実装練習①：HTML で Hello World</h1>
+</header>
+<div class="goal">
+<div class="label">この章のゴール</div>
+<div class="content">
+      自分の Mac で HTML ファイルを作って、ブラウザで開いて、最終的に<strong>インターネット上に公開</strong>するまでをやり切る。<br/>
+      ついでに HTML が「何の道具か」が分かる。
+    </div>
+</div>
+<h2>HTML って何？</h2>
+<p>
+    HTML（エイチティーエムエル）は、<strong>Web ページの構造を書くための言語</strong>です。
+    あなたが今読んでいるこのページも HTML で書かれています。
+  </p>
+<p>
+    雑に言うと「ここは見出し」「ここは段落」「ここはリスト」とタグで囲んでいくだけ。
+    プログラミング言語というよりは <strong>「文書の役割を表現するためのマークアップ」</strong>です。
+  </p>
+<section class="term-deck">
+<h3>絶対に覚える：HTML の用語</h3>
+<p class="lead-text">
+      これから何度も出てくる、HTML の基本パーツの呼び方です。<strong>「タグ／属性／要素」の3つは口で説明できる</strong>状態を目指してください。
+    </p>
+<div class="terms">
+<div class="term-card">
+<div class="term-name"><span class="en">Tag</span><span class="ja">タグ</span></div>
+<dl>
+<dt>一言で</dt>
+<dd><code class="inline">&lt; &gt;</code> で囲まれた、<strong>HTML の最小パーツ</strong>。例：<code class="inline">&lt;h1&gt;</code>、<code class="inline">&lt;p&gt;</code></dd>
+<dt>たとえると</dt>
+<dd>役割を貼り付ける付箋。「ここは見出しだよ」「ここは段落だよ」と意味を割り振る</dd>
+<dt>関連</dt>
+<dd>開始タグ <code class="inline">&lt;p&gt;</code> / 終了タグ <code class="inline">&lt;/p&gt;</code></dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Element</span><span class="ja">要素（エレメント）</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>開始タグ＋中身＋終了タグの<strong>1セット全体</strong>。例：<code class="inline">&lt;p&gt;こんにちは&lt;/p&gt;</code></dd>
+<dt>たとえると</dt>
+<dd>「タグ」がパーツ名、「要素」が完成した1部品</dd>
+<dt>関連</dt>
+<dd>タグ / DOM</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Attribute</span><span class="ja">属性</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>タグに付ける<strong>追加情報</strong>。例：<code class="inline">&lt;a href="..."&gt;</code> の <code class="inline">href</code></dd>
+<dt>たとえると</dt>
+<dd>名札に書く「役職」「部署」のような追記情報</dd>
+<dt>関連</dt>
+<dd>class / id / src / href</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">DOCTYPE</span><span class="ja">ドクタイプ</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>ファイルの先頭に書く<strong>「これは HTML ですよ」の宣言</strong></dd>
+<dt>たとえると</dt>
+<dd>書類の「種類」欄。<code class="inline">&lt;!DOCTYPE html&gt;</code> 以外を書く機会はほぼ無い</dd>
+<dt>関連</dt>
+<dd>HTML5</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">head / body</span><span class="ja">ヘッド／ボディ</span></div>
+<dl>
+<dt>一言で</dt>
+<dd><code class="inline">&lt;head&gt;</code>＝裏方の設定（タイトル、文字コード）／<code class="inline">&lt;body&gt;</code>＝<strong>画面に表示される中身</strong></dd>
+<dt>たとえると</dt>
+<dd>head が「DVD のジャケット情報」、body が「DVD の本編」</dd>
+<dt>関連</dt>
+<dd>title / meta</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">DOM</span><span class="ja">ドム</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>HTML をブラウザが読み込んでできる<strong>「操作可能な構造」</strong>（Document Object Model）</dd>
+<dt>たとえると</dt>
+<dd>HTML が「設計図」、DOM が「実際に組み上がった建物」。第10章の JavaScript で操作する対象がこれ</dd>
+<dt>関連</dt>
+<dd>document / 要素</dd>
+</dl>
+</div>
+</div>
+</section>
+<h2>準備：練習フォルダを作る</h2>
+<pre class="code" data-lang="terminal">mkdir -p <span data-var="devroot">~/dev</span>/hello-world
+cd <span data-var="devroot">~/dev</span>/hello-world</pre>
+<h2>Step 1：AI に最初の HTML を作ってもらう</h2>
+<p>このフォルダで Claude Code を起動して、こう頼みましょう。</p>
+<pre class="code" data-lang="terminal">claude</pre>
+<div class="ai-prompt">
+<div class="quote">
+      初心者向けの最小の HTML ファイルを作ってください。<br/>
+      ファイル名は index.html、中身は「Hello, World!」と画面中央に大きく表示されるだけのシンプルな内容で。<br/>
+      初心者なので、各タグの意味も簡単にコメントで添えてください。
+    </div>
+</div>
+<p>
+    Claude は <code class="inline">index.html</code> を作る案を提示し、許可を求めてきます。
+    内容を見て、問題なければ承認してください。
+  </p>
+<h3>できる HTML の例</h3>
+<pre class="code" data-lang="html">&lt;!DOCTYPE html&gt;
+&lt;html lang="ja"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;最初のページ&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Hello, World!&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+<h2>Step 2：ブラウザで開いてみる</h2>
+<pre class="code" data-lang="terminal">open index.html</pre>
+<p>
+    Mac の標準ブラウザ（Safari）で <code class="inline">index.html</code> が開きます。
+    画面に大きく「Hello, World!」と出れば成功です。
+  </p>
+<h2>Step 3：HTML の中身を読んでみる</h2>
+<p>
+    Cursor で <code class="inline">index.html</code> を開いてみましょう。
+    Cursor を起動 → 「Open Folder」で <code class="inline"><span data-var="devroot">~/dev</span>/hello-world</code> を選びます。
+  </p>
+<p>各タグの意味（最低限）：</p>
+<table>
+<tr><th>タグ</th><th>意味</th></tr>
+<tr><td><code class="inline">&lt;!DOCTYPE html&gt;</code></td><td>「これは HTML 文書です」という宣言</td></tr>
+<tr><td><code class="inline">&lt;html lang="ja"&gt;</code></td><td>HTML 全体の入れ物。<code class="inline">lang="ja"</code> は日本語表記の指定</td></tr>
+<tr><td><code class="inline">&lt;head&gt;</code></td><td>ページのメタ情報（タイトル・文字コードなど）。画面には出ない</td></tr>
+<tr><td><code class="inline">&lt;meta charset="UTF-8"&gt;</code></td><td>文字化けを防ぐおまじない</td></tr>
+<tr><td><code class="inline">&lt;title&gt;</code></td><td>ブラウザのタブに表示される題</td></tr>
+<tr><td><code class="inline">&lt;body&gt;</code></td><td>ここの中身が画面に表示される</td></tr>
+<tr><td><code class="inline">&lt;h1&gt;</code></td><td>大見出し（一番大きい）</td></tr>
+</table>
+<div class="tip">
+    最初は全部覚えなくていいです。「<code class="inline">body</code> の中に書いたものが画面に出る」だけ覚えておけばOK。
+  </div>
+<img alt="イラスト⑤：HTML の構造（DOM ツリー）図" class="guide-illustration" src="../assets/illustrations/illust_05_dom_tree.png"/>
+<h2>Step 4：自分でも触ってみる</h2>
+<p>
+    Cursor で <code class="inline">index.html</code> を開いて、<code class="inline">&lt;h1&gt;Hello, World!&lt;/h1&gt;</code> の下に新しい行を追加してみましょう：
+  </p>
+<pre class="code" data-lang="html">&lt;h1&gt;Hello, World!&lt;/h1&gt;
+&lt;p&gt;このページは私が初めて作ったページです。&lt;/p&gt;</pre>
+<p>
+    保存して（<code class="inline">command + S</code>）、ブラウザを<strong>更新（command + R）</strong>してみてください。
+    新しい段落が表示されているはずです。
+  </p>
+<div class="imura-yell">
+<p>
+      Cursor を開いてコードを行き来する時、まだ<strong>トラックパッドでスクロールしてないだろうな？</strong>
+      コードファイル間の移動は <code class="inline">command + P</code>、行ジャンプは <code class="inline">command + G</code>、置換は <code class="inline">command + shift + H</code>。
+      ショートカットキーで動けるようになると、見た目以上にコードを読むスピードが上がる。
+    </p>
+<p>
+      「分からないショートカットがある」と思ったら、即 AI に「Cursor で〇〇するショートカットは？」と聞け。即答してくれる。
+    </p>
+</div>
+<h2>Step 5：「サーバーに上げる」ってどういうこと？</h2>
+<p>
+    今、ブラウザで開いている HTML は「<strong>あなたの Mac の中にだけ存在する</strong>」状態です。
+    URL を見ると <code class="inline">file:///Users/...</code> のようになっていて、これは「自分の Mac のファイル」を指しています。
+  </p>
+<p>
+    これをインターネット上で誰でも見られる場所に置く作業が「<strong>サーバーに上げる</strong>」「<strong>公開する</strong>」「<strong>デプロイする</strong>」などと呼ばれるものです。
+  </p>
+<h2>Step 6：GitHub Pages で公開する（お手軽な方法）</h2>
+<p>
+    無料で簡単に Web ページを公開できる仕組みとして、GitHub Pages が便利です。
+    <strong>GitHub のアカウント・初期設定は第11章で詳しく扱います</strong>ので、本章では「概要だけ」押さえておきます。
+  </p>
+<ol class="steps">
+<li>GitHub にアカウントを作る（第11章で手順を案内）</li>
+<li>新しい「リポジトリ」を作る（コードの入れ物。第11章）</li>
+<li>今作った <code class="inline">index.html</code> をそのリポジトリに上げる（push する。第11章）</li>
+<li>リポジトリの設定で「Pages」を有効にする</li>
+<li><code class="inline">https://&lt;あなたのID&gt;.github.io/&lt;リポジトリ名&gt;/</code> でアクセスできるようになる</li>
+</ol>
+<p>
+    第11章で実際に手を動かして公開まで持っていきます。
+    ここでは「自分が作ったページが世界中からアクセス可能になる」という<strong>イメージだけ</strong>掴んでください。
+  </p>
+<h2>Step 7：Claude に「公開までの手順」を聞いてみる</h2>
+<p>
+    GitHub Pages を使う流れを Claude にまとめてもらうのもいい練習になります。
+  </p>
+<div class="ai-prompt">
+<div class="quote">
+      今このフォルダにある index.html を、GitHub Pages で公開したいです。<br/>
+      私は GitHub アカウントを持っていない初心者です。アカウント作成から公開まで、ステップごとにめちゃくちゃ丁寧に教えてください。
+    </div>
+</div>
+<p>
+    Claude が手順を教えてくれます。<strong>分からない単語が出てきたら、その都度「これって何？」と聞き返す</strong>のがコツです。
+  </p>
+<h2>つまずきやすいポイント</h2>
+<ul>
+<li><strong>ブラウザに何も表示されない</strong>：HTML のタグの綴りミス。Claude に「このコードに間違いある？」と聞くのが早い</li>
+<li><strong>文字化けする</strong>：<code class="inline">&lt;meta charset="UTF-8"&gt;</code> が抜けている</li>
+<li><strong>ファイルが見つからないと言われる</strong>：<code class="inline">cd</code> で正しい場所にいるか確認</li>
+</ul>
+<h2>本章のチェックリスト</h2>
+<p>
+    すべてチェックを付けると「次の章へ」のリンクが解放されます。
+  </p>
+<ul class="checklist" data-checklist-id="ch08">
+<li><label><input type="checkbox"/> <code class="inline"><span data-var="devroot">~/dev</span>/hello-world/index.html</code> を作った</label></li>
+<li><label><input type="checkbox"/> ブラウザで開いて Hello World が表示できた</label></li>
+<li><label><input type="checkbox"/> HTML の最低限のタグの意味を理解した</label></li>
+<li><label><input type="checkbox"/> 自分で1行追加して、ブラウザ更新で反映を確認できた</label></li>
+</ul>
+<p class="checklist-status">チェック 0 / 4</p>
+<h2>次の章へ</h2>
+<p>
+    プレーンな HTML はちょっと味気ないですね。
+    次の第9章では、CSS で見た目を整えていきます。ここから AI と相談する場面が増えます。
+  </p>
+<nav class="chapter-nav">
+<a class="prev" href="./07_security.html">第7章 セキュリティ</a>
+<a class="toc" href="../index.html">目次</a>
+<a class="next" href="./09_hello_css.html">第9章 CSS 練習</a>
+</nav>
+</main>
+<footer class="site-footer">
+  Poolside · AI運用指南書 · 第8章
+</footer>
+</body>
+</html>

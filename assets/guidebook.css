@@ -1,0 +1,709 @@
+/* AI運用練習 指南書 専用スタイル
+ * 共通は ./style.css を踏襲。本ファイルは指南書固有の拡張のみ。
+ */
+
+/* 章ナビゲーション */
+.chapter-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  border-top: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+  padding: var(--space-3) 0;
+  margin: var(--space-5) 0;
+}
+.chapter-nav .prev,
+.chapter-nav .next,
+.chapter-nav .toc {
+  color: var(--ink-mute);
+  white-space: nowrap;
+}
+.chapter-nav .prev::before { content: "← "; }
+.chapter-nav .next::after { content: " →"; }
+.chapter-nav a {
+  color: var(--accent);
+  border-bottom: 1px solid transparent;
+}
+.chapter-nav a:hover { border-bottom-color: var(--accent); }
+
+/* 学習目標 callout */
+.goal {
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  padding: var(--space-4) var(--space-5);
+  margin: var(--space-5) 0;
+  border-radius: 2px;
+}
+.goal .label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  margin-bottom: var(--space-2);
+}
+.goal .content {
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.8;
+}
+
+/* 補足 callout（種類別） */
+.note,
+.warn,
+.tip,
+.danger {
+  border-left: 2px solid var(--hairline);
+  background: var(--paper-tinted);
+  padding: var(--space-3) var(--space-4);
+  margin: var(--space-4) 0;
+  font-size: 14px;
+  border-radius: 2px;
+}
+.note { border-left-color: var(--accent); background: var(--accent-soft); }
+.warn { border-left-color: var(--warn); background: var(--warn-soft); }
+.tip { border-left-color: var(--ok); background: var(--ok-soft); }
+.danger {
+  border-left-color: #a04040;
+  background: #f7eaea;
+}
+.note::before,
+.warn::before,
+.tip::before,
+.danger::before {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  margin-bottom: var(--space-2);
+}
+.note::before { content: "NOTE"; color: var(--accent); }
+.warn::before { content: "注意"; color: var(--warn); }
+.tip::before { content: "TIP"; color: var(--ok); }
+.danger::before { content: "重要"; color: #a04040; }
+
+/* コードブロック */
+pre.code {
+  background: #1c1c1a;
+  color: #ece9e0;
+  padding: var(--space-4) var(--space-5);
+  overflow-x: auto;
+  border-radius: 2px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.7;
+  margin: var(--space-4) 0;
+  position: relative;
+}
+pre.code::before {
+  content: attr(data-lang);
+  position: absolute;
+  top: 4px;
+  right: 12px;
+  font-size: 10px;
+  color: #5a5a54;
+  letter-spacing: 0.15em;
+}
+code.inline {
+  background: var(--paper-tinted);
+  padding: 1px 6px;
+  border-radius: 2px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--ink-soft);
+  border: 1px solid var(--hairline-soft);
+}
+
+/* 用語ルビ */
+.term {
+  border-bottom: 1px dotted var(--ink-mute);
+  cursor: help;
+}
+
+/* AI 相談プロンプト例 */
+.ai-prompt {
+  background: linear-gradient(180deg, #f3f1ec 0%, #fafaf7 100%);
+  border: 1px solid var(--hairline);
+  padding: var(--space-4) var(--space-5);
+  margin: var(--space-4) 0;
+  border-radius: 2px;
+  position: relative;
+}
+.ai-prompt::before {
+  content: "AI に頼んでみよう";
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  margin-bottom: var(--space-2);
+}
+.ai-prompt .quote {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.8;
+  padding-left: var(--space-3);
+  border-left: 2px solid var(--accent);
+}
+
+/* 手順番号付きリスト */
+ol.steps {
+  list-style: none;
+  padding: 0;
+  margin: var(--space-4) 0;
+  counter-reset: step;
+}
+ol.steps > li {
+  counter-increment: step;
+  padding: var(--space-3) 0 var(--space-3) var(--space-7);
+  border-bottom: 1px solid var(--hairline-soft);
+  position: relative;
+}
+ol.steps > li:last-child { border-bottom: 0; }
+ol.steps > li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: var(--space-3);
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  border-radius: 50%;
+  text-align: center;
+  line-height: 30px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  background: var(--accent-soft);
+}
+
+/* 環境設定フォーム（第3章） */
+.config-form {
+  border: 1px solid var(--accent);
+  background: var(--accent-soft);
+  padding: var(--space-5);
+  margin: var(--space-5) 0;
+  border-radius: 2px;
+  position: relative;
+}
+.config-form::before {
+  content: "あなたの環境を設定";
+  position: absolute;
+  top: -10px;
+  left: var(--space-4);
+  background: var(--paper);
+  color: var(--accent);
+  padding: 0 var(--space-3);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+}
+.config-form h3 {
+  margin: 0 0 var(--space-3);
+  font-family: var(--font-serif);
+  font-size: 16px;
+  color: var(--ink);
+}
+.config-form p.lead {
+  border: 0;
+  padding: 0;
+  margin: 0 0 var(--space-4);
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.7;
+}
+.config-form .field {
+  margin: var(--space-3) 0;
+}
+.config-form label {
+  display: block;
+  font-size: 12px;
+  color: var(--ink-soft);
+  letter-spacing: 0.04em;
+  margin-bottom: var(--space-2);
+}
+.config-form label .desc {
+  display: block;
+  font-size: 11px;
+  color: var(--ink-mute);
+  margin-top: 2px;
+  letter-spacing: 0;
+}
+.config-form input[type="text"] {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: 2px;
+  box-sizing: border-box;
+}
+.config-form input[type="text"]:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+.config-form .config-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--space-3);
+  font-size: 12px;
+}
+.config-form .config-status {
+  color: var(--ink-mute);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  transition: color 0.3s;
+}
+.config-form .config-status.saved {
+  color: var(--ok);
+}
+.config-form .config-reset {
+  appearance: none;
+  background: transparent;
+  border: 1px solid var(--hairline);
+  color: var(--ink-soft);
+  padding: 4px 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  border-radius: 2px;
+  cursor: pointer;
+}
+.config-form .config-reset:hover {
+  background: var(--paper-tinted);
+}
+.config-form .privacy {
+  font-size: 11px;
+  color: var(--ink-mute);
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--hairline);
+}
+
+.config-form .quick-tips {
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  padding: var(--space-3) var(--space-4);
+  margin-top: var(--space-3);
+  border-radius: 2px;
+  font-size: 12px;
+  color: var(--ink-soft);
+  line-height: 1.75;
+}
+.config-form .quick-tips .label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--ink-mute);
+  display: block;
+  margin-bottom: var(--space-2);
+}
+.config-form .quick-tips ul {
+  margin: 0;
+  padding-left: var(--space-4);
+}
+.config-form .quick-tips ul li {
+  margin: 4px 0;
+}
+.config-form .quick-tips .ref {
+  display: block;
+  margin-top: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--hairline-soft);
+  color: var(--ink-mute);
+  font-size: 11px;
+}
+
+/* 値が反映されている箇所のうっすらハイライト（デバッグ用にも） */
+[data-var] {
+  /* 必要なら背景色などを */
+}
+
+/* 用語集（dt/dd） */
+dl.glossary dt {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  color: var(--ink);
+  margin-top: var(--space-3);
+}
+dl.glossary dd {
+  margin: 0 0 var(--space-3) 0;
+  padding-left: var(--space-3);
+  font-size: 13px;
+  color: var(--ink-soft);
+  border-left: 1px solid var(--hairline);
+}
+
+/* 居村ヤジ（小ぶりな上長コラム） */
+.imura-yell {
+  background: var(--warn-soft);
+  border-left: 3px solid var(--warn);
+  padding: var(--space-3) var(--space-4);
+  margin: var(--space-4) 0;
+  border-radius: 2px;
+  font-size: 13px;
+  line-height: 1.85;
+  color: var(--ink-soft);
+}
+.imura-yell::before {
+  content: "居村より一言";
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--warn);
+  margin-bottom: var(--space-2);
+}
+.imura-yell strong { color: var(--ink); }
+.imura-yell p { margin: 0 0 var(--space-2); }
+.imura-yell p:last-child { margin-bottom: 0; }
+
+/* 監修・上長メッセージ */
+.mentor-message {
+  background: var(--paper-tinted);
+  border-left: 3px solid var(--accent);
+  padding: var(--space-5) var(--space-6);
+  margin: var(--space-6) 0;
+  border-radius: 2px;
+  position: relative;
+}
+.mentor-message .label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  margin-bottom: var(--space-3);
+  display: block;
+}
+.mentor-message p {
+  font-family: var(--font-serif);
+  font-size: 15px;
+  color: var(--ink);
+  line-height: 1.9;
+  margin: 0 0 var(--space-3);
+}
+.mentor-message p:last-of-type {
+  margin-bottom: var(--space-4);
+}
+.mentor-message .signature {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 14px;
+  color: var(--ink-soft);
+  text-align: right;
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--hairline);
+  letter-spacing: 0.04em;
+}
+
+/* イラスト差し込みエリア（後で画像を入れる場所） */
+.illust-spec {
+  border: 2px dashed var(--accent);
+  background: var(--accent-soft);
+  padding: var(--space-5) var(--space-5) var(--space-4);
+  margin: var(--space-5) 0;
+  border-radius: 4px;
+  position: relative;
+}
+.illust-spec::before {
+  content: "ILLUSTRATION SLOT";
+  position: absolute;
+  top: -10px;
+  left: var(--space-4);
+  background: var(--accent);
+  color: #ece9e0;
+  padding: 3px 14px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  border-radius: 2px;
+}
+.illust-spec h4 {
+  margin: 0 0 var(--space-3);
+  font-family: var(--font-serif);
+  font-size: 15px;
+  color: var(--ink);
+  letter-spacing: 0.04em;
+}
+.illust-spec dl {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: var(--space-2) var(--space-3);
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.illust-spec dt {
+  color: var(--ink-mute);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  padding-top: 2px;
+}
+.illust-spec dd {
+  margin: 0;
+  color: var(--ink);
+}
+.illust-spec .note-for-ai {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid rgba(43, 74, 111, 0.25);
+  font-size: 11px;
+  color: var(--ink-soft);
+  line-height: 1.7;
+}
+.illust-spec .note-for-ai strong {
+  color: var(--accent);
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 600px) {
+  .illust-spec dl {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .illust-spec dt {
+    margin-top: var(--space-2);
+  }
+}
+
+/* 暗記必須用語カード */
+.term-deck {
+  background: linear-gradient(180deg, #fdfcf6 0%, #fafaf7 100%);
+  border: 2px solid var(--accent);
+  border-radius: 4px;
+  padding: var(--space-6) var(--space-5) var(--space-5);
+  margin: var(--space-6) 0;
+  position: relative;
+}
+.term-deck::before {
+  content: "暗記必須";
+  position: absolute;
+  top: -12px;
+  left: var(--space-4);
+  background: var(--accent);
+  color: #ece9e0;
+  padding: 3px 14px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  border-radius: 2px;
+}
+.term-deck > h3 {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-serif);
+  font-size: 17px;
+  color: var(--ink);
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+.term-deck > .lead-text {
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin: 0 0 var(--space-4);
+  line-height: 1.7;
+  border-left: 0;
+  padding-left: 0;
+}
+.term-deck .terms {
+  display: grid;
+  gap: var(--space-3);
+}
+.term-deck .term-card {
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: 2px;
+  padding: var(--space-4) var(--space-4);
+  transition: border-color 0.15s;
+}
+.term-deck .term-card:hover {
+  border-color: var(--accent);
+}
+.term-deck .term-card .term-name {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+  flex-wrap: wrap;
+}
+.term-deck .term-card .term-name .en {
+  font-family: var(--font-serif);
+  font-size: 19px;
+  color: var(--accent);
+  font-weight: normal;
+  letter-spacing: 0.04em;
+}
+.term-deck .term-card .term-name .ja {
+  font-size: 13px;
+  color: var(--ink-mute);
+  letter-spacing: 0.05em;
+}
+.term-deck .term-card dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: var(--space-2) var(--space-3);
+  font-size: 13px;
+  line-height: 1.75;
+}
+.term-deck .term-card dt {
+  color: var(--ink-mute);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  padding-top: 3px;
+  font-family: var(--font-mono);
+}
+.term-deck .term-card dd {
+  margin: 0;
+  color: var(--ink);
+}
+.term-deck .term-card dd strong {
+  color: var(--accent);
+}
+.term-deck .term-card .related {
+  margin-top: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--hairline-soft);
+  font-size: 11px;
+  color: var(--ink-mute);
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 600px) {
+  .term-deck .term-card dl {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .term-deck .term-card dt {
+    margin-top: var(--space-2);
+  }
+}
+
+/* チェックリスト（インタラクティブ） */
+ul.checklist {
+  list-style: none;
+  padding-left: 0;
+  margin: var(--space-4) 0;
+  display: grid;
+  gap: var(--space-2);
+}
+ul.checklist li {
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: 2px;
+  padding: var(--space-3) var(--space-4);
+  transition: background 0.2s, border-color 0.2s;
+}
+ul.checklist li:has(input:checked) {
+  background: var(--ok-soft);
+  border-color: var(--ok);
+}
+ul.checklist label {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink);
+}
+ul.checklist input[type="checkbox"] {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  cursor: pointer;
+  accent-color: var(--ok);
+}
+ul.checklist li:has(input:checked) label {
+  text-decoration: line-through;
+  text-decoration-color: var(--ok);
+  color: var(--ink-soft);
+}
+.checklist-status {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--ink-mute);
+  text-align: right;
+  margin: var(--space-2) 0 0;
+}
+.checklist-status.complete { color: var(--ok); }
+
+/* チェック未完了時の「次の章へ」ロック */
+.chapter-nav .next.locked {
+  pointer-events: none;
+  color: var(--ink-mute);
+  opacity: 0.55;
+  cursor: not-allowed;
+  border-bottom: 1px dashed var(--ink-mute);
+}
+.chapter-nav .next.locked::after {
+  content: "  ロック中";
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--ink-mute);
+  margin-left: var(--space-2);
+}
+
+/* 章ヘッダー */
+.chapter-header {
+  margin-bottom: var(--space-6);
+}
+.chapter-header .num {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: var(--ink-mute);
+  display: block;
+  margin-bottom: var(--space-2);
+}
+
+/* TOC（目次トップ） */
+.toc-list {
+  list-style: none;
+  padding: 0;
+  margin: var(--space-5) 0;
+}
+.toc-list li {
+  border-bottom: 1px solid var(--hairline-soft);
+  padding: var(--space-3) 0;
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: var(--space-4);
+  align-items: baseline;
+}
+.toc-list .num {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-mute);
+  letter-spacing: 0.1em;
+}
+.toc-list .title {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  color: var(--ink);
+  display: block;
+  margin-bottom: 4px;
+}
+.toc-list .desc {
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+
+
+.guide-illustration {
+  display: block;
+  width: min(100%, 900px);
+  height: auto;
+  margin: 28px auto;
+  border-radius: 18px;
+  box-shadow: 0 14px 40px rgba(15, 23, 42, 0.08);
+}

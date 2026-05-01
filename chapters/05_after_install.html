@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head><script>(function(){var ok=false;try{ok=localStorage.getItem("guidebook-access-granted-v1")==="true";}catch(e){}if(!ok){var depth=location.pathname.indexOf("/chapters/")>=0?"../":"./";var back=encodeURIComponent(location.pathname+location.search+location.hash);location.replace(depth+"gate.html?back="+back);}})();</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第5章 インストール後の注意点 — AI運用指南書</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/guidebook.css">
+<script src="../assets/guidebook.js" defer></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="inner">
+    <div class="brand"><a href="../index.html" style="color:inherit;">AI運用指南書</a></div>
+    <div class="nav">第5章 / 全15章</div>
+  </div>
+</header>
+
+<main>
+  <nav class="chapter-nav">
+    <a class="prev" href="./04_install.html">第4章 インストール</a>
+    <a class="toc" href="../index.html">目次</a>
+    <a class="next" href="./06_first_use.html">第6章 初めて使う</a>
+  </nav>
+
+  <header class="chapter-header">
+    <span class="num">CHAPTER 05</span>
+    <h1>インストール後の注意点</h1>
+  </header>
+
+  <div class="goal">
+    <div class="label">この章のゴール</div>
+    <div class="content">
+      使い始める前にやっておくべき初期設定と、最初の数日でやらかしがちな落とし穴を知っておく。<br>
+      <strong>「動いたから OK」と急いで先に進まず、ここで一回足を止めるのが大事です</strong>。
+    </div>
+  </div>
+
+  <section class="term-deck">
+    <h3>絶対に覚える：シェル設定の用語</h3>
+    <p class="lead-text">
+      第4章で <code class="inline">.zprofile</code> にパスを通しました。意味が分からないまま進めた人もいると思います。ここで整理しておきます。
+    </p>
+    <div class="terms">
+
+      <div class="term-card">
+        <div class="term-name"><span class="en">zsh</span><span class="ja">ズィーシェル</span></div>
+        <dl>
+          <dt>一言で</dt>
+          <dd>Mac の最新版で標準採用されている<strong>シェル</strong>（コマンド翻訳係）の一種</dd>
+          <dt>たとえると</dt>
+          <dd>Mac に最初から入っている「ターミナル用の通訳さん」の名前。古い Mac は bash という別の通訳が標準だった</dd>
+          <dt>関連</dt>
+          <dd>bash / シェル / .zshrc / .zprofile</dd>
+        </dl>
+      </div>
+
+      <div class="term-card">
+        <div class="term-name"><span class="en">.zprofile / .zshrc</span><span class="ja">ドット ズィー...</span></div>
+        <dl>
+          <dt>一言で</dt>
+          <dd>zsh が起動時に<strong>必ず読み込む設定ファイル</strong>（ホームフォルダにある隠しファイル）</dd>
+          <dt>たとえると</dt>
+          <dd>「通訳さんの仕事マニュアル」。ここに「<code class="inline">brew</code> はこの場所にあるよ」など教え込んでおくと、毎回伝えなくて済む</dd>
+          <dt>関連</dt>
+          <dd>PATH / 隠しファイル（<code class="inline">command + shift + .</code> で表示切替）</dd>
+        </dl>
+      </div>
+
+      <div class="term-card">
+        <div class="term-name"><span class="en">PATH</span><span class="ja">パス（環境変数）</span></div>
+        <dl>
+          <dt>一言で</dt>
+          <dd>シェルが「コマンドを<strong>どこから探すか</strong>」のリスト</dd>
+          <dt>たとえると</dt>
+          <dd>「<code class="inline">brew</code> って打たれたら、<strong>このフォルダ群を順に探して同名のプログラムを実行する</strong>」というルックアップ表。第4章でやった「パスを通す」とはここに登録すること</dd>
+          <dt>関連</dt>
+          <dd>環境変数 / export / 「command not found」</dd>
+        </dl>
+      </div>
+
+      <div class="term-card">
+        <div class="term-name"><span class="en">Hidden File</span><span class="ja">隠しファイル</span></div>
+        <dl>
+          <dt>一言で</dt>
+          <dd>名前が <code class="inline">.</code>（ドット）から始まる、<strong>普段は表示されないファイル</strong></dd>
+          <dt>たとえると</dt>
+          <dd>家の中の「設定の小箱」。普段は見えない方が散らからないので隠してある。<code class="inline">.zprofile</code> や <code class="inline">.gitignore</code> もこれ</dd>
+          <dt>関連</dt>
+          <dd>command + shift + . / ls -la</dd>
+        </dl>
+      </div>
+
+      <div class="term-card">
+        <div class="term-name"><span class="en">sudo</span><span class="ja">スードゥ</span></div>
+        <dl>
+          <dt>一言で</dt>
+          <dd>そのコマンドを<strong>管理者権限で実行する</strong>ための頭詞</dd>
+          <dt>たとえると</dt>
+          <dd>「<strong>マスターキーで強制的に開ける</strong>」モード。便利だが、間違えるとシステムを壊しかねない。<strong>意味を分かるまで使わない</strong>のが鉄則（第7章再確認）</dd>
+          <dt>関連</dt>
+          <dd>権限 / Permission denied / 第7章</dd>
+        </dl>
+      </div>
+
+    </div>
+  </section>
+
+  <h2>動いたあとに、まずやっておくこと</h2>
+
+  <h3>① Cursor の日本語入力を確認</h3>
+  <p>
+    Cursor の中で AI に質問する時、日本語入力が変換しっぱなしで Enter を押すと、変換確定だけで終わってしまうことがあります。
+    一度 Cursor の AI チャット欄に「こんにちは」など打ってみて、ちゃんと送信されるか確認しましょう。
+  </p>
+
+  <h3>② Claude Code を一度起動して画面に慣れる</h3>
+  <p>
+    第6章で詳しくやりますが、軽く触っておくのがおすすめ。
+    ターミナルで <code class="inline">claude</code> と打ってみて、画面が立ち上がること、<code class="inline">/exit</code> で終了できることだけ確認してください。
+  </p>
+
+  <h3>③ シェルの設定ファイルを把握しておく</h3>
+  <p>
+    Mac の最新版では、ターミナルは <code class="inline">zsh（ズィーシェル）</code>というシェルが動いています。
+    その設定ファイルが <code class="inline">~/.zprofile</code> や <code class="inline">~/.zshrc</code> です。
+    Homebrew を入れた時に <code class="inline">~/.zprofile</code> にパスを書き加えました。
+  </p>
+  <p>
+    無闇に編集しなくて構いませんが、<strong>「自分の Mac の設定はここに書いてある」</strong>ということだけ覚えておきましょう。
+  </p>
+
+  <h2>陥りがちな落とし穴</h2>
+
+  <h3>落とし穴 1：開発フォルダの置き場所を間違える</h3>
+  <p>
+    最初は「分かりやすいから」とデスクトップに開発用のフォルダを作りたくなりますが、おすすめしません。
+  </p>
+  <ul>
+    <li>デスクトップは <strong>iCloud と同期されている場合があり</strong>、Mac が重くなる原因になる</li>
+    <li>ファイルが増えると視認性が落ち、誤って消しやすい</li>
+    <li>書類フォルダ（<code class="inline">~/Documents/</code>）も同様に iCloud 同期対象になりがち</li>
+  </ul>
+  <p>
+    本書では、ホーム直下の <strong><code class="inline">~/dev/</code></strong> を採用します（<code class="inline">~</code> はホームフォルダの省略記号）。
+    なぜここを推奨するのか・他にどんな選択肢があるのか（macOS の <code class="inline">~/Developer/</code> など）は、<strong>第7章「開発フォルダの適切な場所」</strong>で詳しく解説します。
+  </p>
+  <p>
+    また、フォルダ名は<strong>英数字＋ハイフン</strong>を強く推奨します（日本語名は GitHub や CLI で扱う時に思わぬトラブルの元になります）。
+    こちらも詳細は第7章。
+  </p>
+
+  <h3>落とし穴 2：ターミナルでコピペしたつもりが、形が崩れている</h3>
+  <p>
+    Web ページからコマンドをコピーすると、改行や空白が変な形になることがあります。
+    <strong>うまくいかない時は、コマンドをいったん「メモ」アプリに貼って、形を確認してから</strong>ターミナルに貼り直してみてください。
+  </p>
+
+  <h3>落とし穴 3：エラーメッセージを読まずに連打する</h3>
+  <p>
+    コマンドが失敗した時、画面に出てくるエラーメッセージは <strong>必ず読みましょう</strong>。
+    だいたい原因がそこに書いてあります。読んで分からない時は、<strong>そのまま AI にコピペして聞く</strong>のが最速です。
+  </p>
+
+  <div class="ai-prompt">
+    <div class="quote">
+      ターミナルで以下のコマンドを実行したら、こういうエラーが出ました。<br>
+      初心者向けに、原因と対処法を教えてください。<br><br>
+      実行したコマンド：<br>
+      <code class="inline">[コマンドを貼り付け]</code><br><br>
+      エラー全文：<br>
+      <code class="inline">[エラーをそのまま貼り付け]</code>
+    </div>
+  </div>
+
+  <h3>落とし穴 4：「とりあえず sudo を付ける」</h3>
+  <p>
+    <code class="inline">sudo</code>（スドゥ）は「管理者権限で実行する」という意味の頭詞です。
+    強い権限なので、間違えるとシステムを壊しかねません。
+  </p>
+  <div class="danger">
+    <strong>うまくいかないからといって <code class="inline">sudo</code> を付けて再実行する</strong>のは、初心者が一番やってはいけない癖です。<br>
+    エラーが出たら、まず原因を AI に聞いて、それでも sudo が必要だと判断できた場合に限って使ってください。
+  </div>
+
+  <h3>落とし穴 5：何でもコマンドを試してしまう</h3>
+  <p>
+    Web 上には善意も悪意も含めて様々なコマンドが転がっています。
+    <strong>意味の分からないコマンドは絶対に実行しない</strong>のが鉄則です。
+    必ず最初に AI に「これは何をするコマンド？」と聞きましょう。
+  </p>
+
+  <h2>Mac 全体の設定で見直すと楽になるもの</h2>
+  <table>
+    <tr><th>設定箇所</th><th>変更内容</th><th>理由</th></tr>
+    <tr><td>Finder &gt; 表示</td><td>「すべての拡張子を表示」を ON</td><td>HTML / CSS など拡張子の違いが見えると安心</td></tr>
+    <tr><td>Finder &gt; 表示</td><td>「パスバーを表示」を ON</td><td>今いるフォルダの場所が常に見える</td></tr>
+    <tr><td>Finder &gt; 環境設定</td><td>「すべてのフォルダで表示」を ON（隠しファイル）</td><td><code class="inline">.gitignore</code> など <code class="inline">.</code> から始まるファイルが見えるようになる（<code class="inline">command + shift + . </code> でも切替可）</td></tr>
+  </table>
+
+  <h2>セキュリティ章を必ず読むこと</h2>
+  <div class="warn">
+    第6章で「初めての対話」をする前に、必ず<strong>第7章「AI 運用上のセキュリティ」</strong>に目を通してください。
+    AI を業務で使い始める前に知っておくべきことが書いてあります。
+  </div>
+
+  <h2>準備チェックリスト</h2>
+  <p>
+    実際に確認して、チェックを付けてください。<strong>全部チェックすると「次の章へ」のリンクが解放されます</strong>。
+  </p>
+  <ul class="checklist" data-checklist-id="ch05">
+    <li><label><input type="checkbox"> Cursor が起動できる</label></li>
+    <li><label><input type="checkbox"> <code class="inline">claude</code> コマンドが動く</label></li>
+    <li><label><input type="checkbox"> ターミナルでコピペが正常にできる</label></li>
+    <li><label><input type="checkbox"> Finder の「拡張子表示」「パスバー表示」が ON</label></li>
+    <li><label><input type="checkbox"> 第7章を一度読んだ（次々ページ）</label></li>
+  </ul>
+  <p class="checklist-status">チェック 0 / 5</p>
+
+  <h2>次の章へ</h2>
+  <p>
+    準備が整いました。次の第6章では、Claude Code との初めての対話をやってみます。
+    気軽に話しかけてみる回です。
+  </p>
+
+  <nav class="chapter-nav">
+    <a class="prev" href="./04_install.html">第4章 インストール</a>
+    <a class="toc" href="../index.html">目次</a>
+    <a class="next" href="./06_first_use.html">第6章 初めて使う</a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  Poolside · AI運用指南書 · 第5章
+</footer>
+
+</body>
+</html>

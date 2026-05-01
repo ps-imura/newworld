@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>合言葉 — Poolside AI運用指南書</title>
+<link rel="stylesheet" href="./assets/style.css">
+<link rel="stylesheet" href="./assets/guidebook.css">
+<link rel="stylesheet" href="./assets/gate.css">
+</head>
+<body class="gate-body">
+
+<main class="gate-main">
+  <div class="gate-card">
+    <div class="gate-brand">
+      <span class="gate-brand-name">Poolside AI運用指南書</span>
+      <span class="gate-brand-sub">private guidebook</span>
+    </div>
+
+    <h1 class="gate-title">合言葉を入力してください</h1>
+    <p class="gate-lead">
+      この指南書は <strong>株式会社 Poolside の社内向け</strong>です。
+      合言葉を知っている方のみ、続きを読むことができます。
+    </p>
+
+    <form id="gate-form" class="gate-form" autocomplete="off">
+      <label for="password" class="gate-label">合言葉</label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        autocomplete="current-password"
+        autofocus
+        required
+      >
+      <div id="gate-error" class="gate-error" style="display:none;"></div>
+      <button type="submit" class="gate-submit">入る</button>
+    </form>
+
+    <p class="gate-help">
+      合言葉が分からない方は、<strong>指南書を渡してくれた上長</strong>に確認してください。
+    </p>
+  </div>
+
+  <footer class="gate-footer">
+    Poolside · AI運用指南書
+  </footer>
+</main>
+
+<script src="./assets/gate.js" defer></script>
+
+</body>
+</html>

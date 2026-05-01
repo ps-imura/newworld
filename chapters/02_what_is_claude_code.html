@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head><script>(function(){var ok=false;try{ok=localStorage.getItem("guidebook-access-granted-v1")==="true";}catch(e){}if(!ok){var depth=location.pathname.indexOf("/chapters/")>=0?"../":"./";var back=encodeURIComponent(location.pathname+location.search+location.hash);location.replace(depth+"gate.html?back="+back);}})();</script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>第2章 Claude Code とは何か — AI運用指南書</title>
+<link href="../assets/style.css" rel="stylesheet"/>
+<link href="../assets/guidebook.css" rel="stylesheet"/>
+<script defer="" src="../assets/guidebook.js"></script>
+</head>
+<body>
+<header class="site-header">
+<div class="inner">
+<div class="brand"><a href="../index.html" style="color:inherit;">AI運用指南書</a></div>
+<div class="nav">第2章 / 全15章</div>
+</div>
+</header>
+<main>
+<nav class="chapter-nav">
+<a class="prev" href="./01_intro.html">第1章 はじめに</a>
+<a class="toc" href="../index.html">目次</a>
+<a class="next" href="./03_terminal_basics.html">第3章 ターミナル</a>
+</nav>
+<header class="chapter-header">
+<span class="num">CHAPTER 02</span>
+<h1>Claude Code とは何か／Cursor との関係</h1>
+</header>
+<div class="goal">
+<div class="label">この章のゴール</div>
+<div class="content">
+<strong>Claude（クロード）／Claude Code／Cursor</strong> という3つの言葉の違いがハッキリ分かる。<br/>
+      これから自分が何の道具を使って、何をしようとしているのかを、人に説明できる状態になる。
+    </div>
+</div>
+<h2>そもそも AI って何が起きてる？</h2>
+<p>
+    最近よく聞く「生成 AI」は、ものすごくざっくり言うと、<strong>大量の文章を読んで「次に来そうな言葉」を予測するのがめちゃくちゃ上手な仕組み</strong>です。
+  </p>
+<p>
+    質問を投げると、過去に読んだ膨大な文章の知識を組み合わせて「それっぽい答え」を返してくれます。
+    プログラミングのコードも、文章の一種なので AI は書けます。
+  </p>
+<p>
+    Poolside でこれから使うのは、Anthropic（アンソロピック）という会社が作っている <strong>Claude（クロード）</strong> という AI です。
+  </p>
+<img alt="イラスト①：Claude / Claude Code / Cursor の関係図" class="guide-illustration" src="../assets/illustrations/illust_01_claude_code_cursor.png"/>
+<h2>3つの言葉を整理する</h2>
+<p>これから何度も出てくるので、最初に違いをハッキリさせます。</p>
+<h3>Claude（クロード）</h3>
+<p>
+    AI そのものの名前です。Anthropic 社が作っている対話型 AI で、ChatGPT と同じような立ち位置です。
+    Web ブラウザから <code class="inline">claude.ai</code> にアクセスして使うこともできます。
+  </p>
+<h3>Claude Code（クロード コード）</h3>
+<p>
+    Claude を「<strong>ターミナルから直接呼び出して、コードを書いたりファイルを操作させたりするための道具</strong>」です。
+    Anthropic 社の公式ツールです。本書の主役。
+  </p>
+<p>
+    具体的には、ターミナルで <code class="inline">claude</code> と打つと、AI と対話しながらこんなことができます：
+  </p>
+<ul>
+<li>あなたのフォルダの中身を AI に見せて、「このコードを直して」と頼む</li>
+<li>「この機能を追加するファイルを作って」と頼んで、AI に実際にファイルを書かせる</li>
+<li>「テストを実行して、失敗したら直して」と頼む</li>
+<li>「この設定の意味を解説して」と頼む</li>
+</ul>
+<p>
+    要するに、<strong>AI が自分の Mac を見ながら、いっしょに開発作業をしてくれる</strong>ツールです。
+  </p>
+<h3>Cursor（カーソル）</h3>
+<p>
+    Cursor は <strong>コードを書くためのエディタ</strong>（テキストを編集するアプリ）です。
+    VS Code（マイクロソフトが作っているエディタ）をベースに、AI 機能を強化したものです。
+  </p>
+<p>
+    Cursor の中で「ここのコード、こう直して」と AI にお願いすると、その場でコードを書き換えてくれます。
+    画面上で目で確認しながら作業できるので、初心者にとっつきやすいです。
+  </p>
+<h4>Cursor 自体にも独自の AI が入っている</h4>
+<p>
+    ここで重要なポイント：<strong>Cursor は「単なるエディタ＋ Claude Code 連携」ではありません</strong>。
+    Cursor を作っている会社（Anysphere 社）が独自に開発した AI 機能が、エディタの中に最初から組み込まれています。
+    主な機能は以下です：
+  </p>
+<ul>
+<li>
+<strong>Cursor Tab</strong>：あなたがコードを書いている途中で、<strong>続きを予測して薄いグレーで提案</strong>してくれる機能。
+      Tab キーを押すと採用される。タイピングが激減する
+    </li>
+<li>
+<strong>Cmd + K（インライン編集）</strong>：選択したコードに対して「ここを直して」と<strong>その場で AI に編集を頼む</strong>機能
+    </li>
+<li>
+<strong>Chat / Composer / Agent</strong>：右側のサイドパネルで <strong>チャットしながらフォルダ全体を変更</strong>する機能。Claude Code に近い体験
+    </li>
+</ul>
+<h4>Cursor の AI と Claude Code は "別々のツール" です</h4>
+<p>
+    ここを混乱しないでほしいのですが、<strong>Cursor の AI 機能と Claude Code は、別の会社が作った別のツール</strong>です。
+  </p>
+<ul>
+<li>Cursor の AI＝<strong>Anysphere 社</strong>のプロダクト（中で動かすモデルを Claude / GPT などから選べる）</li>
+<li>Claude Code＝<strong>Anthropic 社</strong>のプロダクト（中身は基本的に Claude）</li>
+</ul>
+<p>
+    両方とも「中で Claude（Anthropic 社の AI）を使えるオプションがある」ので混同しがちですが、<strong>ツールとしては別物</strong>です。
+    ログイン情報も別、料金体系も別、設定ファイルも別です。
+  </p>
+<div class="note">
+    雑にイメージすると：
+    <ul>
+<li><strong>Cursor</strong>＝「AI 機能つきの<strong>エディタ</strong>」（Anysphere 社）</li>
+<li><strong>Claude Code</strong>＝「ターミナルで動く<strong>AI 開発エージェント</strong>」（Anthropic 社）</li>
+</ul>
+    画面（GUI）に強いのが Cursor、フォルダ全体への大きな指示や自動化に強いのが Claude Code。
+  </div>
+<h4>本書では「Cursor 1つの中で Claude Code も動かす」のが基本</h4>
+<p>
+    Poolside の運用は、別々のアプリを並べて使うのではなく、<strong>Cursor 1つのウィンドウで全部完結</strong>させるスタイルです。
+    具体的には：
+  </p>
+<ul>
+<li><strong>Cursor を起動</strong>して、案件フォルダを開く</li>
+<li>Cursor の<strong>内蔵ターミナル</strong>（メニューの「ターミナル」→「新規ターミナル」、または <code class="inline">control + `</code> で開ける）を出す</li>
+<li>その内蔵ターミナルの中で <code class="inline">claude --continue</code> を実行 → <strong>Cursor の画面の下半分で Claude Code が動き出す</strong></li>
+<li>上半分のエディタ領域でコードを目視・直接編集</li>
+</ul>
+<p>
+    こうすると、<strong>1つの Cursor ウィンドウの中に「エディタ」「内蔵ターミナル」「Claude Code」が同居</strong>します。
+    Mac 標準の「ターミナル.app」を別途開く必要はありません。
+    内蔵ターミナルは、Cursor で開いているフォルダが<strong>自動的にカレントディレクトリ</strong>になるので、<code class="inline">cd</code> も基本的に不要です。
+  </p>
+<div class="note">
+    内蔵ターミナルは「Cursor のオマケ機能」ではなく、本物のターミナルそのものです。<br/>
+    Mac 標準のターミナル.app と中身は同じ（zsh が動く）。コマンドの結果も完全に同じになります。<br/>
+    なので、本書の第3章で覚えるターミナル知識は、Cursor 内蔵ターミナルでも全部そのまま通用します。
+  </div>
+<p>
+    Cursor も Claude Code も<strong>どちらか片方だけでも仕事はできます</strong>。
+    ですが、Poolside の運用では<strong>両方を Cursor 1ウィンドウで同時起動</strong>するのが標準です。
+    それぞれの得意分野が違うため、組み合わせると圧倒的に効率が上がります。
+  </p>
+<table>
+<tr><th>場面</th><th>Cursor が向く</th><th>Claude Code が向く</th></tr>
+<tr>
+<td>1行の typo 修正、変数名のリネーム</td>
+<td>◎（Cmd+K で即修正）</td>
+<td>△（ターミナル開く手間がもったいない）</td>
+</tr>
+<tr>
+<td>コードを書きながら続きを予測</td>
+<td>◎（Cursor Tab）</td>
+<td>—（ない）</td>
+</tr>
+<tr>
+<td>ファイルを目で読む・確認する</td>
+<td>◎（画面で見やすい）</td>
+<td>△（ターミナル表示は読みにくい）</td>
+</tr>
+<tr>
+<td>「フォルダ全体を作って」のような大きな指示</td>
+<td>○（Composer/Agent で可）</td>
+<td>◎（CLAUDE.md / エージェント / スキルを活用できる）</td>
+</tr>
+<tr>
+<td>git の commit / push まで一気にやる</td>
+<td>△</td>
+<td>◎（コマンド実行まで頼める）</td>
+</tr>
+<tr>
+<td>議事録の自動生成、長時間の対話</td>
+<td>○</td>
+<td>◎（セッションが長期保存される）</td>
+</tr>
+</table>
+<img alt="イラスト②：Cursor 1ウィンドウの中での同居図" class="guide-illustration" src="../assets/illustrations/illust_02_cursor_window.png"/>
+<h4>典型的な運用イメージ（Cursor 1ウィンドウ完結型）</h4>
+<p>1ウィンドウの中で、こんな具合に動きます：</p>
+<ol class="steps">
+<li>
+<strong>Cursor を起動</strong>し、案件フォルダを開く（File → Open Folder）
+    </li>
+<li>
+<strong><code class="inline">control + `</code> で内蔵ターミナルを開く</strong>。Cursor の画面下半分にターミナルが現れる
+    </li>
+<li>
+      内蔵ターミナルで <code class="inline">claude --continue</code>（または初回は <code class="inline">claude</code>）を実行
+    </li>
+<li>
+      Claude Code に「フォルダ全体に対する変更」を頼む。AI がファイルを書き換える
+    </li>
+<li>
+      Cursor の<strong>エディタ領域（上半分）</strong>に、書き換えられた結果が即座に反映される。目視で確認
+    </li>
+<li>
+      気になる箇所があれば、エディタ側で<strong>Cursor の AI（<code class="inline">command + K</code>）</strong>を使ってその場でちょい直し
+    </li>
+<li>
+      ターミナル側の Claude Code に戻って「commit して push」を頼む
+    </li>
+</ol>
+<p>
+    つまり、<strong>「読む・目視確認・ちょい直し」は Cursor のエディタ＋ Cursor AI、「大きい変更・自動化・コマンド実行」は内蔵ターミナル内の Claude Code</strong>、と役割を分けるのがコツです。
+    どちらも<strong>同じウィンドウの中</strong>にいるので、視線移動だけで切り替えられます。
+  </p>
+<div class="warn">
+    Cursor の AI（Cmd + K や Composer）と Claude Code を<strong>同じファイルに対して同時に動かす</strong>と、ファイルの変更が衝突することがあります。
+    どちらかが書き換えている最中に、もう一方が同じファイルを触らないように。
+    迷ったら<strong>Claude Code 側を主導にして、Cursor 側は目視確認とちょい直し</strong>に絞るのが安全です。
+  </div>
+<h4>なぜターミナル.app ではなく Cursor の内蔵ターミナルなのか</h4>
+<ul>
+<li>
+<strong>カレントディレクトリの取り違いが起きない</strong> — Cursor で開いているフォルダ＝ターミナルのカレント。<code class="inline">cd</code> し忘れて違うフォルダで claude を起動する事故が防げる
+    </li>
+<li>
+<strong>視線移動だけで全部見える</strong> — エディタ・ターミナル・差分表示が1画面に並ぶ。アプリを切り替える疲労がない
+    </li>
+<li>
+<strong>Cursor が認識しているファイルと、Claude Code が見ているファイルが完全に一致する</strong> — 不整合が起きにくい
+    </li>
+<li>
+<strong>command + tab でアプリを行き来しなくていい</strong> — タッチタイピングの妨げにならない
+    </li>
+</ul>
+<div class="imura-yell">
+<p>
+      Mac 標準のターミナル.app を単独で使うのは「練習・第3章まで」だ。
+      実務では <strong>Cursor の内蔵ターミナルで claude を動かす</strong> のが Poolside の標準。慣れろ。
+    </p>
+<p>
+      別アプリを行き来していると、必ずどこかで「あれ、今いるフォルダどこだっけ」「どっちのターミナル？」と迷う。Cursor 1枚に集約すれば<strong>その混乱が消える</strong>。
+    </p>
+</div>
+<h4>料金・ログインも別物</h4>
+<ul>
+<li>Cursor のアカウント（Cursor Pro 等）：Anysphere 社との契約</li>
+<li>Claude Code のアカウント（Claude Pro / API 利用）：Anthropic 社との契約</li>
+</ul>
+<p>
+    会社支給アカウントが両方用意されている場合は、<strong>両方ともそれを使う</strong>こと（個人アカウントと混ぜない）。
+    アカウント周りで分からない時は、第1章の「お約束」のとおり居村に相談してください。
+  </p>
+<section class="term-deck">
+<h3>絶対に覚える：AI 開発環境の用語</h3>
+<p class="lead-text">
+      混同しやすい3つを、しっかり区別しておきましょう。<strong>「これって何だっけ？」と聞かれて答えられるレベル</strong>を目指してください。
+    </p>
+<div class="terms">
+<div class="term-card">
+<div class="term-name"><span class="en">Claude</span><span class="ja">クロード</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>Anthropic 社の対話型 <strong>AI そのもの</strong></dd>
+<dt>たとえると</dt>
+<dd>「相棒の頭脳」。ChatGPT と同じカテゴリ。Web 版・モバイルアプリ版もある</dd>
+<dt>関連</dt>
+<dd>claude.ai / ChatGPT / Gemini</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Claude Code</span><span class="ja">クロード コード</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>Claude を <strong>ターミナルから呼び出して、自分の Mac を操作してもらう</strong>ためのツール</dd>
+<dt>たとえると</dt>
+<dd>相棒の頭脳に「手」を付けたもの。ファイルを作る／編集する／コマンドを実行する、まで頼める</dd>
+<dt>関連</dt>
+<dd>ターミナル / claude コマンド / CLAUDE.md</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Cursor</span><span class="ja">カーソル</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>AI 機能を強化した<strong>コードエディタ</strong>（テキスト編集アプリ）</dd>
+<dt>たとえると</dt>
+<dd>普通のメモ帳の超強化版。中で AI に「ここを直して」と頼める</dd>
+<dt>関連</dt>
+<dd>VS Code / コードエディタ</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Prompt</span><span class="ja">プロンプト</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>AI に投げる <strong>指示文・質問文</strong></dd>
+<dt>たとえると</dt>
+<dd>相棒への「お願いの書き方」。これが上手いほど AI を使い倒せる</dd>
+<dt>関連</dt>
+<dd>プロンプトエンジニアリング</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Session / Context</span><span class="ja">セッション／コンテキスト</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>AI との<strong>1回の会話のまとまり</strong>と、その中で AI が記憶している情報</dd>
+<dt>たとえると</dt>
+<dd>「打ち合わせ1回ぶんの記憶」。<code class="inline">claude --continue</code> で同じセッションの続きから話せる</dd>
+<dt>関連</dt>
+<dd>--continue / --resume / /clear</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">ChatGPT</span><span class="ja">チャット ジーピーティー</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>OpenAI 社の対話型 AI。世界で最も知名度の高い<strong>もう1人の相棒候補</strong></dd>
+<dt>たとえると</dt>
+<dd>「Claude の競合・親戚」のような存在。得意分野が少し違うので、用途で使い分ける</dd>
+<dt>関連</dt>
+<dd>OpenAI / DALL-E / 音声対話</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Gemini</span><span class="ja">ジェミニ</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>Google 社の対話型 AI。<strong>Google サービスとの連携が強み</strong></dd>
+<dt>たとえると</dt>
+<dd>「Google 検索の結果も踏まえて答えてくれる相棒」。最新情報や Google Drive 連携が得意</dd>
+<dt>関連</dt>
+<dd>Google / Workspace / リアルタイム検索</dd>
+</dl>
+</div>
+</div>
+</section>
+<h2>本書での組み合わせ</h2>
+<p>
+    本書では、この2つを次のように使い分けます：
+  </p>
+<table>
+<tr>
+<th>道具</th>
+<th>主な用途</th>
+<th>使う場面の例</th>
+</tr>
+<tr>
+<td><strong>Cursor</strong></td>
+<td>コードを書く・読む・編集する</td>
+<td>HTML / CSS / JS のファイルを開いて中身を確認、修正</td>
+</tr>
+<tr>
+<td><strong>Claude Code</strong></td>
+<td>AI と相談しながら作業を進める</td>
+<td>「このフォルダ全体に対してこういう変更したい」「サーバーに上げる手順を教えて」など</td>
+</tr>
+</table>
+<p>
+    どちらか片方だけでも作業はできます。慣れてくると、<strong>「一覧で見たい時は Cursor、複雑な指示は Claude Code」</strong>のように自然に使い分けられるようになります。
+  </p>
+<h2>料金についてのざっくり情報</h2>
+<p>
+    両方とも有料プランがありますが、本書を進めるうえで必要な範囲では <strong>無料枠 + 会社の支給アカウント</strong>で十分にカバーできます。
+    アカウントの準備は社内の総務／情シス担当に確認してください。
+  </p>
+<div class="warn">
+    会社で支給されたアカウントには、<strong>個人の用事で使わない</strong>ようにしてください（ログ・利用料金・契約面のトラブル防止）。
+    個人的に試してみたい時は、自分用のアカウントを別途作るのが安全です。
+  </div>
+<h2>他の AI（ChatGPT / Gemini）との使い分け</h2>
+<p>
+    本書のメインは Claude（と Claude Code / Cursor）です。
+    しかし業務全体で見ると、<strong>ChatGPT や Gemini も併用する</strong>のが実態です。
+    それぞれ得意分野が違うので、シーンに応じて使い分けるのが賢い運用です。
+  </p>
+<h3>3つの AI、それぞれの得意・不得意</h3>
+<h4>Claude（Anthropic 社）</h4>
+<ul>
+<li>
+<strong>得意</strong>：長文の読み解き／構造的で丁寧な文章／コードを書く・直す／文脈をしっかり捉えて応答する／安全性方針が明確で、機密関連の判断が無難
+    </li>
+<li>
+<strong>不得意</strong>：画像生成（できない／提案のみ）／リアルタイム情報（最新ニュースなど）には弱い場合がある
+    </li>
+<li>
+<strong>本書での位置付け</strong>：開発作業の主軸。Claude Code・Cursor 経由で動かす
+    </li>
+</ul>
+<h4>ChatGPT（OpenAI 社）</h4>
+<ul>
+<li>
+<strong>得意</strong>：知名度が高く周辺情報・サンプルが多い／<strong>画像生成（DALL-E）</strong>／<strong>音声対話</strong>／GPTs（カスタム GPT）／豊富なサードパーティ連携
+    </li>
+<li>
+<strong>不得意</strong>：長文の精度はモデル次第で揺らぐ／日本語の自然さで Claude に劣ることもある
+    </li>
+<li>
+<strong>本書での位置付け</strong>：補助的に使う。特に画像生成・音声入力で重宝
+    </li>
+</ul>
+<h4>Gemini（Google 社）</h4>
+<ul>
+<li>
+<strong>得意</strong>：<strong>Google 検索結果と連携</strong>した最新情報の取得／<strong>Google Workspace（Gmail / Drive / Docs）連携</strong>／画像理解・動画分析などのマルチモーダル
+    </li>
+<li>
+<strong>不得意</strong>：日本語の文章生成のニュアンスは Claude / ChatGPT の方が優れることが多い
+    </li>
+<li>
+<strong>本書での位置付け</strong>：補助的に使う。特に最新情報の調査・社内 Drive 資料との連携時に
+    </li>
+</ul>
+<h3>使い分けの想定シーン</h3>
+<table>
+<tr><th>シーン</th><th>おすすめ</th><th>理由</th></tr>
+<tr>
+<td>コードを書く・直す（本書の練習）</td>
+<td><strong>Claude</strong>（Claude Code / Cursor）</td>
+<td>コーディング精度と長文の構造把握が強み</td>
+</tr>
+<tr>
+<td>長文の議事録・資料の要約／整理</td>
+<td><strong>Claude</strong></td>
+<td>長いコンテキストの読み解きと整理が得意</td>
+</tr>
+<tr>
+<td>ブレインストーミング・アイデア出し</td>
+<td><strong>ChatGPT</strong> または Claude</td>
+<td>どちらも強い。比較するために両方試すのもあり</td>
+</tr>
+<tr>
+<td>画像を生成したい（資料の挿絵など）</td>
+<td><strong>ChatGPT（DALL-E）</strong> / 他の生成 AI</td>
+<td>Claude は画像生成不可</td>
+</tr>
+<tr>
+<td>最新ニュース・トレンド調査</td>
+<td><strong>Gemini</strong> または ChatGPT</td>
+<td>Gemini は Google 検索と直結。リアルタイム性が高い</td>
+</tr>
+<tr>
+<td>音声で対話したい（移動中など）</td>
+<td><strong>ChatGPT</strong></td>
+<td>音声機能（Voice Mode）が成熟</td>
+</tr>
+<tr>
+<td>Gmail・Google Drive・Docs との連携</td>
+<td><strong>Gemini</strong></td>
+<td>純正の連携で、Drive 内文書の参照などがスムーズ</td>
+</tr>
+<tr>
+<td>動画や音声ファイルの解析</td>
+<td><strong>Gemini</strong></td>
+<td>マルチモーダル処理が強い</td>
+</tr>
+<tr>
+<td>「これって何？」「なぜ？」の素朴な質問</td>
+<td><strong>どれでも OK</strong></td>
+<td>第1章で言ったとおり、迷わず即聞く</td>
+</tr>
+</table>
+<h3>同じ質問を複数の AI に投げる「並列確認」</h3>
+<p>
+    重要な意思決定や、技術的判断で迷う時は、<strong>同じ質問を Claude と ChatGPT と Gemini の3つに投げて、回答を見比べる</strong>のが賢い運用です。
+    それぞれの AI が違う観点・違う引用元を出してくることが多いので、自分の理解が一気に立体的になります。
+  </p>
+<div class="ai-prompt">
+<div class="quote">
+      （Claude / ChatGPT / Gemini それぞれに同じ質問を投げる）<br/>
+<br/>
+      Firebase の Spark プランと Blaze プランの違いを、初心者向けに、メリット・デメリット・典型的な切替判断のタイミングを含めて解説してください。
+    </div>
+</div>
+<p>
+    出てきた回答を見比べると、<strong>抜けている観点</strong>や、<strong>各 AI が強調する違うポイント</strong>が浮き彫りになります。
+    これは「AI を信じすぎない」リテラシーを育てる意味でも有効です。
+  </p>
+<h3>機密情報の扱いはどの AI でも同じ</h3>
+<div class="warn">
+    第7章で扱う<strong>機密情報のルール</strong>は、Claude でも ChatGPT でも Gemini でも<strong>同じく守ってください</strong>。
+    どれを使っても「あなたの入力したテキストは外部のサーバーに送られている」という事実は変わりません。
+    取引先名、契約金額、API キー、個人情報などは、<strong>どの AI にも貼り付けない</strong>のが鉄則です。
+  </div>
+<h3>料金・契約も AI ごとに別</h3>
+<ul>
+<li>Claude（Pro / Team）：Anthropic 社との契約</li>
+<li>ChatGPT（Plus / Team）：OpenAI 社との契約</li>
+<li>Gemini（Advanced）：Google との契約（Google Workspace 経由のことも）</li>
+</ul>
+<p>
+    会社支給アカウントが何のプランで揃っているかは、<strong>居村に確認</strong>してください。
+    個人で勝手に有料プランへ切り替えないこと（第1章「お約束」のとおり）。
+  </p>
+<h2>「で、結局どう使うの？」</h2>
+<p>
+    Poolside の現場運用は、<strong>「Cursor を起動して、その内蔵ターミナルで Claude Code を動かす」</strong>。これが標準です。
+  </p>
+<ul>
+<li>Cursor は<strong>作業の入れ物（コードを見る／編集する／ターミナルを内包する）</strong></li>
+<li>Claude Code は<strong>その内蔵ターミナルで動く相棒</strong>（フォルダ全体への大きな変更／コマンド実行）</li>
+<li>Cursor の AI（Cmd+K / Tab / Composer）は<strong>その場でのちょい直し用</strong></li>
+</ul>
+<p>
+    つまり、<strong>「Cursor を開く＝作業を始める」「内蔵ターミナルで claude を起動＝相棒呼び出し」</strong> の流れが、毎回の作業開始の合言葉。
+    Mac 標準のターミナル.app を単独で開く必要はほぼありません。
+  </p>
+<p>
+    最初の数日は、第3章で覚えた「ターミナル.app での操作」を Cursor 内蔵ターミナルでも試してみてください。
+    動きは完全に同じです。<strong>違う「窓」で同じ「部屋」を見ている</strong>感覚になります。
+  </p>
+<h2>次の章へ</h2>
+<p>
+    どちらの道具も「ターミナル」と無関係には使えません。
+    次の第3章では、その<strong>ターミナル</strong>を初めて開いてみます。怖くないので大丈夫です。
+  </p>
+<nav class="chapter-nav">
+<a class="prev" href="./01_intro.html">第1章 はじめに</a>
+<a class="toc" href="../index.html">目次</a>
+<a class="next" href="./03_terminal_basics.html">第3章 ターミナル</a>
+</nav>
+</main>
+<footer class="site-footer">
+  Poolside · AI運用指南書 · 第2章
+</footer>
+</body>
+</html>

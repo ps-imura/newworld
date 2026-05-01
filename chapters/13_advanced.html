@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head><script>(function(){var ok=false;try{ok=localStorage.getItem("guidebook-access-granted-v1")==="true";}catch(e){}if(!ok){var depth=location.pathname.indexOf("/chapters/")>=0?"../":"./";var back=encodeURIComponent(location.pathname+location.search+location.hash);location.replace(depth+"gate.html?back="+back);}})();</script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>第13章 Claude Code を使い倒す — AI運用指南書</title>
+<link href="../assets/style.css" rel="stylesheet"/>
+<link href="../assets/guidebook.css" rel="stylesheet"/>
+<script defer="" src="../assets/guidebook.js"></script>
+</head>
+<body>
+<header class="site-header">
+<div class="inner">
+<div class="brand"><a href="../index.html" style="color:inherit;">AI運用指南書</a></div>
+<div class="nav">第13章 / 全15章</div>
+</div>
+</header>
+<main>
+<nav class="chapter-nav">
+<a class="prev" href="./12_firebase.html">第12章 Firebase</a>
+<a class="toc" href="../index.html">目次</a>
+<a class="next" href="./14_remote.html">第14章 リモート運用</a>
+</nav>
+<header class="chapter-header">
+<span class="num">CHAPTER 13</span>
+<h1>Claude Code を使い倒す — ルール／エージェント／スキル</h1>
+</header>
+<div class="goal">
+<div class="label">この章のゴール</div>
+<div class="content">
+      Claude Code には、デフォルトの会話だけでなく <strong>「ルール」「エージェント」「スキル」</strong>という、AI の動き方を仕込む仕組みがあります。<br/>
+      この章では、それぞれが何で・何ができて・どう使うかを <strong>実際に手を動かして</strong>体験します。<br/>
+      使いこなせるようになると、毎回同じ指示をしなくても、AI が「あなた仕様」で動いてくれるようになります。
+    </div>
+</div>
+<section class="term-deck">
+<h3>絶対に覚える：Claude Code 応用機能の用語</h3>
+<p class="lead-text">
+      この章は用語が一気に増える章です。<strong>「ルール／エージェント／スキル」の3つは口で違いを説明できる</strong>状態を目指してください。
+    </p>
+<div class="terms">
+<div class="term-card">
+<div class="term-name"><span class="en">CLAUDE.md (Rule)</span><span class="ja">クロード ドット エムディー／ルール</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>そのフォルダで Claude が<strong>常に守るルール</strong>を書いておく Markdown ファイル</dd>
+<dt>たとえると</dt>
+<dd><strong>就業規則／チームの作法書</strong>。Claude 起動時に必ず読まれる</dd>
+<dt>関連</dt>
+<dd>階層対応 / 優先順位</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Subagent</span><span class="ja">サブエージェント</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>専門の役割・性格を持った<strong>別人格 AI</strong>。<code class="inline">.claude/agents/&lt;名前&gt;.md</code> で定義</dd>
+<dt>たとえると</dt>
+<dd>社内の<strong>専門スタッフ</strong>（営業／編集／デザイナー）。必要な時に呼び出す</dd>
+<dt>関連</dt>
+<dd>YAML frontmatter / Task tool</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Skill</span><span class="ja">スキル</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>特定の作業のやり方を<strong>パッケージ化</strong>したもの。<code class="inline">.claude/skills/&lt;名前&gt;/SKILL.md</code></dd>
+<dt>たとえると</dt>
+<dd><strong>業務手順書</strong>。「PDF 整形」「ブログ整形」など、必要な時に Claude が動的に読み込む</dd>
+<dt>関連</dt>
+<dd>Skills / 公式スキル</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Slash Command</span><span class="ja">スラッシュコマンド</span></div>
+<dl>
+<dt>一言で</dt>
+<dd><code class="inline">/コマンド名</code> で呼び出せる、<strong>自分専用のショートカット指示</strong></dd>
+<dt>たとえると</dt>
+<dd>「<code class="inline">/review</code> と打ったら毎回コードレビューが走る」のように仕込んでおける</dd>
+<dt>関連</dt>
+<dd>.claude/commands/</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Hook</span><span class="ja">フック</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>「ファイル編集の前後」など<strong>イベントに反応して自動実行</strong>する仕掛け</dd>
+<dt>たとえると</dt>
+<dd>「ドアを開けたらライトが点く」のセンサー。コミット前にフォーマッタを走らせる、テストを実行する、など</dd>
+<dt>関連</dt>
+<dd>settings.json / 自動化</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Permission</span><span class="ja">パーミッション／許可</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>Claude が<strong>勝手にやって良い操作の範囲</strong>を定めた設定</dd>
+<dt>たとえると</dt>
+<dd>新人スタッフに渡す「権限カード」。「この範囲なら確認なしで動いていい」と決められる。<code class="inline">.claude/settings.json</code> に書く</dd>
+<dt>関連</dt>
+<dd>Permission denied / 自動承認</dd>
+</dl>
+</div>
+</div>
+</section>
+<h2>そもそも：Claude Code に「クセ」を仕込む3つの方法</h2>
+<p>
+    Claude Code を素のまま使うと、毎回ゼロから「日本語で答えて」「コミットメッセージは○○の形式で」など、同じ指示を繰り返すことになります。
+    そのうち面倒になります。
+  </p>
+<p>
+    Claude Code には、こうした「いつも守ってほしいこと」「専門家として動いてほしい役割」「特定の作業のやり方」を、<strong>ファイルとして仕込んでおく</strong>仕組みが3つあります。
+  </p>
+<table>
+<tr><th>仕組み</th><th>役割</th><th>たとえると</th></tr>
+<tr>
+<td><strong>ルール</strong><br/>(<code class="inline">CLAUDE.md</code>)</td>
+<td>AI に常に守らせたい方針・好み・禁止事項</td>
+<td>会社の就業規則／チームの作法</td>
+</tr>
+<tr>
+<td><strong>エージェント</strong><br/>(<code class="inline">.claude/agents/</code>)</td>
+<td>専門の役割・性格を持った別人格を呼び出せる</td>
+<td>社内の専門スタッフ（営業、デザイナー、エンジニア…）</td>
+</tr>
+<tr>
+<td><strong>スキル</strong><br/>(<code class="inline">.claude/skills/</code>)</td>
+<td>特定の作業のやり方をパッケージ化したもの</td>
+<td>「PDF 整形マニュアル」「Excel 操作マニュアル」のような業務手順書</td>
+</tr>
+</table>
+<img alt="イラスト⑩：ルール／エージェント／スキルの3層関係図" class="guide-illustration" src="../assets/illustrations/illust_10_rules_agents_skills.png"/>
+<h2>1. ルール（CLAUDE.md）— 一番まず使う</h2>
+<h3>何ができるか</h3>
+<p>
+    プロジェクトのフォルダ直下に <code class="inline">CLAUDE.md</code> というファイルを置いておくと、Claude Code は<strong>そのフォルダで起動するたびに必ずこのファイルを読む</strong>ようになります。
+    ここに「常に守ってほしいルール」を書いておけば、毎回指示する必要がなくなります。
+  </p>
+<h3>実際に使ってみる</h3>
+<p>
+    第6章で作った <code class="inline"><span data-var="devroot">~/dev</span>/hello-claude/</code> フォルダで試してみましょう。
+  </p>
+<pre class="code" data-lang="terminal">cd <span data-var="devroot">~/dev</span>/hello-claude
+claude --continue</pre>
+<p>
+    Claude Code が起動したら、こう頼みます：
+  </p>
+<div class="ai-prompt">
+<div class="quote">
+      このフォルダのルートに CLAUDE.md を作ってください。中身は次の内容で：<br/>
+      ・回答は必ず日本語で<br/>
+      ・初心者向けなので、専門用語は必ず初出時に1〜2行で噛み砕く<br/>
+      ・コードを書く前に、何を作るかを先に箇条書きで提示する<br/>
+      ・破壊的なコマンド（rm -rf、sudo を伴うもの）は絶対に勝手に実行しない<br/>
+      ファイル形式は普通の Markdown でお願いします。
+    </div>
+</div>
+<p>
+    Claude が <code class="inline">CLAUDE.md</code> を生成して、許可を求めてきます。承認すると、フォルダのルートにファイルが置かれます。
+  </p>
+<h3>効果を確認</h3>
+<p>
+    一度 <code class="inline">/exit</code> で終了して、もう一度 <code class="inline">claude</code> で立ち上げ直してください。
+    今度は<strong>最初から日本語で</strong>応答が始まり、専門用語の補足も自動で入るようになります。
+  </p>
+<div class="tip">
+    CLAUDE.md は、フォルダ階層をたどって読まれます。<br/>
+    例：<code class="inline"><span data-var="devroot">~/dev</span>/CLAUDE.md</code> と <code class="inline"><span data-var="devroot">~/dev</span>/hello-claude/CLAUDE.md</code> が両方あれば、両方適用されます。
+    <strong>「全プロジェクト共通のルール」と「この案件だけのルール」</strong>を分けて書けるということです。
+  </div>
+<h3>書くと便利な項目（テンプレ）</h3>
+<ul>
+<li>言語ルール（日本語で／英語で）</li>
+<li>コードのスタイル（インデント、命名）</li>
+<li>禁止事項（git push を勝手にしない、本番環境を触らない）</li>
+<li>プロジェクト固有の用語集（社内用語の正しい綴り）</li>
+<li>使う技術スタック（Firebase / Notion など、混乱しないよう明示）</li>
+</ul>
+<h2>2. エージェント — 役割を持った別人格を呼び出す</h2>
+<h3>何ができるか</h3>
+<p>
+    Claude Code には、<strong>サブエージェント</strong>（小さい専門 AI）を呼び出す機能があります。
+    例えば「コードレビュー専門」「リサーチ専門」「校正専門」のような<strong>役割と性格</strong>を持ったエージェントを定義しておくと、必要な時に呼び出せます。
+  </p>
+<p>
+    本書を作っているこの Poolside の業務でも、<code class="inline">aiguide-leader</code>（プロジェクト統括）、<code class="inline">aiguide-editor</code>（文章担当）など、複数のエージェントが定義されています。
+    あなたも自分用に作ってみましょう。
+  </p>
+<h3>実際に作ってみる</h3>
+<p>
+    エージェントの定義は <code class="inline">.claude/agents/&lt;名前&gt;.md</code> として置きます。
+    Claude に頼んで作ってもらうのが早いです。
+  </p>
+<div class="ai-prompt">
+<div class="quote">
+      このフォルダ用に、初心者向けの「コードレビュー担当」エージェントを作ってください。<br/>
+      ・名前は <code class="inline">my-reviewer</code><br/>
+      ・ファイルは <code class="inline">.claude/agents/my-reviewer.md</code><br/>
+      ・性格：穏やかで、初心者を萎縮させない／指摘の前に「良いところ」を1つ必ず褒める／改善案は具体的に<br/>
+      ・対象：HTML / CSS / JavaScript の初級レベルのコード<br/>
+      Markdown の YAML frontmatter（name / description / model）込みで作ってください。
+    </div>
+</div>
+<p>
+    Claude が定義ファイルを生成してくれます。承認すると <code class="inline">.claude/agents/my-reviewer.md</code> が出来ます。
+  </p>
+<h3>呼び出してみる</h3>
+<p>
+    エージェントを使うには、Claude Code に直接「<strong>my-reviewer エージェントを使ってください</strong>」と頼むか、Claude が自分で適切なエージェントを選んで呼び出します。
+  </p>
+<div class="ai-prompt">
+<div class="quote">
+      第8章で作った hello-world フォルダの index.html を、my-reviewer エージェントに見てもらってください。<br/>
+      初心者の最初のコードとして、良いところと改善ポイントを教えて欲しいです。
+    </div>
+</div>
+<p>
+    Claude が <code class="inline">my-reviewer</code> として動き、「良いところ」を必ず先に挙げた上で、改善案を提示してくれます。
+  </p>
+<h3>使い分けの感覚</h3>
+<ul>
+<li><strong>定型作業がある</strong>：レビュー・校正・命名チェック・テスト走らせ など → エージェント化すると毎回同じ品質で動く</li>
+<li><strong>性格を変えたい</strong>：厳しいレビュアー／優しいレビュアーを使い分けたい時など → 別エージェントとして用意</li>
+<li><strong>並列化したい</strong>：複数のエージェントに同じ題材を渡して、別の視点を集める使い方も可能</li>
+</ul>
+<h2>3. スキル — 「やり方」のパッケージ</h2>
+<h3>何ができるか</h3>
+<p>
+    スキル（Skills）は、Claude Code が <strong>特定の作業のやり方を、必要になった時にだけ動的に読み込む</strong>仕組みです。
+    エージェントが「人格」だとすると、スキルは「業務手順書」に近いです。
+  </p>
+<p>
+    例：
+  </p>
+<ul>
+<li>PDF を編集するスキル（PDF を切り貼り・結合・抽出する手順がパッケージ化されている）</li>
+<li>Excel を読み書きするスキル</li>
+<li>画像のリサイズ・トリミングをするスキル</li>
+<li>会社のブランドガイドに沿って LP を作るスキル</li>
+</ul>
+<p>
+    Anthropic が公式に提供しているスキル群もあれば、自分で作って配置することもできます。
+  </p>
+<h3>実際に作ってみる（簡単なもの）</h3>
+<p>
+    スキルの定義は <code class="inline">.claude/skills/&lt;スキル名&gt;/SKILL.md</code> として置きます。
+    今回は「ブログ記事の体裁を整えるスキル」を作ってみます。
+  </p>
+<div class="ai-prompt">
+<div class="quote">
+      このフォルダに、新しいスキル「blog-formatter」を作ってください。<br/>
+      パス：<code class="inline">.claude/skills/blog-formatter/SKILL.md</code><br/>
+      内容：<br/>
+      ・Markdown のブログ記事を、Poolside の社内ブログ向けに整形する<br/>
+      ・タイトルは H1 で、必ず冒頭に置く<br/>
+      ・各 H2 の後ろに「読了時間の目安」を 1 行入れる<br/>
+      ・最後に「関連リンク」セクションを必ず置く<br/>
+      Markdown の YAML frontmatter（name / description）込みで作ってください。
+    </div>
+</div>
+<p>
+    Claude がスキル定義ファイルを作ってくれます。
+  </p>
+<h3>呼び出してみる</h3>
+<div class="ai-prompt">
+<div class="quote">
+      blog-formatter スキルを使って、以下のドラフトを整形してください。<br/>
+<br/>
+      （ここにドラフトの Markdown を貼る）
+    </div>
+</div>
+<p>
+    Claude がスキル定義を読み込んで、その手順に沿って整形してくれます。
+  </p>
+<div class="note">
+    スキルの真価は、<strong>定型業務の知識を組織で共有できる</strong>ところにあります。<br/>
+    たとえば「Poolside の納品書フォーマット」のスキルを誰か1人が作っておけば、他のメンバーも同じスキルを使うだけで同じ品質の納品書が作れる、という運用ができます。
+  </div>
+<h2>3つの仕組みの使い分け（早見表）</h2>
+<table>
+<tr><th>こんな時は</th><th>これを使う</th></tr>
+<tr><td>「常に日本語で」「コミットメッセージはこの形式で」など <strong>常時の方針</strong></td><td>ルール（CLAUDE.md）</td></tr>
+<tr><td>「コードレビューしてほしい」「校正してほしい」など <strong>役割を持った相談相手</strong>が欲しい</td><td>エージェント</td></tr>
+<tr><td>「PDF 整形」「Excel 集計」「ブログ整形」など <strong>具体的な作業手順</strong>を仕込みたい</td><td>スキル</td></tr>
+</table>
+<h2>4本目の柱：議事録運用 — Poolside の必須ルール</h2>
+<p>
+    Poolside では、Claude Code を使った全ての案件で <strong>「手動ログ補完」と呼ぶ議事録</strong>を、案件フォルダの中に残す運用を徹底しています。
+    これは <strong>AI を使う以上、絶対にやってほしい習慣</strong>です。
+  </p>
+<h3>なぜ議事録を残すのか</h3>
+<ul>
+<li>
+<strong>AI の会話ログだけだと、後から読み返すのが大変</strong>。
+      claude が自動保存する <code class="inline">.jsonl</code> ログは、AI のためのものであって人間が読むものではない
+    </li>
+<li>
+<strong>「決めたこと」「決めなかったこと」「次の一手」を人間の言葉で残す</strong>と、明日の自分・引き継ぎ相手・上長レビュー時に役立つ
+    </li>
+<li>
+<strong>同じ案件で複数セッションをまたぐ時、議事録があれば迷子にならない</strong>。次回開いて議事録を読めばすぐに脳内が復旧する
+    </li>
+<li>
+<strong>外部に説明を求められた時の証拠</strong>になる（「このタイミングでこう判断した」を残せる）
+    </li>
+</ul>
+<h3>運用ルール — どこに、何を、どう残すか</h3>
+<h4>① 配置場所</h4>
+<p>
+    Poolside の標準は、<strong>案件フォルダごとに <code class="inline">手動ログ補完/</code> フォルダを置く</strong>形です。
+  </p>
+<pre class="code" data-lang="terminal"><span data-var="devroot">~/dev</span>/
+└── &lt;案件フォルダ&gt;/
+    ├── （案件ファイル）
+    └── 手動ログ補完/
+        ├── index.html       ← 議事録一覧トップ（起動コマンド／判断待ち／ログ一覧）
+        ├── assets/style.css ← 共通スタイル
+        └── meetings/
+            ├── 2026-05-01_キックオフ.html
+            ├── 2026-05-02_進捗共有.html
+            └── ...
+</pre>
+<h4>② 1セッション = 1議事録ページ</h4>
+<p>
+    1回の Claude Code セッションが終わったら、その内容をまとめた <strong>1ページ</strong>を <code class="inline">meetings/YYYY-MM-DD_テーマ.html</code> として作成します。
+    ページ構成は以下を最低ライン：
+  </p>
+<ul>
+<li><strong>日付・案件タイプ・参加メンバー</strong>（あなた、claude、エージェントなど）</li>
+<li><strong>セッションのテーマ</strong>（1〜3行）</li>
+<li><strong>決定事項</strong>（リスト）</li>
+<li><strong>未決事項</strong>（リスト）</li>
+<li><strong>次の一手</strong>（次回最初に取りかかること）</li>
+</ul>
+<h4>③ 起動コマンドを議事録トップに置く</h4>
+<p>
+    各案件の <code class="inline">手動ログ補完/index.html</code> には、その案件用の <strong>claude 起動コマンド</strong>を載せておきます：
+  </p>
+<pre class="code" data-lang="terminal">cd "<span data-var="devroot">~/dev</span>/&lt;案件フォルダ&gt;" &amp;&amp; claude --continue</pre>
+<p>
+    これで「このターミナルで、いつもの続きから」を1コマンドで再開できます。
+  </p>
+<div class="note">
+    Cursor で案件フォルダを開いて内蔵ターミナル（<code class="inline">control + `</code>）を起動した場合は、<strong><code class="inline">cd</code> 部分は不要</strong>で、<code class="inline">claude --continue</code> だけで OK です。<br/>
+    上記の <code class="inline">cd ... &amp;&amp; claude --continue</code> は「ターミナル.app から1コマンドで再開する」用の保険として議事録に載せておく形です。
+  </div>
+<h3>テンプレートの活用（dev2006 の社内雛形）</h3>
+<p>
+    Poolside では、<code class="inline">dev2006/_template/</code> に新規案件用の議事録雛形が用意されています。
+    新しい案件を始める時は、この雛形をコピーして使えば、毎回ゼロから組む必要はありません。
+  </p>
+<p>
+    詳しくは社内の上長（居村）に <strong>「dev2006 の新規案件初期化フロー」</strong>として聞いてください。
+    雛形を使った自動初期化コマンドも用意されています。
+  </p>
+<h3>AI に議事録を作らせる</h3>
+<p>
+    議事録を毎回手書きするのは大変です。<strong>セッション終了時に Claude に頼んで自動生成</strong>させましょう。
+  </p>
+<div class="ai-prompt">
+<div class="quote">
+      今日のセッションを <code class="inline">手動ログ補完/meetings/&lt;今日の日付&gt;_&lt;テーマ&gt;.html</code> として記録してください。<br/>
+      フォーマットは既存の議事録（meetings/ 配下にあれば）を参考に。<br/>
+      最低限の項目：日付／テーマ／決定事項／未決事項／次の一手。<br/>
+<strong>機密情報は本文に書かない</strong>こと（取引先名・契約金額など）。
+    </div>
+</div>
+<p>
+    Claude が議事録 HTML を作って提案してくれます。承認すれば <code class="inline">meetings/</code> に追加されます。
+    最後に <code class="inline">手動ログ補完/index.html</code> のセッションログ一覧にもエントリを追加してもらえば完了です。
+  </p>
+<h3>セッションを閉じる前のお作法</h3>
+<ol class="steps">
+<li>「<strong>今日やったことを議事録にしてください</strong>」と Claude に頼む</li>
+<li>生成された議事録の<strong>機密情報チェック</strong>（取引先名・金額などが混入していないか）</li>
+<li>必要なら手で微修正</li>
+<li>議事録一覧に追加</li>
+<li><code class="inline">/exit</code> で終了</li>
+</ol>
+<div class="imura-yell">
+<p>
+<strong>議事録を残さない奴は、半年後に「あの案件何やったっけ」となる</strong>。マジで。
+      AI 時代になっても、いや、AI 時代だからこそ <strong>「人間が読み返せる記録」</strong> の価値は上がっている。
+    </p>
+<p>
+      最初は AI に丸投げで OK。1日 5 分の手間を惜しんだやつから、引き継ぎや振り返りで詰む。
+      逆に習慣化したやつは、自分の<strong>業務の歴史</strong>が積み上がっていく。後で見返した時の財産になる。
+    </p>
+</div>
+<h2>もう一段：スラッシュコマンドと hooks</h2>
+<p>
+    さらに上を目指したい人向けに、軽く触れておきます。今は名前だけ覚えて、必要になったら戻ってきてください。
+  </p>
+<ul>
+<li>
+<strong>スラッシュコマンド</strong>（<code class="inline">/コマンド名</code>）：自分用のショートカット指示を登録できます。例：<code class="inline">/review</code> と打ったらコードレビューが走るように仕込む。
+    </li>
+<li>
+<strong>hooks</strong>：「Claude がファイルを編集したら自動でテスト走らせる」「コミット前にフォーマッタをかける」など、<strong>イベントに反応して自動実行</strong>する仕掛け。
+    </li>
+</ul>
+<div class="ai-prompt">
+<div class="quote">
+      Claude Code のスラッシュコマンドと hooks について、初心者向けに 5 行で要点を教えてください。
+    </div>
+</div>
+<div class="imura-yell">
+<p>
+      ここまで来ると、もう「AI を使う側」じゃなくて「<strong>AI を仕込む側</strong>」だ。
+      ルール・エージェント・スキルを自分用に育てると、半年後には<strong>あなただけが持つ「武器」</strong>になる。
+    </p>
+<p>
+      最初の一歩として、まずは <code class="inline">CLAUDE.md</code> に自分のクセや好みを書き溜めることから始めろ。
+      育てた CLAUDE.md は、転職しても自分の財産として持ち歩けるからな。
+    </p>
+</div>
+<h2>本章のチェックリスト</h2>
+<p>
+    すべてチェックを付けると「次の章へ」のリンクが解放されます。<strong>実際に作って動かしてから</strong>チェックしてください。
+  </p>
+<ul class="checklist" data-checklist-id="ch13">
+<li><label><input type="checkbox"/> <code class="inline">CLAUDE.md</code> を実際に作って、Claude Code 再起動後に効いていることを確認した</label></li>
+<li><label><input type="checkbox"/> <code class="inline">.claude/agents/my-reviewer.md</code> を作って、エージェントを呼び出した</label></li>
+<li><label><input type="checkbox"/> <code class="inline">.claude/skills/&lt;名前&gt;/SKILL.md</code> を作って、スキルを呼び出した</label></li>
+<li><label><input type="checkbox"/> ルール／エージェント／スキルの使い分けを、人に説明できる</label></li>
+<li><label><input type="checkbox"/> 案件フォルダに <code class="inline">手動ログ補完/</code> を作り、AI に議事録を作らせた</label></li>
+<li><label><input type="checkbox"/> セッション終了前に議事録を残す習慣を理解した</label></li>
+<li><label><input type="checkbox"/> スラッシュコマンドと hooks の存在を知った（深掘りは将来でOK）</label></li>
+</ul>
+<p class="checklist-status">チェック 0 / 7</p>
+<h2>次の章へ</h2>
+<p>
+    次は、ここまで仕込んだ Claude Code を <strong>出先からスマホで動かす</strong>方法を扱います。
+    通勤中、出張中、商談の合間に、AI に作業を進めてもらうための仕組みです。
+  </p>
+<nav class="chapter-nav">
+<a class="prev" href="./12_firebase.html">第12章 Firebase</a>
+<a class="toc" href="../index.html">目次</a>
+<a class="next" href="./14_remote.html">第14章 リモート運用</a>
+</nav>
+</main>
+<footer class="site-footer">
+  Poolside · AI運用指南書 · 第13章
+</footer>
+</body>
+</html>

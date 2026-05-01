@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head><script>(function(){var ok=false;try{ok=localStorage.getItem("guidebook-access-granted-v1")==="true";}catch(e){}if(!ok){var depth=location.pathname.indexOf("/chapters/")>=0?"../":"./";var back=encodeURIComponent(location.pathname+location.search+location.hash);location.replace(depth+"gate.html?back="+back);}})();</script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>第9章 実装練習② CSS で整える — AI運用指南書</title>
+<link href="../assets/style.css" rel="stylesheet"/>
+<link href="../assets/guidebook.css" rel="stylesheet"/>
+<script defer="" src="../assets/guidebook.js"></script>
+</head>
+<body>
+<header class="site-header">
+<div class="inner">
+<div class="brand"><a href="../index.html" style="color:inherit;">AI運用指南書</a></div>
+<div class="nav">第9章 / 全15章</div>
+</div>
+</header>
+<main>
+<nav class="chapter-nav">
+<a class="prev" href="./08_hello_html.html">第8章 HTML 練習</a>
+<a class="toc" href="../index.html">目次</a>
+<a class="next" href="./10_hello_js.html">第10章 JavaScript</a>
+</nav>
+<header class="chapter-header">
+<span class="num">CHAPTER 09</span>
+<h1>実装練習②：CSS で整える（AI と相談）</h1>
+</header>
+<div class="goal">
+<div class="label">この章のゴール</div>
+<div class="content">
+      Hello World ページに CSS で色や余白を付けて、見た目を整える。<br/>
+<strong>「自分でゼロから書く」のではなく「AI と相談しながら作る」流れを体験する</strong>のが本章の主目的。
+    </div>
+</div>
+<h2>CSS って何？</h2>
+<p>
+    CSS（シーエスエス）は <strong>Web ページの見た目を整えるための指示書</strong>です。
+    HTML が「ここは見出し」「ここは段落」と意味を書いた紙だとすると、CSS は「見出しは大きく赤く、段落は読みやすい行間で」と装飾を指示する紙です。
+  </p>
+<p>
+    本章のテーマは <strong>「CSS を完璧に覚える」ではなく「AI に頼んで CSS を書いてもらう感覚を身につける」</strong>こと。
+    覚えなくていいので安心してください。
+  </p>
+<section class="term-deck">
+<h3>絶対に覚える：CSS の用語</h3>
+<p class="lead-text">
+      CSS は構造がシンプル：「<strong>どこに</strong>（セレクタ）」「<strong>何を</strong>（プロパティ）」「<strong>どう設定する</strong>（値）」の3点セットです。
+    </p>
+<div class="terms">
+<div class="term-card">
+<div class="term-name"><span class="en">Selector</span><span class="ja">セレクタ</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>CSS を当てる<strong>対象（どこに）</strong>を指定する記述。例：<code class="inline">h1</code>、<code class="inline">.btn</code></dd>
+<dt>たとえると</dt>
+<dd>「どこの誰さんに」声をかけるかの<strong>呼び方</strong>。タグ名で指定したり、クラス名で指定したり</dd>
+<dt>関連</dt>
+<dd>タグセレクタ / class / id</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Property</span><span class="ja">プロパティ</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>そのセレクタに対して<strong>何を変えるか</strong>。例：<code class="inline">color</code>、<code class="inline">font-size</code></dd>
+<dt>たとえると</dt>
+<dd>「色」「文字サイズ」「余白」など、<strong>設定できる項目名</strong></dd>
+<dt>関連</dt>
+<dd>値（value）</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Value</span><span class="ja">値</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>そのプロパティに<strong>具体的にどんな値を入れるか</strong>。例：<code class="inline">red</code>、<code class="inline">16px</code></dd>
+<dt>たとえると</dt>
+<dd>項目に対する答え。「色」というプロパティに「赤」という値、のように対応する</dd>
+<dt>関連</dt>
+<dd>単位（px、em、rem、%）</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Class / ID</span><span class="ja">クラス／アイディー</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>HTML 要素に付ける<strong>名札</strong>。CSS 側からこの名札を指定して特定の要素にだけ装飾できる</dd>
+<dt>たとえると</dt>
+<dd>class＝同じ名札を複数人につけられる（チーム名）／id＝1ページに1人だけ（個人名）</dd>
+<dt>関連</dt>
+<dd>セレクタ <code class="inline">.btn</code>（class）/ <code class="inline">#header</code>（id）</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">External Stylesheet</span><span class="ja">外部スタイルシート</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>CSS を別ファイル（<code class="inline">.css</code>）に分けて、HTML から読み込む方式</dd>
+<dt>たとえると</dt>
+<dd>「内容」と「見た目」の作業を別ファイルに分けて、整理しやすくする。<code class="inline">&lt;link rel="stylesheet" href="..."&gt;</code> で読み込み</dd>
+<dt>関連</dt>
+<dd>&lt;style&gt; タグ / インラインスタイル</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Cache</span><span class="ja">キャッシュ</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>ブラウザが「<strong>前回読んだ CSS をしばらく覚えておく</strong>」仕組み</dd>
+<dt>たとえると</dt>
+<dd>初心者が一番引っかかる罠。CSS を変えたのに反映されない時はキャッシュのせい。<code class="inline">command + shift + R</code> で強制再読み込み</dd>
+<dt>関連</dt>
+<dd>強制リロード / DevTools</dd>
+</dl>
+</div>
+</div>
+</section>
+<h2>準備：第8章のフォルダで作業を続ける</h2>
+<pre class="code" data-lang="terminal">cd <span data-var="devroot">~/dev</span>/hello-world
+claude --continue</pre>
+<h2>Step 1：AI に CSS の追加を頼む</h2>
+<p>まず、雑に頼んでみます。</p>
+<div class="ai-prompt">
+<div class="quote">
+      index.html の Hello World を、もう少し見栄えよくしてください。<br/>
+      ・背景は淡いベージュ<br/>
+      ・文字は大きめ、画面の中央に配置<br/>
+      ・フォントは可読性の高いゴシック体<br/>
+      CSS は HTML の中に書く形でも、別ファイルでも、初心者向けに分かりやすい方を選んで。
+    </div>
+</div>
+<p>
+    Claude は CSS を加えた変更案を提示してきます。差分（変更前 → 変更後）を見て、内容に納得できたら承認。
+  </p>
+<h3>こんな感じになるはず</h3>
+<pre class="code" data-lang="html">&lt;!DOCTYPE html&gt;
+&lt;html lang="ja"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;最初のページ&lt;/title&gt;
+  &lt;style&gt;
+    body {
+      background-color: #faf6e9;
+      font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    h1 {
+      font-size: 56px;
+      color: #2b4a6f;
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Hello, World!&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+<p>ブラウザを更新して反映を確認しましょう。</p>
+<h2>Step 2：少しずつ注文を変えてみる</h2>
+<p>
+    AI と相談する練習なので、いろんな注文を投げてみましょう。<strong>1つずつ</strong>注文するのが上達のコツ。
+  </p>
+<div class="ai-prompt">
+<div class="quote">
+      文字の色をもっと深い青にしてください。
+    </div>
+</div>
+<div class="ai-prompt">
+<div class="quote">
+      Hello World の下に、薄いグレーで「Welcome to my first page.」と添えてください。
+    </div>
+</div>
+<div class="ai-prompt">
+<div class="quote">
+      画面下に小さく日付を入れてください。日付は今日の日付で。
+    </div>
+</div>
+<p>
+    1回ごとに保存 → ブラウザ更新で確認するクセをつけましょう。
+  </p>
+<img alt="イラスト⑥：CSS ボックスモデル図" class="guide-illustration" src="../assets/illustrations/illust_06_css_box_model.png"/>
+<h2>Step 3：CSS を別ファイルに分ける</h2>
+<p>
+    HTML の <code class="inline">&lt;style&gt;</code> タグの中に CSS を書く方法は手軽ですが、コードが増えると見にくくなります。
+    実務では <code class="inline">style.css</code> という別ファイルに分けるのが一般的です。
+  </p>
+<div class="ai-prompt">
+<div class="quote">
+      今 HTML の中に書いてある CSS を、別ファイル style.css に切り出してください。<br/>
+      HTML 側からは link タグで読み込む形にしてください。
+    </div>
+</div>
+<p>
+    Claude が以下のような変更を提案してくれます：
+  </p>
+<ul>
+<li><code class="inline">style.css</code> という新しいファイルを作る</li>
+<li>HTML から CSS の中身を移動する</li>
+<li>HTML の <code class="inline">&lt;head&gt;</code> に <code class="inline">&lt;link rel="stylesheet" href="style.css"&gt;</code> を追加</li>
+</ul>
+<h2>Step 4：自分で1個だけ書いてみる</h2>
+<p>
+    AI に任せきりにせず、自分でも触ってみましょう。
+    <code class="inline">style.css</code> の <code class="inline">h1</code> のところに、こう書き足してみてください：
+  </p>
+<pre class="code" data-lang="css">h1 {
+  /* 既存のプロパティはそのまま */
+  letter-spacing: 0.1em;  /* ← ここを追加 */
+}</pre>
+<p>
+    保存してブラウザ更新。文字の間隔が広がっているはずです。
+  </p>
+<div class="tip">
+    変更が反映されない時は、ブラウザのキャッシュが原因のことがあります。<br/>
+<code class="inline">command + shift + R</code>（強制再読み込み）で解決します。
+  </div>
+<h2>Step 5：AI に「いまの CSS を解説してもらう」</h2>
+<p>
+    AI と作業した後は、書いてもらったコードの意味を解説してもらうとぐんと理解が深まります。
+  </p>
+<div class="ai-prompt">
+<div class="quote">
+      今の style.css を、初心者向けに各プロパティの意味を1行ずつ解説してください。<br/>
+      特に display: flex; が何をしているか、絵で例えるように説明してくれると嬉しいです。
+    </div>
+</div>
+<h2>「AI と相談する」の正解の感覚</h2>
+<ul>
+<li><strong>命令ではなく、相談する</strong>：「こうしろ」より「こんな感じにしたいんだけど、どう書く？」</li>
+<li><strong>注文は1つずつ</strong>：一気に5つの変更を頼むと、どれが反映されたか分からなくなる</li>
+<li><strong>気に入らなかったら戻して、別案を頼む</strong>：「やっぱり戻して、もっとシンプルに」もアリ</li>
+<li><strong>動いたら一回 git commit する</strong>（第11章）：節目で保存しておけば、次の挑戦で失敗しても戻せる</li>
+</ul>
+<div class="imura-yell">
+<p>
+      「AI が書いてくれるから自分のタイピングは遅くても問題ない」<strong>これは逃げ</strong>だ。
+      AI に指示を素早く投げられる人ほど、相棒を使い倒せる。指示が 1 行 30 秒かかる人と、5 秒で打てる人の生産性は段違い。
+    </p>
+<p>
+<strong>キーボードは見ない、トラックパッドは触らない、トラックボールで動く</strong>。
+      Poolside の標準スタイルだ。最初は遅くてもいい。3 ヶ月後に化けてればそれでいい。
+    </p>
+</div>
+<h2>注意：意味を理解しないまま進めない</h2>
+<div class="warn">
+    AI が書いてくれたコードは、<strong>「自分が分かるレベル」</strong>でだけ受け入れましょう。
+    意味の分からないまま積み重ねると、後で「なぜこう動いているのか」を説明できなくなります。<br/>
+    分からない箇所は <strong>必ず</strong> AI に解説してもらってください。
+  </div>
+<h2>本章のチェックリスト</h2>
+<p>
+    すべてチェックを付けると「次の章へ」のリンクが解放されます。
+  </p>
+<ul class="checklist" data-checklist-id="ch09">
+<li><label><input type="checkbox"/> Hello World に CSS を追加して、見た目が変わった</label></li>
+<li><label><input type="checkbox"/> CSS を別ファイルに分けられた</label></li>
+<li><label><input type="checkbox"/> 自分で1行だけ CSS を追記して、効果を確認した</label></li>
+<li><label><input type="checkbox"/> 書いてもらった CSS の各行の意味を、AI に解説してもらった</label></li>
+</ul>
+<p class="checklist-status">チェック 0 / 4</p>
+<h2>次の章へ</h2>
+<p>
+    見た目が整いました。次の第10章では、JavaScript で動きを付けてみます。Hello World が動き出します。
+  </p>
+<nav class="chapter-nav">
+<a class="prev" href="./08_hello_html.html">第8章 HTML 練習</a>
+<a class="toc" href="../index.html">目次</a>
+<a class="next" href="./10_hello_js.html">第10章 JavaScript</a>
+</nav>
+</main>
+<footer class="site-footer">
+  Poolside · AI運用指南書 · 第9章
+</footer>
+</body>
+</html>

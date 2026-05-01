@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head><script>(function(){var ok=false;try{ok=localStorage.getItem("guidebook-access-granted-v1")==="true";}catch(e){}if(!ok){var depth=location.pathname.indexOf("/chapters/")>=0?"../":"./";var back=encodeURIComponent(location.pathname+location.search+location.hash);location.replace(depth+"gate.html?back="+back);}})();</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第4章 インストール手順 — AI運用指南書</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/guidebook.css">
+<script src="../assets/guidebook.js" defer></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="inner">
+    <div class="brand"><a href="../index.html" style="color:inherit;">AI運用指南書</a></div>
+    <div class="nav">第4章 / 全15章</div>
+  </div>
+</header>
+
+<main>
+  <nav class="chapter-nav">
+    <a class="prev" href="./03_terminal_basics.html">第3章 ターミナル</a>
+    <a class="toc" href="../index.html">目次</a>
+    <a class="next" href="./05_after_install.html">第5章 インストール後の注意</a>
+  </nav>
+
+  <header class="chapter-header">
+    <span class="num">CHAPTER 04</span>
+    <h1>インストール手順</h1>
+  </header>
+
+  <div class="goal">
+    <div class="label">この章のゴール</div>
+    <div class="content">
+      自分の Mac に Cursor と Claude Code をインストールできる。<br>
+      ターミナルから <code class="inline">claude</code> コマンドを打って AI を呼び出せる状態になる。
+    </div>
+  </div>
+
+  <h2>インストールするもの一覧</h2>
+  <p>この章で入れていくのは次の4つです。</p>
+  <table>
+    <tr><th>順</th><th>ツール</th><th>役割</th></tr>
+    <tr><td>1</td><td>Cursor</td><td>コードを書くエディタ（アプリ）</td></tr>
+    <tr><td>2</td><td>Homebrew</td><td>Mac でツールを入れるための「アプリの自販機」のようなもの</td></tr>
+    <tr><td>3</td><td>Node.js</td><td>Claude Code が裏で必要としている JavaScript の実行環境</td></tr>
+    <tr><td>4</td><td>Claude Code</td><td>本書の主役。AI と対話するためのコマンド</td></tr>
+  </table>
+
+  <div class="warn">
+    インストール作業には30分〜1時間かかることがあります。途中でパスワードを求められることもあります。
+    時間に余裕がある時にやりましょう。
+  </div>
+
+  <section class="term-deck">
+    <h3>絶対に覚える：開発ツール周辺の用語</h3>
+    <p class="lead-text">
+      この章で出てくる、エンジニアが日常的に口にする道具の名前です。<strong>聞いたことが無い言葉が並ぶ</strong>と思いますが、ここで一度雰囲気を掴んでおくと安心です。
+    </p>
+    <div class="terms">
+
+      <div class="term-card">
+        <div class="term-name"><span class="en">Homebrew</span><span class="ja">ホームブリュー</span></div>
+        <dl>
+          <dt>一言で</dt>
+          <dd>Mac で<strong>開発ツールを簡単に入れる</strong>ためのアプリ自販機</dd>
+          <dt>たとえると</dt>
+          <dd>App Store の「開発者ツール特化版」。<code class="inline">brew install &lt;名前&gt;</code> でインストール、<code class="inline">brew upgrade</code> で更新</dd>
+          <dt>関連</dt>
+          <dd>brew コマンド / Cask / Formula</dd>
+        </dl>
+      </div>
+
+      <div class="term-card">
+        <div class="term-name"><span class="en">Node.js</span><span class="ja">ノード ジェイエス</span></div>
+        <dl>
+          <dt>一言で</dt>
+          <dd>JavaScript を<strong>ブラウザの外で動かす</strong>ための実行環境</dd>
+          <dt>たとえると</dt>
+          <dd>JavaScript の「動力源エンジン」。Claude Code や Firebase CLI など、多くのツールがこれを土台にしている</dd>
+          <dt>関連</dt>
+          <dd>npm / nvm / バージョン管理</dd>
+        </dl>
+      </div>
+
+      <div class="term-card">
+        <div class="term-name"><span class="en">npm</span><span class="ja">エヌピーエム</span></div>
+        <dl>
+          <dt>一言で</dt>
+          <dd>Node.js 用の<strong>パッケージ管理ツール</strong>（Node Package Manager）</dd>
+          <dt>たとえると</dt>
+          <dd>JavaScript 系ツールのアプリストア。<code class="inline">npm install -g &lt;名前&gt;</code> で世界中どこからでも使えるツールとして入る</dd>
+          <dt>関連</dt>
+          <dd>package / -g（global）</dd>
+        </dl>
+      </div>
+
+      <div class="term-card">
+        <div class="term-name"><span class="en">Package</span><span class="ja">パッケージ</span></div>
+        <dl>
+          <dt>一言で</dt>
+          <dd>誰かが作って公開している<strong>再利用可能なコード一式</strong></dd>
+          <dt>たとえると</dt>
+          <dd>料理の「下ごしらえ済み素材」。<code class="inline">@anthropic-ai/claude-code</code> もパッケージの一つ</dd>
+          <dt>関連</dt>
+          <dd>npm install / dependency（依存）</dd>
+        </dl>
+      </div>
+
+      <div class="term-card">
+        <div class="term-name"><span class="en">CLI</span><span class="ja">コマンドラインインターフェース</span></div>
+        <dl>
+          <dt>一言で</dt>
+          <dd><strong>ターミナルで動くアプリ</strong>の総称（GUI（画面付きアプリ）の対義語）</dd>
+          <dt>たとえると</dt>
+          <dd>「アプリ＝アイコンをダブルクリックするやつ」だとすれば、CLI＝「文字で命令して動かすやつ」。<code class="inline">claude</code> も <code class="inline">git</code> も <code class="inline">brew</code> も CLI</dd>
+          <dt>関連</dt>
+          <dd>GUI / コマンド</dd>
+        </dl>
+      </div>
+
+      <div class="term-card">
+        <div class="term-name"><span class="en">Version</span><span class="ja">バージョン</span></div>
+        <dl>
+          <dt>一言で</dt>
+          <dd>そのツールの<strong>何代目か</strong>を表す番号（例：<code class="inline">v22.5.0</code>）</dd>
+          <dt>たとえると</dt>
+          <dd>iPhone の世代みたいなもの。<code class="inline">--version</code> で確認できれば「ちゃんと入った」証拠</dd>
+          <dt>関連</dt>
+          <dd>--version / アップグレード</dd>
+        </dl>
+      </div>
+
+    </div>
+  </section>
+
+  <h2>① Cursor をインストール</h2>
+
+  <ol class="steps">
+    <li>
+      <strong>公式サイトを開く</strong><br>
+      ブラウザで <code class="inline">https://cursor.com</code> にアクセス。
+    </li>
+    <li>
+      <strong>ダウンロードボタンを押す</strong><br>
+      ページ上の「Download」ボタンを押すと、Mac 用のインストーラ（.dmg ファイル）がダウンロードされます。
+    </li>
+    <li>
+      <strong>.dmg を開いて、アプリを Applications フォルダにドラッグ</strong><br>
+      ダウンロードした <code class="inline">Cursor.dmg</code> をダブルクリックすると、Cursor のアイコンと Applications フォルダのアイコンが並んで表示されます。
+      Cursor のアイコンを Applications フォルダにドラッグ&amp;ドロップしてください。
+    </li>
+    <li>
+      <strong>初回起動と Mac の許可</strong><br>
+      Launchpad またはアプリケーションフォルダから Cursor を起動。「インターネットからダウンロードされたアプリです」という確認が出たら「開く」を選択。
+    </li>
+    <li>
+      <strong>サインイン</strong><br>
+      初回起動時に Cursor のアカウント作成 or サインインを求められます。会社の支給アカウントがあればそれを使い、無ければまずはご自身のメールで登録してから社内担当に連絡してください。
+    </li>
+  </ol>
+
+  <h2>② Homebrew をインストール</h2>
+  <p>
+    Homebrew（ホームブリュー）は、Mac でツールをインストールするための公式風ツールです。
+    本書ではこのあと出てくる <code class="inline">git</code> や <code class="inline">node</code> を入れる時にも使います。
+  </p>
+
+  <ol class="steps">
+    <li>
+      <strong>ターミナルを開く</strong>（第3章を参照）
+    </li>
+    <li>
+      <strong>下のコマンドをコピーして、ターミナルにペーストして Enter</strong>
+    </li>
+  </ol>
+
+<pre class="code" data-lang="terminal">/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</pre>
+
+  <p>
+    途中で Mac のログインパスワードを聞かれるので入力（打っても画面には表示されません）。
+    インストールには5〜10分かかります。
+  </p>
+
+  <h3>パスを通す</h3>
+  <p>
+    インストールが終わると、画面の最後に「Next steps」のような英文と、もう2つ実行すべきコマンドが書かれています。
+    通常、次のような内容です（自分の画面の指示通りにコピーしてください）。
+  </p>
+
+<pre class="code" data-lang="terminal">echo &gt;&gt; ~/.zprofile
+echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' &gt;&gt; ~/.zprofile
+eval "$(/opt/homebrew/bin/brew shellenv)"</pre>
+
+  <p>
+    コピペ実行したら、ターミナルを<strong>一度閉じて開き直して</strong>ください。
+    そのあと次のコマンドで動作確認します：
+  </p>
+
+<pre class="code" data-lang="terminal">brew --version</pre>
+
+  <p>
+    <code class="inline">Homebrew 4.x.x</code> のように表示されたら成功です。
+  </p>
+
+  <div class="warn">
+    画面に出ているメッセージは <strong>毎回必ず読みましょう</strong>。「次にこれをやってね」と書いてあることが多いです。
+  </div>
+
+  <h2>③ Node.js をインストール</h2>
+  <p>
+    Claude Code は Node.js（ノードジェイエス）という基盤の上で動きます。Homebrew で入れます。
+  </p>
+
+<pre class="code" data-lang="terminal">brew install node</pre>
+
+  <p>動作確認：</p>
+
+<pre class="code" data-lang="terminal">node --version
+npm --version</pre>
+
+  <p>
+    どちらもバージョン番号（例：<code class="inline">v22.x.x</code>）が表示されれば OK です。
+  </p>
+
+  <h2>④ Claude Code をインストール</h2>
+  <p>
+    いよいよ本書の主役を入れます。
+  </p>
+
+<pre class="code" data-lang="terminal">npm install -g @anthropic-ai/claude-code</pre>
+
+  <p>
+    <code class="inline">-g</code> は「グローバルに（どこからでも使える形で）入れる」という意味です。
+    インストールには2〜5分かかります。
+  </p>
+
+  <h3>動作確認</h3>
+
+<pre class="code" data-lang="terminal">claude --version</pre>
+
+  <p>バージョン番号が表示されれば成功です。</p>
+
+  <div class="note">
+    Claude Code のインストール方法は今後変わる可能性があります。<strong>うまく動かない時は、必ず公式ドキュメント</strong>（<code class="inline">https://docs.claude.com/claude-code</code> など）<strong>を確認してください</strong>。
+    本書は2026年5月時点の情報をもとに書いています。
+  </div>
+
+  <h2>⑤ 初回ログイン</h2>
+  <p>
+    Claude Code を初めて使うときは、Anthropic アカウントでのログインを求められます。
+    任意の場所でターミナルを開き、次を実行：
+  </p>
+
+<pre class="code" data-lang="terminal">claude</pre>
+
+  <p>
+    画面の指示に従って、ブラウザでログインします。
+    会社支給のアカウントがあれば必ずそれを使ってください（個人アカウントと混ぜない）。
+  </p>
+
+  <h2>git も入れておく（GitHub 編で使用）</h2>
+  <p>
+    第11章で GitHub を扱う時に必要なので、ついでに入れておきます。
+  </p>
+
+<pre class="code" data-lang="terminal">brew install git</pre>
+
+<pre class="code" data-lang="terminal">git --version</pre>
+
+  <p>バージョンが出れば OK。</p>
+
+  <h2>つまずきやすいポイント</h2>
+  <ul>
+    <li><strong>「command not found: brew」</strong>：パスを通すコマンドを実行していない／ターミナルを開き直していない（②の最後を再確認）</li>
+    <li><strong>パスワードが通らない</strong>：Mac のログインパスワードを入力。Apple ID のパスワードではない</li>
+    <li><strong>npm install で permission denied</strong>：管理者権限が必要なコマンドかも。<code class="inline">sudo</code> を頭に付けたくなるが、<strong>その前に第7章を読んで</strong>から判断してください</li>
+    <li><strong>会社の Mac で Homebrew が入れられない</strong>：管理者制限の可能性あり。社内の情シス担当に相談してください</li>
+  </ul>
+
+  <div class="ai-prompt">
+    <div class="quote">
+      Claude Code をインストールしようとしてターミナルでエラーが出ました。<br>
+      実行したコマンドはこれ：<code class="inline">[コマンドを貼り付け]</code><br>
+      出てきたエラーメッセージはこれ：<code class="inline">[エラーを貼り付け]</code><br>
+      初心者向けに、何が原因でどう直せばいいか教えてください。
+    </div>
+  </div>
+
+  <h2>ここまで来たら：以後のターミナル操作は Cursor 内蔵がおすすめ</h2>
+  <p>
+    第2章で触れた通り、Poolside の運用は <strong>「Cursor を起動して、その内蔵ターミナルで claude を動かす」</strong>のが標準です。
+    Cursor を入れた今、以下の流れに慣れていきましょう：
+  </p>
+  <ol>
+    <li>Cursor を起動する</li>
+    <li>「File → Open Folder」で案件フォルダを開く</li>
+    <li><code class="inline">control + `</code>（バッククォート）で内蔵ターミナルを開く</li>
+    <li>そこで <code class="inline">claude</code> や <code class="inline">brew</code> や <code class="inline">git</code> を実行する</li>
+  </ol>
+  <p>
+    こうすると、Cursor で開いているフォルダが自動的にターミナルのカレントディレクトリになるので、<code class="inline">cd</code> し忘れの事故が起きません。
+    本書では第6章以降、この運用を前提にしていきます。
+  </p>
+
+  <h2>ここまでのチェック</h2>
+  <p>
+    実際に手を動かして確認してから、チェックを付けてください。<strong>全部チェックすると「次の章へ」のリンクが解放されます</strong>。
+  </p>
+  <ul class="checklist" data-checklist-id="ch04">
+    <li><label><input type="checkbox"> Cursor を Applications に入れて、起動できる</label></li>
+    <li><label><input type="checkbox"> ターミナルで <code class="inline">brew --version</code> が動く</label></li>
+    <li><label><input type="checkbox"> ターミナルで <code class="inline">node --version</code> が動く</label></li>
+    <li><label><input type="checkbox"> ターミナルで <code class="inline">claude --version</code> が動く</label></li>
+    <li><label><input type="checkbox"> ターミナルで <code class="inline">git --version</code> が動く</label></li>
+  </ul>
+  <p class="checklist-status">チェック 0 / 5</p>
+
+  <nav class="chapter-nav">
+    <a class="prev" href="./03_terminal_basics.html">第3章 ターミナル</a>
+    <a class="toc" href="../index.html">目次</a>
+    <a class="next" href="./05_after_install.html">第5章 インストール後の注意</a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  Poolside · AI運用指南書 · 第4章
+</footer>
+
+</body>
+</html>

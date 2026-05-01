@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head><script>(function(){var ok=false;try{ok=localStorage.getItem("guidebook-access-granted-v1")==="true";}catch(e){}if(!ok){var depth=location.pathname.indexOf("/chapters/")>=0?"../":"./";var back=encodeURIComponent(location.pathname+location.search+location.hash);location.replace(depth+"gate.html?back="+back);}})();</script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>第12章 Firebase — AI運用指南書</title>
+<link href="../assets/style.css" rel="stylesheet"/>
+<link href="../assets/guidebook.css" rel="stylesheet"/>
+<script defer="" src="../assets/guidebook.js"></script>
+</head>
+<body>
+<header class="site-header">
+<div class="inner">
+<div class="brand"><a href="../index.html" style="color:inherit;">AI運用指南書</a></div>
+<div class="nav">第12章 / 全15章</div>
+</div>
+</header>
+<main>
+<nav class="chapter-nav">
+<a class="prev" href="./11_github.html">第11章 GitHub</a>
+<a class="toc" href="../index.html">目次</a>
+<a class="next" href="./13_advanced.html">第13章 Claude を使い倒す</a>
+</nav>
+<header class="chapter-header">
+<span class="num">CHAPTER 12</span>
+<h1>関連ツール解説：Firebase</h1>
+</header>
+<div class="goal">
+<div class="label">この章のゴール</div>
+<div class="content">
+      Firebase が何のサービスか、何ができるかを理解する。<br/>
+      GitHub Pages との違いを把握する。<br/>
+      簡易的に Firebase Hosting を使ってみる流れを体験する（実際の本番構築は別途プロジェクトで）。
+    </div>
+</div>
+<h2>Firebase って何？</h2>
+<p>
+    Firebase（ファイアベース）は、Google が提供している<strong>Web・モバイルアプリの土台になる便利機能の詰め合わせ</strong>のようなサービスです。
+    「BaaS（Backend as a Service）」と呼ばれるカテゴリに入ります。
+  </p>
+<p>主な機能（一部）：</p>
+<ul>
+<li><strong>Hosting</strong> — Web サイトを公開できる（GitHub Pages の代替候補）</li>
+<li><strong>Authentication</strong> — ログイン機能を簡単に実装できる</li>
+<li><strong>Firestore / Realtime Database</strong> — 簡易データベース</li>
+<li><strong>Functions</strong> — サーバーサイドで動かす小さなプログラム</li>
+<li><strong>Storage</strong> — 画像や動画ファイルの保管</li>
+</ul>
+<p>
+    本章では <strong>Hosting</strong> だけ触ります。他は将来必要になった時に学べばOK。
+  </p>
+<img alt="イラスト⑨：Firebase の機能群と Spark/Blaze プランの関係図" class="guide-illustration" src="../assets/illustrations/illust_09_firebase_plans.png"/>
+<section class="term-deck">
+<h3>絶対に覚える：Firebase の用語</h3>
+<p class="lead-text">
+      Firebase は機能が多いので用語も多めですが、本書で扱うのは Hosting だけ。<strong>「プロジェクト／Hosting／プラン／デプロイ／CLI」の5つ</strong>を押さえれば十分です。
+    </p>
+<div class="terms">
+<div class="term-card">
+<div class="term-name"><span class="en">Project</span><span class="ja">プロジェクト</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>Firebase で作る<strong>1つのサービス単位</strong>。1案件＝1プロジェクトが基本</dd>
+<dt>たとえると</dt>
+<dd>「Firebase 上のフォルダ」みたいなもの。中に Hosting / DB / Functions など複数機能を入れていく</dd>
+<dt>関連</dt>
+<dd>Console / プロジェクトID</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Hosting</span><span class="ja">ホスティング</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>HTML / CSS / JS のファイルを<strong>インターネット上で公開</strong>する機能</dd>
+<dt>たとえると</dt>
+<dd>GitHub Pages の Firebase 版。本書ではこれだけ使う</dd>
+<dt>関連</dt>
+<dd>deploy / 独自ドメイン</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Firebase CLI</span><span class="ja">ファイアベース シーエルアイ</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>ターミナルから Firebase を操作するためのコマンド（<code class="inline">firebase</code>）</dd>
+<dt>たとえると</dt>
+<dd>Firebase の Web 画面でやれることを、コマンド1行で済ませられるツール。<code class="inline">npm install -g firebase-tools</code> で導入</dd>
+<dt>関連</dt>
+<dd>firebase init / firebase deploy</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Deploy</span><span class="ja">デプロイ／公開</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>手元のファイルを<strong>サーバーにアップロードして実際に公開</strong>する操作</dd>
+<dt>たとえると</dt>
+<dd>本のゲラを「印刷所に渡して印刷開始」する瞬間。<code class="inline">firebase deploy</code> 一発で終わる</dd>
+<dt>関連</dt>
+<dd>Hosting URL / プレビュー</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Spark Plan</span><span class="ja">スパークプラン</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>Firebase の<strong>無料プラン</strong>。上限を超えると<strong>停止</strong>する（課金されない）</dd>
+<dt>たとえると</dt>
+<dd>練習・小規模公開向けの安全プラン。<strong>本書の練習はこれを使う</strong></dd>
+<dt>関連</dt>
+<dd>Blaze / 無料枠</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Blaze Plan</span><span class="ja">ブレイズプラン</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>Firebase の<strong>従量課金プラン</strong>。使った分だけ料金が発生する</dd>
+<dt>たとえると</dt>
+<dd>水道や電気と同じ「使った分だけ請求」。<strong>知らずに切り替えると事故る</strong>。本番運用で必要になった時、慎重に切り替える</dd>
+<dt>関連</dt>
+<dd>無料枠 / 従量課金 / 請求アカウント</dd>
+</dl>
+</div>
+</div>
+</section>
+<h2>つまずきポイント：Spark プラン（無料）と Blaze プラン（従量課金）の選び方</h2>
+<p>
+    Firebase で<strong>初心者が一番怖いのが「気づかないうちに有料プランに切り替わって請求が来る」事故</strong>です。
+    GitHub の Public/Private と同じくらい大事な判断ポイントなので、ここでしっかり整理します。
+  </p>
+<h3>2つのプランの違い</h3>
+<table>
+<tr><th>項目</th><th>Spark（無料）</th><th>Blaze（従量課金）</th></tr>
+<tr><td>料金</td><td><strong>完全無料</strong></td><td>使った分だけ請求</td></tr>
+<tr><td>無料枠を超えたら</td><td><strong>サービスが停止する</strong>（課金されない）</td><td>そのまま課金される</td></tr>
+<tr><td>使える機能</td><td>Hosting, Firestore（少量）, Auth など主要機能はOK</td><td>全部使える（外部 API 連携など含む）</td></tr>
+<tr><td>本書の練習用途</td><td><strong>これで完全にOK</strong></td><td>不要</td></tr>
+</table>
+<h3>本書では Spark を使う理由</h3>
+<ul>
+<li>練習で使う規模では<strong>無料枠の中で完結</strong>する</li>
+<li>万が一何かのバグで大量アクセスが来ても、<strong>勝手に課金されない安心感</strong></li>
+<li>本番運用が必要になった時、慎重に Blaze に切り替えればよい</li>
+</ul>
+<h3>Blaze プランが必要になる場面</h3>
+<ul>
+<li><strong>外部の API（OpenAI など）と連携する Functions を作りたい</strong>：これが Blaze 必須の最大の理由</li>
+<li>Firestore で大量のデータを扱う（無料枠を超える）</li>
+<li>商用サービスを本格運用する</li>
+</ul>
+<div class="warn">
+    Blaze プランに切り替える時は、<strong>必ず予算上限（Budget Alert）を設定</strong>してください。<br/>
+    設定しないと、攻撃や不具合で大量アクセスが来た時に<strong>請求が天井知らずに膨らむ</strong>事故が実際に起きています。
+  </div>
+<div class="danger">
+<strong>Blaze プランへの切替は、必ず居村に相談してから</strong>行ってください（第1章の「お約束」参照）。<br/>
+    切替＋予算上限設定は、社内のエンジニアと一緒に進めるのが安全です。
+    請求アカウントの紐付けや、退職時の引き継ぎにも関わる重要事項です。
+  </div>
+<div class="ai-prompt">
+<div class="quote">
+      Firebase の Blaze プランで、月の予算上限を 1,000 円に設定する手順を初心者向けに教えてください。<br/>
+      上限を超えたら通知が来るようにもしたいです。
+    </div>
+</div>
+<h2>GitHub Pages と Firebase Hosting の違い</h2>
+<table>
+<tr><th>項目</th><th>GitHub Pages</th><th>Firebase Hosting</th></tr>
+<tr><td>料金</td><td>無料（個人レベル）</td><td>無料枠あり、超えると従量課金</td></tr>
+<tr><td>セットアップ難度</td><td>かなり簡単</td><td>少し手順が増える</td></tr>
+<tr><td>独自ドメイン</td><td>OK（無料）</td><td>OK（無料）</td></tr>
+<tr><td>動的機能との連携</td><td>静的ファイルのみ</td><td>Functions と組み合わせて動的にできる</td></tr>
+<tr><td>適している案件</td><td>個人サイト、ドキュメント、ポートフォリオ</td><td>会員機能・データ保存が必要な Web アプリ</td></tr>
+</table>
+<p>
+    シンプルな静的サイトなら GitHub Pages で十分。
+    会員ログインや書き込み機能が必要になった時、Firebase の出番が来ます。
+  </p>
+<h2>Step 1：Firebase アカウントを作る</h2>
+<ol class="steps">
+<li>Google アカウントを用意する（普段使っているので OK）</li>
+<li>ブラウザで <code class="inline">https://firebase.google.com</code> にアクセス</li>
+<li>「コンソールへ移動」または「Get started」を押す</li>
+<li>「プロジェクトを追加」を押す</li>
+<li>プロジェクト名を入力（例：<code class="inline">hello-world-test</code>）</li>
+<li>Google Analytics は<strong>無効</strong>にしてOK（練習用なので）</li>
+<li>プロジェクトが作成される</li>
+</ol>
+<div class="warn">
+<strong>会社の業務で使う場合</strong>、個人の Google アカウントではなく、会社支給アカウントを使ってください。
+    料金請求のひも付けや、退職時の引き継ぎ問題を防ぐためです。
+    個人アカウントで作って後から移管するのは大変です。
+  </div>
+<h2>Step 2：Firebase CLI をインストール</h2>
+<p>
+    ターミナルから Firebase を操作するためのコマンドを入れます。
+  </p>
+<pre class="code" data-lang="terminal">npm install -g firebase-tools</pre>
+<p>動作確認：</p>
+<pre class="code" data-lang="terminal">firebase --version</pre>
+<h2>Step 3：Firebase にログイン</h2>
+<pre class="code" data-lang="terminal">firebase login</pre>
+<p>
+    ブラウザが開き、Google アカウントでのログインを求められます。
+    Firebase で使ったアカウントを選んでください。
+  </p>
+<h2>Step 4：Hosting を初期化</h2>
+<p>第10章まで作った hello-world フォルダで作業します。</p>
+<pre class="code" data-lang="terminal">cd <span data-var="devroot">~/dev</span>/hello-world
+firebase init hosting</pre>
+<p>対話形式で質問されます。最初は次の選択でOK：</p>
+<ul>
+<li>「Use an existing project」→ 先ほど作ったプロジェクトを選ぶ</li>
+<li>「What do you want to use as your public directory?」→ 「<code class="inline">.</code>」（ピリオド）または「<code class="inline">public</code>」</li>
+<li>「Configure as a single-page app?」→ N（ノー）</li>
+<li>「Set up automatic builds with GitHub?」→ N（ノー、初回はスキップ）</li>
+<li>「File ... already exists. Overwrite?」（index.html 上書き確認）→ <strong>N</strong>（既存を残す）</li>
+</ul>
+<div class="tip">
+    質問の意味が分からない時は、いったん N（No）を選ぶか、Claude に「これって何を聞かれてる？」とコピペして聞いてしまいましょう。
+  </div>
+<h2>Step 5：デプロイ（公開）</h2>
+<pre class="code" data-lang="terminal">firebase deploy</pre>
+<p>
+    1〜2分で完了し、最後に「Hosting URL: https://&lt;プロジェクト名&gt;.web.app」が表示されます。
+    そのURLにアクセスすると、あなたの Hello World が世界に公開されています。
+  </p>
+<h2>2回目以降の更新</h2>
+<p>ファイルを直したら：</p>
+<pre class="code" data-lang="terminal">firebase deploy</pre>
+<p>これだけ。GitHub Pages とほぼ同じくらい手軽。</p>
+<h2>「使う／使わない」の判断目安</h2>
+<ul>
+<li><strong>静的ページしか要らない</strong>：GitHub Pages で十分</li>
+<li><strong>独自ドメインを使いたい</strong>：どちらでもOK</li>
+<li><strong>そのうち会員機能・お問い合わせフォーム送信などが要りそう</strong>：Firebase 一択</li>
+<li><strong>社内で既に Firebase 案件がある</strong>：Firebase に揃えると人にも頼みやすい</li>
+</ul>
+<p>
+    Poolside の他案件（特に <code class="inline">fetp.jp</code> など）が Firebase 構成のようです。
+    将来そちらにアサインされる可能性も踏まえると、ひととおり触れておくのは無駄になりません。
+  </p>
+<h2>注意点：料金の罠</h2>
+<div class="danger">
+    Firebase は無料枠を超えると<strong>自動的に課金される</strong>仕組み（Pay-as-you-go プラン）に切り替わる場合があります。<br/>
+    練習用プロジェクトでは <strong>Spark プラン（無料・上限ありで止まる）</strong> のままにしておきましょう。<br/>
+    本番運用に切り替える時は、必ず社内の経理・情シスに相談してください。
+  </div>
+<h2>困った時の AI 相談例</h2>
+<div class="ai-prompt">
+<div class="quote">
+      firebase deploy を実行したらこういうエラーが出ました。初心者向けに原因と対処を教えてください。<br/>
+<code class="inline">[エラー全文を貼り付け]</code>
+</div>
+</div>
+<div class="ai-prompt">
+<div class="quote">
+      Firebase Hosting で公開したサイトを、独自ドメイン（poolside.life など）に紐付けるにはどうすればいいですか？<br/>
+      手順をステップごとに教えてください。
+    </div>
+</div>
+<h2>本章のチェックリスト</h2>
+<p>
+    すべてチェックを付けると「次の章へ」のリンクが解放されます。
+  </p>
+<ul class="checklist" data-checklist-id="ch12">
+<li><label><input type="checkbox"/> Firebase プロジェクトを作った</label></li>
+<li><label><input type="checkbox"/> firebase-tools をインストールできた</label></li>
+<li><label><input type="checkbox"/> <code class="inline">firebase deploy</code> で Hello World を公開できた</label></li>
+<li><label><input type="checkbox"/> GitHub Pages との違いをひとことで言える</label></li>
+</ul>
+<p class="checklist-status">チェック 0 / 4</p>
+<h2>次の章へ</h2>
+<p>
+    お疲れさまでした。実装まわりは一通り体験できました。
+    次の最終章では、これまでに出てきたつまずきポイントを横断的にまとめます。
+  </p>
+<nav class="chapter-nav">
+<a class="prev" href="./11_github.html">第11章 GitHub</a>
+<a class="toc" href="../index.html">目次</a>
+<a class="next" href="./13_advanced.html">第13章 Claude を使い倒す</a>
+</nav>
+</main>
+<footer class="site-footer">
+  Poolside · AI運用指南書 · 第12章
+</footer>
+</body>
+</html>

@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head><script>(function(){var ok=false;try{ok=localStorage.getItem("guidebook-access-granted-v1")==="true";}catch(e){}if(!ok){var depth=location.pathname.indexOf("/chapters/")>=0?"../":"./";var back=encodeURIComponent(location.pathname+location.search+location.hash);location.replace(depth+"gate.html?back="+back);}})();</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第6章 初めて使ってみる — AI運用指南書</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/guidebook.css">
+<script src="../assets/guidebook.js" defer></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="inner">
+    <div class="brand"><a href="../index.html" style="color:inherit;">AI運用指南書</a></div>
+    <div class="nav">第6章 / 全15章</div>
+  </div>
+</header>
+
+<main>
+  <nav class="chapter-nav">
+    <a class="prev" href="./05_after_install.html">第5章 インストール後の注意</a>
+    <a class="toc" href="../index.html">目次</a>
+    <a class="next" href="./07_security.html">第7章 セキュリティ</a>
+  </nav>
+
+  <header class="chapter-header">
+    <span class="num">CHAPTER 06</span>
+    <h1>初めて使ってみる（最小の対話）</h1>
+  </header>
+
+  <div class="goal">
+    <div class="label">この章のゴール</div>
+    <div class="content">
+      Claude Code を実際に起動して、最初の対話と最初のファイル作成までを体験する。<br>
+      「AI に頼んでファイルを作る」とはどういうことかを、自分の手でやってみる。
+    </div>
+  </div>
+
+  <h2>練習用フォルダを作る</h2>
+  <p>
+    まず、練習で使うフォルダを作ります。本書の推奨ルート <code class="inline">~/dev/</code> の中に練習用フォルダを作ります（理由は第5章・第7章で解説）。
+  </p>
+  <p>
+    フォルダ作成は、ターミナル.app または Cursor の内蔵ターミナルどちらでも構いません。今は手早く Mac の<strong>ターミナル.app</strong>でやってみましょう：
+  </p>
+
+<pre class="code" data-lang="terminal">mkdir -p <span data-var="devroot">~/dev</span>/hello-claude</pre>
+
+  <p>
+    <code class="inline">mkdir -p</code> の <code class="inline">-p</code> は「親フォルダがなければ一緒に作る」という意味です。
+    <code class="inline">~/dev</code> フォルダもまだ無ければ、同時に作ってくれます。
+  </p>
+
+  <h2>Cursor で開く → 内蔵ターミナルから Claude Code を起動</h2>
+  <p>
+    第2章で触れたとおり、<strong>Poolside の標準は「Cursor 1ウィンドウで完結」スタイル</strong>です。
+    早速この流れに乗りましょう。
+  </p>
+
+  <ol class="steps">
+    <li>
+      <strong>Cursor を起動</strong>。メニューの「File → Open Folder」から、いま作った <code class="inline"><span data-var="devroot">~/dev</span>/hello-claude</code> を選択
+    </li>
+    <li>
+      Cursor のウィンドウが開いて、左側にフォルダの中身（まだ空）が表示される
+    </li>
+    <li>
+      <strong>内蔵ターミナルを開く</strong>：メニューの「Terminal → New Terminal」、または <code class="inline">control + `</code>（バッククォート）
+    </li>
+    <li>
+      Cursor の画面下半分にターミナルが現れる。プロンプトを見ると、自動で <code class="inline">hello-claude</code> フォルダがカレントになっているはず
+    </li>
+    <li>
+      その内蔵ターミナルで Claude Code を起動：
+    </li>
+  </ol>
+
+<pre class="code" data-lang="terminal">claude</pre>
+
+  <div class="note">
+    <strong>cd 不要のメリット</strong>を実感してみてください。Cursor で開いているフォルダが自動的にカレントディレクトリになるので、毎回 <code class="inline">cd ~/dev/hello-claude</code> と打つ必要がありません。<br>
+    ターミナル.app を別途使う場合は <code class="inline">cd</code> が必要なので、フォルダ取り違いの事故が起きやすい。Cursor 内蔵ターミナルなら、その心配が無くなります。
+  </div>
+
+  <p>
+    Claude Code が立ち上がります。画面の見た目は次のようになります（バージョンによって違います）：
+  </p>
+
+  <p>
+    一番下に文字を打ち込める欄があります。ここから AI と対話します。
+  </p>
+
+  <h2>最初のあいさつ</h2>
+  <p>
+    試しに、こう打って Enter を押してみましょう：
+  </p>
+
+  <div class="ai-prompt">
+    <div class="quote">
+      こんにちは。今日が初めての利用です。私の今いるフォルダの中身を教えてください。
+    </div>
+  </div>
+
+  <p>
+    Claude が <code class="inline">ls</code> 相当のことを実行して、答えを返してくれます。
+    まだ <code class="inline">hello-claude</code> フォルダは空なので「何もありません」と返ってくるはずです。
+  </p>
+
+  <h2>初めてのファイル作成</h2>
+  <p>
+    今度は、AI に直接ファイルを作ってもらいます。
+  </p>
+
+  <div class="ai-prompt">
+    <div class="quote">
+      このフォルダに「hello.txt」というファイルを作って、中に「これは私の最初のファイルです」と書いてください。
+    </div>
+  </div>
+
+  <p>
+    Claude は「<code class="inline">hello.txt</code> を作成してもいいですか？」のように<strong>許可を求めてくる</strong>ことがあります。
+    内容を確認して、問題なければ「はい」「OK」「Yes」などと答えると実行されます。
+  </p>
+
+  <div class="note">
+    Claude Code は<strong>勝手にファイルを作ったり削除したりしない</strong>仕組みになっています。
+    実行する前に必ず確認を入れてくれるので、暴走を恐れずに頼ってよいです。
+  </div>
+
+  <h2>確認してみる</h2>
+  <p>
+    ファイルができているか、Finder で見てみましょう。
+    Claude Code を一度終了させても、Finder で残ったファイルは確認できます。
+  </p>
+  <p>
+    終了するには Claude Code の画面で：
+  </p>
+
+<pre class="code" data-lang="terminal">/exit</pre>
+
+  <p>
+    Finder で <code class="inline"><span data-var="devroot">~/dev</span>/hello-claude/</code> を開くと、<code class="inline">hello.txt</code> ができているはずです。
+    ダブルクリックして開いてみると、書いた内容が入っています。
+  </p>
+
+  <h2>「会話の続きから戻る」やり方</h2>
+  <p>
+    Claude Code を終了したあと、また同じ続きから話したい時の流れ：
+  </p>
+
+  <h3>Cursor 内蔵ターミナルから（推奨）</h3>
+  <ol class="steps">
+    <li>Cursor を起動して、<code class="inline"><span data-var="devroot">~/dev</span>/hello-claude</code> フォルダを開く（前回開いていれば自動で開く）</li>
+    <li><code class="inline">control + `</code> で内蔵ターミナルを開く</li>
+    <li>カレントディレクトリは自動で hello-claude フォルダになっている。<code class="inline">cd</code> 不要。下記を実行：</li>
+  </ol>
+
+<pre class="code" data-lang="terminal">claude --continue</pre>
+
+  <h3>ターミナル.app から（補助）</h3>
+  <p>
+    Cursor を開かずに会話を再開したい時は、ターミナル.app から：
+  </p>
+
+<pre class="code" data-lang="terminal">cd <span data-var="devroot">~/dev</span>/hello-claude
+claude --continue</pre>
+
+  <p>
+    <code class="inline">--continue</code>（続ける、の意味）を付けると、そのフォルダで前回した会話の続きから始められます。
+    ターミナルを閉じても会話が記憶されている、ということです。
+  </p>
+
+  <div class="tip">
+    <strong>「No conversation found to continue」</strong> と出たら、まだそのフォルダで一度も話していない状態です。<br>
+    最初の1回は <code class="inline">claude</code>（オプション無し）で始めて、2回目以降は <code class="inline">claude --continue</code> でOKです。
+  </div>
+
+  <h2>もう少し凝ったお願いをしてみる</h2>
+  <p>
+    再起動後、こう頼んでみましょう：
+  </p>
+
+  <div class="ai-prompt">
+    <div class="quote">
+      hello.txt の内容を、もう少し詩的な文章に書き換えてください。
+    </div>
+  </div>
+
+  <p>
+    Claude が「こう変えていいですか？」と差分（変更前 → 変更後）を見せてくれます。
+    気に入った内容なら承認、違うなら「もっと素朴な感じで」のように追加注文ができます。
+  </p>
+
+  <div class="imura-yell">
+    <p>
+      おい、いまキーボードを<strong>見ながら打ってないか</strong>？画面と手元を行ったり来たりするタイピングは <strong>AI 時代の最大の足かせ</strong>だ。
+      AI に指示を出すスピードがそのまま生産性になる時代に、毎回キーを目で探してたら相棒のスピードについていけない。
+    </p>
+    <p>
+      今のうちから<strong>画面だけ見て手元を見ない</strong>癖を付けろ。最初は遅くてもいい。1 ヶ月で景色が変わる。
+      タッチタイピングの練習サイト（e-typing など）を昼休みに 5 分やるだけで全然違うぞ。
+    </p>
+  </div>
+
+  <h2>覚えておきたいスラッシュコマンド</h2>
+  <p>
+    Claude Code には <code class="inline">/</code> から始まる便利な機能があります。最初は次の3つだけ覚えれば十分です。
+  </p>
+  <table>
+    <tr><th>コマンド</th><th>効果</th></tr>
+    <tr><td><code class="inline">/help</code></td><td>使えるコマンド一覧を見る</td></tr>
+    <tr><td><code class="inline">/clear</code></td><td>会話履歴をリセットして真っさらから始める</td></tr>
+    <tr><td><code class="inline">/exit</code></td><td>Claude Code を終了する</td></tr>
+  </table>
+
+  <section class="term-deck">
+    <h3>絶対に覚える：Claude Code を使う上での用語</h3>
+    <p class="lead-text">
+      Claude Code を触っていく中で、<strong>これだけは押さえておいてほしい</strong>用語です。後の章でも出てきます。
+    </p>
+    <div class="terms">
+
+      <div class="term-card">
+        <div class="term-name"><span class="en">Session</span><span class="ja">セッション</span></div>
+        <dl>
+          <dt>一言で</dt>
+          <dd>1回の起動から終了までの<strong>会話のまとまり</strong></dd>
+          <dt>たとえると</dt>
+          <dd>1回の打ち合わせ。<code class="inline">claude --continue</code> で「前回の打ち合わせの続きから」始められる</dd>
+          <dt>関連</dt>
+          <dd>--continue / --resume</dd>
+        </dl>
+      </div>
+
+      <div class="term-card">
+        <div class="term-name"><span class="en">Context</span><span class="ja">コンテキスト／文脈</span></div>
+        <dl>
+          <dt>一言で</dt>
+          <dd>AI が今<strong>覚えている情報</strong>の総量（会話履歴・読んだファイル）</dd>
+          <dt>たとえると</dt>
+          <dd>相棒の<strong>短期記憶</strong>。長く話すほど膨らむ。容量には限界があり、超えると古い記憶から忘れていく</dd>
+          <dt>関連</dt>
+          <dd>トークン / /clear / /compact</dd>
+        </dl>
+      </div>
+
+      <div class="term-card">
+        <div class="term-name"><span class="en">Slash Command</span><span class="ja">スラッシュコマンド</span></div>
+        <dl>
+          <dt>一言で</dt>
+          <dd>Claude Code 自体に対する<strong>特殊な指示</strong>（<code class="inline">/</code> から始まるもの）</dd>
+          <dt>たとえると</dt>
+          <dd>会話相手への質問ではなく、<strong>会議室の機能（電気・空調・終了）</strong>への命令。<code class="inline">/help</code> / <code class="inline">/clear</code> / <code class="inline">/exit</code> など</dd>
+          <dt>関連</dt>
+          <dd>カスタムスラッシュコマンド（第13章）</dd>
+        </dl>
+      </div>
+
+      <div class="term-card">
+        <div class="term-name"><span class="en">Permission / Approval</span><span class="ja">許可／承認</span></div>
+        <dl>
+          <dt>一言で</dt>
+          <dd>AI がファイル作成・変更・コマンド実行をする前に求めてくる<strong>確認</strong></dd>
+          <dt>たとえると</dt>
+          <dd>新人スタッフが「これ買っていいですか？」と毎回確認してくれる感じ。<strong>内容を見ずに即承認しない</strong>のが鉄則</dd>
+          <dt>関連</dt>
+          <dd>settings.json / 自動承認</dd>
+        </dl>
+      </div>
+
+      <div class="term-card">
+        <div class="term-name"><span class="en">CLAUDE.md</span><span class="ja">クロード ドット エムディー</span></div>
+        <dl>
+          <dt>一言で</dt>
+          <dd>そのフォルダで Claude が<strong>常に守るべきルール</strong>を書いておくファイル</dd>
+          <dt>たとえると</dt>
+          <dd>新人スタッフに渡す<strong>「うちのお店の作法ルール」</strong>。詳しくは第13章</dd>
+          <dt>関連</dt>
+          <dd>ルール / .claude/agents / スキル</dd>
+        </dl>
+      </div>
+
+      <div class="term-card">
+        <div class="term-name"><span class="en">Token</span><span class="ja">トークン</span></div>
+        <dl>
+          <dt>一言で</dt>
+          <dd>AI が処理する文字の<strong>計算単位</strong>。だいたい<strong>1トークン ≒ 0.5〜1 文字</strong>（日本語）</dd>
+          <dt>たとえると</dt>
+          <dd>AI 業界の<strong>"単価の元"</strong>。長文を読ませる・長く話す＝トークンを多く使う＝（API 利用時は）コストが上がる</dd>
+          <dt>関連</dt>
+          <dd>Context Window / コスト / /compact</dd>
+        </dl>
+      </div>
+
+      <div class="term-card">
+        <div class="term-name"><span class="en">Context Window</span><span class="ja">コンテキストウィンドウ</span></div>
+        <dl>
+          <dt>一言で</dt>
+          <dd>AI が一度に覚えていられる<strong>トークンの最大量</strong></dd>
+          <dt>たとえると</dt>
+          <dd>相棒の「短期記憶の容量」。これを超えると古い記憶から忘れていく。Claude は最新モデルで非常に大きいが、無限ではない</dd>
+          <dt>関連</dt>
+          <dd>Token / /clear / /compact</dd>
+        </dl>
+      </div>
+
+      <div class="term-card">
+        <div class="term-name"><span class="en">Markdown</span><span class="ja">マークダウン（.md）</span></div>
+        <dl>
+          <dt>一言で</dt>
+          <dd><strong>簡単な記号で見出し・箇条書き・強調などを表現できる文書フォーマット</strong>。拡張子は <code class="inline">.md</code></dd>
+          <dt>たとえると</dt>
+          <dd>「HTML より圧倒的に書きやすい、人間にも AI にも読みやすい文書」。<code class="inline">CLAUDE.md</code> や README などはほぼ全部これ</dd>
+          <dt>関連</dt>
+          <dd>README.md / CLAUDE.md / GitHub の表示</dd>
+        </dl>
+      </div>
+
+    </div>
+  </section>
+
+  <h2>ちょっと寄り道：「Markdown（.md）」って何？</h2>
+  <p>
+    AI を使った開発をしていると、<strong><code class="inline">.md</code> という拡張子のファイル</strong>が頻繁に出てきます。
+    <code class="inline">CLAUDE.md</code>、<code class="inline">README.md</code>、<code class="inline">SKILL.md</code> など。
+    これらは「Markdown（マークダウン）」という<strong>軽い書式の文書フォーマット</strong>です。
+  </p>
+
+  <h3>どうして Markdown を使うのか</h3>
+  <ul>
+    <li>
+      <strong>記号がシンプル</strong>：見出しは <code class="inline">#</code>、リストは <code class="inline">-</code>、強調は <code class="inline">**</code> で囲むだけ。HTML の <code class="inline">&lt;h1&gt;...&lt;/h1&gt;</code> のような長い記述が要らない
+    </li>
+    <li>
+      <strong>そのままでも読める</strong>：記号入りのテキストでも、人間が読んで意味が分かる。HTML を素のテキストとして読むのと違って、ストレスがない
+    </li>
+    <li>
+      <strong>AI が理解しやすい</strong>：「これは見出しだな」「これはリストだな」と AI が一発で構造を把握できる。だから Claude Code への指示も <code class="inline">CLAUDE.md</code> に Markdown で書く
+    </li>
+    <li>
+      <strong>GitHub・各種サービスで表示が綺麗</strong>：<code class="inline">README.md</code> を GitHub に上げると、自動的に綺麗な見た目で表示される
+    </li>
+    <li>
+      <strong>変換が容易</strong>：Markdown → HTML、Markdown → PDF など、後から別の形式に変換するのが簡単
+    </li>
+  </ul>
+
+  <h3>最低限の書き方（これだけ覚えればOK）</h3>
+
+<pre class="code" data-lang="markdown"># 大見出し（H1）
+## 中見出し（H2）
+### 小見出し（H3）
+
+これは普通の段落です。
+
+- 箇条書き 1
+- 箇条書き 2
+- 箇条書き 3
+
+1. 番号付きリスト 1
+2. 番号付きリスト 2
+
+**太字** と *斜体* も書けます。
+
+`インラインコード` はバッククォートで囲みます。
+
+```
+コードブロックは
+バッククォート 3 つで囲む
+```
+
+> 引用は &gt; から始める
+
+[リンクテキスト](https://example.com)
+
+![画像の説明](image.png)
+</pre>
+
+  <p>これだけで、ほぼ全ての文書を構造的に書けます。HTML より圧倒的に少ない記号数で済みます。</p>
+
+  <h3>なぜ AI 開発で Markdown が標準なのか</h3>
+  <p>
+    Claude Code・Cursor・GitHub・Notion・Slack など、AI 開発に関わるツールはほとんどが Markdown 表示に対応しています。
+    つまり <strong>「Markdown で書いておけば、どこに貼っても綺麗に表示される」</strong>。
+    そして AI も Markdown の構造を理解して動くので、指示文や設定ファイルを Markdown で書くと意図が伝わりやすい。
+  </p>
+  <p>
+    本書を進める中で <code class="inline">.md</code> ファイルが出てきたら、「これは構造化された文書だな」と思って中身を見れば、たいてい意味が分かります。
+    完璧に書ける必要はありませんが、<strong>最低限「見出し・リスト・コードブロック」が書ける</strong>と十分です。
+  </p>
+
+  <div class="ai-prompt">
+    <div class="quote">
+      Markdown の書き方を、初心者向けにチートシート（早見表）の形でまとめてください。<br>
+      よく使うものを上から順に並べ、それぞれに「実際に書いた例」と「画面でどう見えるか」を併記してください。
+    </div>
+  </div>
+
+  <div class="tip">
+    Cursor で <code class="inline">.md</code> ファイルを開くと、画面右上にプレビューボタンが出ます。
+    記号付きのテキストと、整形された見た目を並べて確認できるので、最初の練習にぴったりです。
+  </div>
+
+  <h2>脇道課題：Markdown を Notion に貼って「人間向けに展開」してみる</h2>
+  <p>
+    Markdown は<strong>そのままだと記号入りのテキスト</strong>です。
+    AI や開発者には読みやすいですが、社内の他メンバーやクライアントに見せる時は<strong>「綺麗に整形された見た目」</strong>で渡したいですよね。
+  </p>
+  <p>
+    Markdown は<strong>主要なドキュメントツールに貼り付けるだけで自動整形される</strong>のが大きな強みです。
+    ここでは Poolside でも使う <strong>Notion（ノーション）</strong> に貼って、変換のされ方を実体験してみましょう。
+  </p>
+
+  <h3>Notion とは（軽く）</h3>
+  <ul>
+    <li>Notion = メモ・ドキュメント・タスク・データベースが全部1つに収まる<strong>万能ノート系の SaaS</strong></li>
+    <li>会社の Wiki・議事録・ナレッジ集の置き場として、Poolside 含め多くの組織で採用されている</li>
+    <li>個人の無料プランで十分試せる。アカウントが無い人は <code class="inline">https://notion.so</code> で作成（会社の方針があれば居村に確認）</li>
+  </ul>
+
+  <h3>課題の流れ</h3>
+
+  <h4>Step 1：練習用フォルダを作って test-document.md を作る</h4>
+  <p>
+    Cursor で <code class="inline"><span data-var="devroot">~/dev</span>/markdown-practice/</code> フォルダを開いて、内蔵ターミナルで Claude Code を起動してから、こう頼みます：
+  </p>
+
+  <div class="ai-prompt">
+    <div class="quote">
+      このフォルダに <code class="inline">test-document.md</code> を作ってください。<br>
+      内容は「Markdown の主要な記号を一通り含む練習用ドキュメント」にしたいです。<br>
+      具体的には以下を全部含めて：<br>
+      ・H1、H2、H3 の見出し（タイトル例：『私の Markdown 練習帳』）<br>
+      ・段落（短めの自己紹介を3〜5行）<br>
+      ・箇条書き（3項目）<br>
+      ・番号付きリスト（3項目）<br>
+      ・<strong>太字</strong>と<em>斜体</em>の例文<br>
+      ・インラインコード（例：<code class="inline">command + V</code>）<br>
+      ・コードブロック（HTML の Hello World 例を埋める）<br>
+      ・引用（誰かの言葉を1文引用）<br>
+      ・リンク（example.com に飛ばす）<br>
+      ・チェックリスト（- [ ] 未完了 と - [x] 完了）<br>
+      機密情報は含めず、ダミーの内容で OK です。
+    </div>
+  </div>
+
+  <p>
+    Claude が一通り盛り込んだ Markdown ファイルを作ってくれます。Cursor で開いて、プレビューも確認してみてください。
+  </p>
+
+  <h4>Step 2：Markdown の中身を全選択してコピー</h4>
+  <p>
+    Cursor で <code class="inline">test-document.md</code> を開き、<code class="inline">command + A</code> で全選択 → <code class="inline">command + C</code> でコピー。
+  </p>
+  <div class="note">
+    Cursor のプレビュー画面ではなく、<strong>記号が見えている状態（編集画面）</strong>からコピーしてください。
+    プレビュー画面からコピーすると、Notion 側で記号として認識されないことがあります。
+  </div>
+
+  <h4>Step 3：Notion で新しいページを作って貼り付け</h4>
+  <ol class="steps">
+    <li>ブラウザで Notion を開き、サイドバーの「+ Add a page」または「+ ページを追加」</li>
+    <li>新しい空のページが開いたら、<strong>本文エリアにフォーカス</strong>してそのまま <code class="inline">command + V</code></li>
+    <li>Notion が「これは Markdown ですね」と認識して<strong>自動で整形</strong>される</li>
+  </ol>
+
+  <h4>Step 4：整形のされ方を観察</h4>
+  <p>
+    貼り付けが終わったら、見た目を Markdown 元と見比べてみてください。
+  </p>
+  <ul>
+    <li>見出し（<code class="inline">#</code>）→ 大きい文字に</li>
+    <li>箇条書き（<code class="inline">-</code>）→ ドット付きリストに</li>
+    <li>番号付き（<code class="inline">1.</code>）→ 番号付きリストに</li>
+    <li>太字（<code class="inline">**</code>）→ ボールドに</li>
+    <li>コードブロック（バッククォート3つ）→ コードハイライト付きブロックに</li>
+    <li>チェックリスト（<code class="inline">- [ ]</code>）→ Notion のチェックボックスに</li>
+    <li>リンク（<code class="inline">[text](url)</code>）→ クリック可能なリンクに</li>
+  </ul>
+  <p>
+    完璧に変換されない要素もあります（Notion のバージョンや状況による）。
+    <strong>「Markdown は完璧な変換ではないが、9割以上自動で綺麗になる」</strong>感覚を掴むのが本課題の狙いです。
+  </p>
+
+  <h4>Step 5：AI に「次の運用」を聞いてみる</h4>
+
+  <div class="ai-prompt">
+    <div class="quote">
+      Markdown を Notion に貼り付けて整形する流れを試しました。<br>
+      この運用が業務でどんな場面で活きるか、初心者向けに5パターン挙げて教えてください。<br>
+      Poolside（映像制作・音声メディア・イベント・システム開発の会社）の文脈で、ありそうなシーンを想定して。
+    </div>
+  </div>
+
+  <h3>この課題で身につくこと</h3>
+  <ul>
+    <li><strong>Markdown を「人間向けに展開する手段」がある</strong>ことを体験で理解できる</li>
+    <li>議事録・原稿・ナレッジを <code class="inline">.md</code> で管理しつつ、共有時は Notion に流し込むワークフローが見える</li>
+    <li>AI に Markdown で生成させて、Notion に貼って完成形にする、という<strong>AI と人間の役割分担</strong>が掴める</li>
+  </ul>
+
+  <h3>Poolside での想定シーン</h3>
+  <ul>
+    <li>議事録：Claude Code で議事録を <code class="inline">.md</code> 生成 → Notion に貼って関係者に共有</li>
+    <li>提案書のドラフト：AI に Markdown で構成案を作らせて、Notion で整形・装飾</li>
+    <li>社内ナレッジ：技術メモを <code class="inline">.md</code> で書いて GitHub に保存しつつ、Notion でも共有</li>
+    <li>ブログ下書き：Markdown で書いて、Notion 経由で関係者レビュー → CMS にコピペで投稿</li>
+  </ul>
+
+  <div class="warn">
+    Notion に貼り付ける時、<strong>機密情報が含まれていないか</strong>必ず再確認してください（第7章の方針）。
+    Notion のページは初期設定で「ワークスペース内に共有」されることがあるので、誤って機密情報を組織内に拡散しないよう注意。
+  </div>
+
+  <div class="imura-yell">
+    <p>
+      <strong>Markdown を書いて Notion に流し込む</strong>運用を覚えると、生産性が一段上がる。
+      AI に Markdown で書かせる → Notion で見た目を整える → 共有、の流れを身につけろ。
+    </p>
+    <p>
+      逆に「Notion で最初から整形しながら書く」と<strong>思考のスピードが落ちる</strong>。
+      AI と組む時は、構造化されたテキスト（Markdown）で会話するのが圧倒的に速い。
+    </p>
+  </div>
+
+  <h2>うまく頼むコツ</h2>
+  <ul>
+    <li><strong>具体的に書く</strong>：「いい感じに」より「短くて読みやすい1段落で」のほうが伝わる</li>
+    <li><strong>まず小さく頼む</strong>：いきなり「Web サイトを作って」より「index.html を作って中身は h1 タグだけ」</li>
+    <li><strong>うまくいかなかった時は「いまのを取り消して」と頼む</strong>：戻すのも AI に頼める</li>
+    <li><strong>分からない言葉が出てきたら「これってどういう意味？」と素直に聞く</strong>：恥ずかしくない。むしろ最短ルート</li>
+  </ul>
+
+  <div class="ai-prompt">
+    <div class="quote">
+      さっき作ったファイルを、初心者向けに「どんなことをしたか」順番に解説してください。
+    </div>
+  </div>
+
+  <h2>コスト感覚を持つ — トークンと上手に付き合う</h2>
+  <p>
+    AI を使う上で<strong>必ず意識してほしい</strong>のが「<strong>トークン</strong>」という単位です。
+    AI は内部で文字を「トークン」という小さな塊に変換して処理しています。
+    だいたい <strong>日本語1文字 ≒ 1〜2トークン</strong>と思ってください。
+  </p>
+
+  <h3>なぜコストの話をするのか</h3>
+  <p>
+    会社の業務でプランを使っている間は、月額固定で済むケースが多く、過剰に怖がる必要はありません。
+    ただし、<strong>API キー利用や Claude Code の本格運用</strong>では「使った分だけ課金」になることがあり、無自覚に大量にトークンを消費すると<strong>請求が膨らみます</strong>。
+    今のうちから<strong>節約のクセ</strong>を付けておくと、将来本格運用に入る時にぐっと楽になります。
+  </p>
+
+  <h3>トークンを大きく消費する場面（要注意）</h3>
+  <ul>
+    <li><strong>巨大なファイルを丸ごと読ませる</strong>（数千行のコード、長い PDF など）</li>
+    <li><strong>同じ会話を何時間も続ける</strong>（履歴がどんどん膨らむ）</li>
+    <li><strong>フォルダ全体を「全部読んで」と頼む</strong>（不要なファイルまで読み込む）</li>
+    <li><strong>長い出力を何度もやり直す</strong>（毎回同じくらいの量を再生成）</li>
+  </ul>
+
+  <h3>コストをかけずに使い倒す7つの習慣</h3>
+  <ol class="steps">
+    <li>
+      <strong>用件は具体的に書く</strong> — 「この関数だけ直して」のように対象を絞ると、AI が読み込む範囲が狭くなりトークン節約になる
+    </li>
+    <li>
+      <strong>区切りで <code class="inline">/clear</code> する</strong> — 話題が一段落したら会話履歴をリセット。古い文脈を引きずらないことでトークン節約＋AI の精度も上がる
+    </li>
+    <li>
+      <strong><code class="inline">/compact</code> で履歴を要約</strong> — 会話を続けたい時は <code class="inline">/clear</code> ではなく <code class="inline">/compact</code> で、過去のやり取りを要約してくれる
+    </li>
+    <li>
+      <strong>不要なファイルを <code class="inline">.claude/settings.json</code> や CLAUDE.md で除外</strong> — node_modules、ビルド成果物などは AI に読ませない設定にする
+    </li>
+    <li>
+      <strong>長文を貼る前に「要約してから貼る」</strong> — 100ページの議事録を全部貼るより、要約を貼る方が安く・的確に答えてもらえる
+    </li>
+    <li>
+      <strong>同じ作業はエージェント／スキルにする</strong>（第13章） — 毎回プロンプトを長く書くより、定型化して呼び出した方が安い
+    </li>
+    <li>
+      <strong>ハマったら一度終了して新セッション</strong> — 解決しない時にダラダラ続けるより、別セッションで仕切り直した方が時間もトークンも節約になる
+    </li>
+  </ol>
+
+  <div class="ai-prompt">
+    <div class="quote">
+      Claude Code の現在のコンテキスト使用量を教えてください。<br>
+      また、今のセッションをこれ以上続けるべきか、いったん /clear して新しく始めるべきか、状況を見て助言してください。
+    </div>
+  </div>
+
+  <div class="warn">
+    <strong>有料プラン・API 従量課金への切替判断は、必ず居村に相談してください</strong>。
+    第1章の「お約束」にある通り、個人判断で課金プランを切り替えないこと。
+    無料枠で足りないと感じた段階で、まず相談を。
+  </div>
+
+  <h2>議事録の習慣 — 何をやったか必ず残す</h2>
+  <p>
+    Poolside では、Claude Code を使った作業のたびに <strong>「手動ログ補完」議事録を残す</strong>運用になっています。
+    AI との会話履歴は claude が自動で保存しますが、<strong>「人間が後から読みやすい要約」</strong>を別途残すという文化です。
+  </p>
+  <ul>
+    <li>その日に何をやったか、どこまで進んだか</li>
+    <li>決めたこと（決定事項）／決めなかったこと（未決事項）</li>
+    <li>次のセッションで最初に取りかかること</li>
+  </ul>
+  <p>
+    この習慣の<strong>具体的なやり方・テンプレート・ファイル配置</strong>は、第13章の「議事録運用」で詳しく扱います。
+    本章ではまず「<strong>セッション後に手書きの議事録を残す</strong>」という習慣があることだけ、頭に入れておいてください。
+  </p>
+
+  <h2>練習フォルダの片付け</h2>
+  <p>
+    練習が一段落したら、Finder からゴミ箱にドラッグしても構いません。
+    あるいはこのまま残しておいて、別の練習に使ってもOK。
+  </p>
+
+  <h2>次の章へ</h2>
+  <p>
+    AI とまっすぐ対話する感覚はつかめたでしょうか。
+    次の第7章は<strong>必読の章</strong>です。AI を業務で使う前に知っておくべきセキュリティの話。
+  </p>
+
+  <nav class="chapter-nav">
+    <a class="prev" href="./05_after_install.html">第5章 インストール後の注意</a>
+    <a class="toc" href="../index.html">目次</a>
+    <a class="next" href="./07_security.html">第7章 セキュリティ</a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  Poolside · AI運用指南書 · 第6章
+</footer>
+
+</body>
+</html>

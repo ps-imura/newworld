@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head><script>(function(){var ok=false;try{ok=localStorage.getItem("guidebook-access-granted-v1")==="true";}catch(e){}if(!ok){var depth=location.pathname.indexOf("/chapters/")>=0?"../":"./";var back=encodeURIComponent(location.pathname+location.search+location.hash);location.replace(depth+"gate.html?back="+back);}})();</script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>第3章 ターミナルとは何か — AI運用指南書</title>
+<link href="../assets/style.css" rel="stylesheet"/>
+<link href="../assets/guidebook.css" rel="stylesheet"/>
+<script defer="" src="../assets/guidebook.js"></script>
+</head>
+<body>
+<header class="site-header">
+<div class="inner">
+<div class="brand"><a href="../index.html" style="color:inherit;">AI運用指南書</a></div>
+<div class="nav">第3章 / 全15章</div>
+</div>
+</header>
+<main>
+<nav class="chapter-nav">
+<a class="prev" href="./02_what_is_claude_code.html">第2章 Claude Code とは</a>
+<a class="toc" href="../index.html">目次</a>
+<a class="next" href="./04_install.html">第4章 インストール</a>
+</nav>
+<header class="chapter-header">
+<span class="num">CHAPTER 03</span>
+<h1>ターミナルとは何か（Mac の基本）</h1>
+</header>
+<div class="goal">
+<div class="label">この章のゴール</div>
+<div class="content">
+      ターミナルが何のための道具かが分かる。<br/>
+      実際にターミナルを開いて、最低限のコマンドを打てるようになる（フォルダの中身を見る・移動する・新しいフォルダを作る）。
+    </div>
+</div>
+<h2>ターミナルって何？</h2>
+<p>
+    ターミナルは、ものすごく雑に言うと <strong>「文字で Mac を操作するための窓」</strong>です。
+  </p>
+<p>
+    普段 Mac を触る時は、Finder（ファインダー）でフォルダを開いたり、マウスでアプリをダブルクリックして起動したり、画面上のボタンを押したりしますね。
+    これと同じことを、<strong>マウスを使わず、文字を打って Mac にやらせる</strong>のがターミナルです。
+  </p>
+<h2>なぜターミナルを使うの？</h2>
+<p>
+    「Finder でできることをわざわざ文字で？」と思うかもしれません。
+    でも、ターミナルには次のような利点があります：
+  </p>
+<ul>
+<li>マウスではできない細かい操作ができる</li>
+<li>同じ作業を一気にたくさん実行できる（自動化に強い）</li>
+<li><strong>AI（Claude Code）がターミナルから動く</strong>ので、AI に作業を頼むには必須</li>
+<li>世界中のエンジニアが共通で使っている標準ツール</li>
+</ul>
+<p>
+    本書のいちばんの理由は3番目。Claude Code はターミナルで動くので、ターミナルを開けないと AI との協働が始まりません。
+  </p>
+<div class="tip">
+    最初は怖いかもしれませんが、本書で扱うコマンドは <strong>10個もありません</strong>。少しずつ慣れていきましょう。
+  </div>
+<h2>初めてターミナルを開いてみる</h2>
+<ol class="steps">
+<li>
+<strong>Spotlight（スポットライト）検索を開く</strong><br/>
+      キーボードで <code class="inline">command</code>（⌘）キーを押しながら <code class="inline">スペースキー</code>を押します。
+      画面の真ん中に検索窓が出てきます。
+    </li>
+<li>
+<strong>「ターミナル」と入力</strong><br/>
+      検索窓に「ターミナル」と打つと、候補に「ターミナル.app」が出てきます。
+    </li>
+<li>
+<strong>Enter キーを押す</strong><br/>
+      ターミナルアプリが起動し、白いウィンドウ（または黒）が出てきます。
+    </li>
+</ol>
+<h2>最初の画面の見方</h2>
+<p>
+    ターミナルを開くと、何やら白い画面に文字が出ています。多くの場合、こんな感じです：
+  </p>
+<pre class="code" data-lang="terminal"><span data-var="user">jinimura</span>@<span data-var="machine">MacBook-Pro</span> ~ %</pre>
+<p>
+    意味はこうです：
+  </p>
+<dl class="glossary">
+<dt><code class="inline"><span data-var="user">jinimura</span></code></dt>
+<dd>あなたのユーザー名（Mac のログイン名）</dd>
+<dt><code class="inline">@<span data-var="machine">MacBook-Pro</span></code></dt>
+<dd>使っている Mac の名前</dd>
+<dt><code class="inline">~</code>（チルダ）</dt>
+<dd>「あなたのホームフォルダ」を指す記号。今あなたがいる場所のこと</dd>
+<dt><code class="inline">%</code></dt>
+<dd>「ここにコマンドを打ってね」という合図。<strong>プロンプト</strong>と呼ばれる</dd>
+</dl>
+<section class="config-form" id="guidebook-config">
+<h3>あなたの値を貼り付けておくと、以降の章のコマンド例が自動で書き換わります（任意）</h3>
+<p class="lead">
+      ターミナルに表示されている <code class="inline">ユーザー名@Mac名</code> の部分をコピーして、下の欄に貼り付けてください。<br/>
+      開発フォルダのルートも変えたい人は、2つめの欄で指定できます。<br/>
+      入力すると、第6章以降のコマンド例（<code class="inline">cd ~/...</code> など）の該当箇所が、あなたの環境に合った形に自動で書き換わります。
+    </p>
+<div class="field">
+<label for="config-prompt">
+        プロンプト（<code class="inline">ユーザー名@Mac名</code>）
+        <span class="desc">ターミナルから「<code class="inline">jinimura@MacBook-Pro ~ %</code>」のような行を貼り付ければ、@ の前後を自動で読み取ります。</span>
+</label>
+<input id="config-prompt" name="prompt" placeholder="例：tanaka@MacBook-Air" type="text"/>
+</div>
+<div class="field">
+<label for="config-devroot">
+        開発フォルダのルート
+        <span class="desc">本書の推奨は <code class="inline">~/dev</code>。<code class="inline">~/Developer</code> や <code class="inline">~/projects</code> など別の慣習を採りたい人はここで指定。</span>
+</label>
+<input id="config-devroot" name="devroot" placeholder="例：~/dev" type="text"/>
+<div class="quick-tips">
+<span class="label">いまだけ要点（詳しくは第7章）</span>
+<ul>
+<li>
+<strong>デスクトップ（<code class="inline">~/Desktop/</code>）や書類（<code class="inline">~/Documents/</code>）は避ける</strong>。
+            iCloud と同期されている場合があり、開発ファイルが大量に同期キューに入って Mac が重くなる原因になります。
+          </li>
+<li>
+<strong>ホーム直下に開発フォルダを作るのが安全</strong>。
+            本書推奨の <code class="inline">~/dev/</code> や、macOS 公式の <code class="inline">~/Developer/</code>（金槌アイコンの特別フォルダ）はホーム直下なので iCloud に同期されません。
+          </li>
+<li>
+<strong>フォルダ名は英数字＋ハイフン推奨</strong>。
+            日本語名は GitHub・Firebase・各種ツールで URL エンコードされたり、対応していなかったりして、原因不明の不具合の温床になります。
+            例：<code class="inline">poolside-website</code> ◯ ／ <code class="inline">マイサイト</code> ✕
+          </li>
+</ul>
+<span class="ref">→ なぜそうなのか／選択肢の整理／案件フォルダの命名ルールは、第7章「AI運用上のセキュリティ」内の「開発フォルダの適切な場所」で詳しく解説しています。今は要点だけ把握して先に進めば OK です。</span>
+</div>
+</div>
+<div class="config-actions">
+<span class="config-status">入力すると自動保存されます</span>
+<button class="config-reset" type="button">デフォルトに戻す</button>
+</div>
+<p class="privacy">
+      入力した内容はあなたのブラウザにのみ保存されます（localStorage）。サーバーには送られません。
+      別の Mac やブラウザで開くと、再度入力が必要です。
+    </p>
+</section>
+<p>
+    入力したら、以降のコマンド例にあなたの値が反映されます。試しに次の節を読み進めてみてください。
+  </p>
+<div class="note">
+    本書ではコマンドを示す時、見やすさのために <code class="inline">$</code> や <code class="inline">%</code> といったプロンプト記号を <strong>省略する</strong>ことがあります。
+    入力するのは <strong>その記号より右側だけ</strong>で OK です。
+  </div>
+<section class="term-deck">
+<h3>絶対に覚える：ターミナル基礎用語</h3>
+<p class="lead-text">
+      ここから先、何度も出てくる単語です。<strong>意味とイメージを今のうちに頭に入れておく</strong>と、後の章がぐっと楽になります。
+    </p>
+<div class="terms">
+<div class="term-card">
+<div class="term-name"><span class="en">Terminal</span><span class="ja">ターミナル</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>文字で Mac を操作する <strong>窓</strong> のこと</dd>
+<dt>たとえると</dt>
+<dd>Finder（マウス操作）を、文字で行うバージョン。<strong>Mac との対話用テキストチャット画面</strong>みたいなもの</dd>
+<dt>関連</dt>
+<dd>シェル / プロンプト / コマンド</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Shell</span><span class="ja">シェル</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>ターミナル<strong>の中</strong>で、あなたの言葉（コマンド）を Mac の言葉に翻訳して動かしてくれる<strong>通訳</strong></dd>
+<dt>たとえると</dt>
+<dd>ターミナルが「窓口の建物」、シェルが「窓口の中の通訳係」。Mac の最新版では <code class="inline">zsh</code> という名前のシェルが標準</dd>
+<dt>関連</dt>
+<dd>zsh / bash / .zshrc</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Prompt</span><span class="ja">プロンプト</span></div>
+<dl>
+<dt>一言で</dt>
+<dd><strong>「ここに打ち込んでね」のサイン</strong>。<code class="inline">%</code> や <code class="inline">$</code> の記号</dd>
+<dt>たとえると</dt>
+<dd>飲食店の「ご注文をどうぞ」の声。これが出ている時だけコマンドを受け付ける</dd>
+<dt>関連</dt>
+<dd>カーソル</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Command</span><span class="ja">コマンド</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>Mac にやってほしいことを書いた<strong>1行の指示</strong>（例：<code class="inline">ls</code>）</dd>
+<dt>たとえると</dt>
+<dd>注文票。Enter キーが「これで注文確定」の合図</dd>
+<dt>関連</dt>
+<dd>引数 / オプション（<code class="inline">-p</code> など）</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Directory / Folder</span><span class="ja">ディレクトリ／フォルダ</span></div>
+<dl>
+<dt>一言で</dt>
+<dd><strong>同じもの</strong>。Finder では「フォルダ」、ターミナルでは「ディレクトリ」と呼ばれる</dd>
+<dt>たとえると</dt>
+<dd>ファイルをまとめて入れておく書類入れ。本書では「フォルダ」に統一</dd>
+<dt>関連</dt>
+<dd>パス / ホーム / cd / ls</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Path</span><span class="ja">パス</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>そのフォルダ／ファイルが Mac の中の<strong>どこにあるか</strong>を表す住所</dd>
+<dt>たとえると</dt>
+<dd>「日本＞東京都＞港区＞虎ノ門＞◯◯ビル」のような住所表記。<code class="inline">/</code> で区切る</dd>
+<dt>関連</dt>
+<dd>絶対パス（<code class="inline">/Users/...</code>）／相対パス（<code class="inline">./</code>）</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Home</span><span class="ja">ホームフォルダ／<code class="inline">~</code></span></div>
+<dl>
+<dt>一言で</dt>
+<dd>あなた専用の作業場の<strong>玄関</strong>。<code class="inline">/Users/あなたのユーザー名/</code> のこと</dd>
+<dt>たとえると</dt>
+<dd>自分の家。<code class="inline">~</code>（チルダ）と書くと「自分の家から数えて」の意味になる（例：<code class="inline">~/dev</code> = 自分の家の中の dev フォルダ）</dd>
+<dt>関連</dt>
+<dd>cd ~ で帰宅</dd>
+</dl>
+</div>
+</div>
+</section>
+<img alt="イラスト③：パスとホームフォルダの概念図（住所のたとえ）" class="guide-illustration" src="../assets/illustrations/illust_03_path_home.png"/>
+<h2>最低限の3つのコマンド</h2>
+<h3>① 今いるフォルダの中身を見る：<code class="inline">ls</code></h3>
+<p>
+    「list」の略。今いるフォルダに何が入っているかを表示します。
+  </p>
+<pre class="code" data-lang="terminal">ls</pre>
+<p>
+    Enter キーを押すと、Documents、Desktop、Downloads などの名前が並びます。
+    これは Finder で「ホームフォルダ」を開いたときと同じものです。
+  </p>
+<h3>② 別のフォルダに移動する：<code class="inline">cd</code></h3>
+<p>
+    「change directory（フォルダを変える）」の略。
+  </p>
+<pre class="code" data-lang="terminal">cd Desktop</pre>
+<p>
+    これで「デスクトップに移動」したことになります。プロンプトの表示が変わって、今いる場所がわかります：
+  </p>
+<pre class="code" data-lang="terminal"><span data-var="user">jinimura</span>@<span data-var="machine">MacBook-Pro</span> Desktop %</pre>
+<p>
+    元のホームフォルダに戻りたい時は：
+  </p>
+<pre class="code" data-lang="terminal">cd ~</pre>
+<p>
+    一つ上のフォルダ（親フォルダ）に戻りたい時は：
+  </p>
+<pre class="code" data-lang="terminal">cd ..</pre>
+<h3>③ 新しいフォルダを作る：<code class="inline">mkdir</code></h3>
+<p>
+    「make directory」の略。
+  </p>
+<pre class="code" data-lang="terminal">mkdir my-first-folder</pre>
+<p>
+    今いる場所に <code class="inline">my-first-folder</code> という名前の空のフォルダができます。Finder で確認すると、ちゃんと出来ていることが分かります。
+  </p>
+<h2>ためしに3コマンド連続でやってみる</h2>
+<p>順番にコピペして Enter してみてください。</p>
+<pre class="code" data-lang="terminal">cd ~/Desktop
+mkdir test-folder
+ls</pre>
+<p>
+    結果として、デスクトップに <code class="inline">test-folder</code> という空フォルダができ、<code class="inline">ls</code> でその名前が表示されるはずです。
+  </p>
+<div class="tip">
+    出来上がったテストフォルダは、Finder からゴミ箱にドラッグして削除して構いません。
+  </div>
+<div class="imura-yell">
+<p>
+      おい、いまターミナルのフォーカスを当てるためにトラックパッドに手が伸びてないか？
+      <strong>Poolside にトラックパッドユーザーは存在しない</strong>。即トラックボールに切り替えろ。
+      手首が痛くなくなるし、肩こりも減るし、何より<strong>カッコいい</strong>。会社に置いてあるから空いてるやつを使え。
+    </p>
+</div>
+<h2>ターミナルは「ブラウザの入力欄」と何が違うか</h2>
+<p>
+    Mac で文字を打つ場面といえば、メモアプリやブラウザのテキストボックスが普通ですよね。
+    ターミナルは見た目こそ似ていますが、<strong>挙動がかなり違います</strong>。
+    最初にこのギャップを知っておくだけで、混乱がぐっと減ります。
+  </p>
+<table>
+<tr><th>普段（ブラウザ・メモ）の感覚</th><th>ターミナルでは…</th></tr>
+<tr>
+<td><code class="inline">command + Z</code> で<strong>戻す</strong></td>
+<td>
+<strong>使えません。</strong> 入力途中の取り消しは別キー（後述）。<br/>
+        Enter を押して<strong>実行されたコマンドは取り消せない</strong>のが原則です。実行前に内容を見直す癖を。
+      </td>
+</tr>
+<tr>
+<td>マウスでカーソルをクリックして移動</td>
+<td>
+        基本的に<strong>クリックでカーソルが動かない</strong>ターミナルが多いです。<br/>
+        カーソル移動は矢印キーや control / option との組み合わせで行います。
+      </td>
+</tr>
+<tr>
+<td>マウス選択 → <code class="inline">delete</code> で範囲削除</td>
+<td>
+        範囲選択削除は使いません。<br/>
+        単語単位 (<code class="inline">control + W</code>) や行頭まで (<code class="inline">control + U</code>) など、<strong>専用キーで削除</strong>します。
+      </td>
+</tr>
+<tr>
+<td>↑↓キーで<strong>画面スクロール</strong></td>
+<td>
+        ↑↓キーは<strong>「過去に打ったコマンドを呼び戻す」</strong>キーです。<br/>
+        画面のスクロールはマウスホイール／トラックボールホイールで。
+      </td>
+</tr>
+<tr>
+<td>パスワード欄は <code class="inline">●●●</code> 表示</td>
+<td>
+        パスワード入力時は<strong>何も表示されません</strong>（カーソルすら動かないように見える）。<br/>
+        実際にはちゃんと打てているので、迷わず入力して Enter。
+      </td>
+</tr>
+<tr>
+<td>ペーストは <code class="inline">command + V</code></td>
+<td>同じ <code class="inline">command + V</code> でOK。これは Mac のターミナルでも使えます。</td>
+</tr>
+</table>
+<div class="warn">
+    一番大事なのは <strong>「Enter を押した後は戻せない」</strong>ということ。
+    意味の分からないコマンドを Enter してしまうと、システムを壊す操作だった場合でも取り消せません。
+    だから本書ではしつこく「<strong>意味を理解してから実行</strong>」と書いているわけです。
+  </div>
+<h2>知っておくと楽なショートカット</h2>
+<p>
+    全部覚える必要はありません。<strong>太字のものから順に体に入れていく</strong>のがおすすめです。
+    どれも<strong>キーボードを見ずに打てる</strong>ようになるのが目標。
+  </p>
+<h3>入力補助・履歴</h3>
+<table>
+<tr><th>キー操作</th><th>効果</th></tr>
+<tr><td><strong><code class="inline">Tab</code></strong></td><td>入力途中のフォルダ名・コマンド名を<strong>自動補完</strong>。最強のショートカット。打ち間違いも減る</td></tr>
+<tr><td><strong><code class="inline">↑</code>（上矢印）</strong></td><td>1つ前に打ったコマンドを呼び戻す。連打で過去にさかのぼる</td></tr>
+<tr><td><code class="inline">↓</code>（下矢印）</td><td>呼び戻したコマンドを進める（↑で行きすぎた時に戻る）</td></tr>
+<tr><td><code class="inline">control + R</code></td><td>過去のコマンドを<strong>キーワードで検索</strong>。例：<code class="inline">control + R</code> → <code class="inline">git</code> と打つと、過去の git 系コマンドが出てくる</td></tr>
+</table>
+<h3>カーソル移動</h3>
+<table>
+<tr><th>キー操作</th><th>効果</th></tr>
+<tr><td><strong><code class="inline">control + A</code></strong></td><td>行の<strong>先頭</strong>にカーソルを移動</td></tr>
+<tr><td><strong><code class="inline">control + E</code></strong></td><td>行の<strong>末尾</strong>にカーソルを移動</td></tr>
+<tr><td><code class="inline">option + ←</code></td><td>1単語ぶん<strong>左</strong>にジャンプ</td></tr>
+<tr><td><code class="inline">option + →</code></td><td>1単語ぶん<strong>右</strong>にジャンプ</td></tr>
+</table>
+<h3>削除（重要）</h3>
+<table>
+<tr><th>キー操作</th><th>効果</th></tr>
+<tr><td><code class="inline">delete</code>（バックスペース）</td><td>カーソルの<strong>左 1 文字</strong>を削除（ブラウザと同じ）</td></tr>
+<tr><td><strong><code class="inline">control + W</code></strong></td><td>カーソルの左の<strong>1 単語</strong>をまとめて削除（ブラウザの <code class="inline">option + delete</code> 相当）</td></tr>
+<tr><td><strong><code class="inline">control + U</code></strong></td><td>カーソル位置から<strong>行頭まで全削除</strong>（打ち間違えた時の最速リセット）</td></tr>
+<tr><td><code class="inline">control + K</code></td><td>カーソル位置から<strong>行末まで削除</strong></td></tr>
+</table>
+<div class="tip">
+    打ち間違えた行を全部消したい時、<strong>delete を連打しないでください</strong>。
+    <code class="inline">control + U</code> 一発で行が消えます。これを覚えるとイライラが激減します。
+  </div>
+<h3>実行・脱出</h3>
+<table>
+<tr><th>キー操作</th><th>効果</th></tr>
+<tr><td><code class="inline">Enter</code></td><td>コマンドを実行（戻せないので、押す前に必ず内容確認）</td></tr>
+<tr><td><strong><code class="inline">control + C</code></strong></td><td>動いているコマンドを<strong>強制終了</strong>。固まった時の脱出キー。何度押してもOK</td></tr>
+<tr><td><code class="inline">control + D</code></td><td>ターミナルを終了する（または入力の終わりを伝える）</td></tr>
+<tr><td><code class="inline">control + L</code></td><td>画面の表示をクリア（履歴は消えない）</td></tr>
+<tr><td><code class="inline">command + K</code></td><td>画面の表示をクリア（Mac のターミナル.app の機能）</td></tr>
+</table>
+<h3>コピー・ペースト</h3>
+<table>
+<tr><th>キー操作</th><th>効果</th></tr>
+<tr><td><code class="inline">command + C</code></td><td>選択範囲を<strong>コピー</strong>（ターミナルでも使える）</td></tr>
+<tr><td><code class="inline">command + V</code></td><td><strong>ペースト</strong>。本書のコマンド例はこれで全部貼れる</td></tr>
+</table>
+<div class="imura-yell">
+<p>
+      上の表で<strong>太字になっているもの</strong>（Tab / ↑ / control+A / control+E / control+W / control+U / control+C）は、
+      最低限これだけは指に覚え込ませろ。最初の 1 週間で意識的に使え。
+    </p>
+<p>
+      delete 連打や、矢印長押しでカーソルを動かしてる人を見ると、<strong>ベテランからすると見ていられない</strong>。
+      逆に control 系をスッと使えるだけで「お、こいつ分かってるな」と思われる。
+    </p>
+</div>
+<h2>「黒い画面が怖い」を克服するコツ</h2>
+<ul>
+<li>ターミナルは <strong>「打ったコマンド以外は何もしない」</strong>。勝手に Mac を壊したりしません</li>
+<li>知らないコマンドが書いてあったら、まず Claude に「このコマンドって何するの？」と聞いてからにする</li>
+<li><strong>絶対に <code class="inline">rm -rf /</code> や <code class="inline">sudo</code> から始まるコマンドを、知らずに実行しない</strong>（破壊的なコマンド）。第7章で詳しく扱います</li>
+</ul>
+<div class="ai-prompt">
+<div class="quote">
+      ターミナルにコマンドを打ち込もうとしているけど、これが何をするコマンドなのか初心者向けに説明して：<br/>
+<code class="inline">[ここにコマンドを貼り付け]</code>
+</div>
+</div>
+<h2>つまずきやすいポイント</h2>
+<ul>
+<li><strong>コマンドが見つからないと言われた</strong>：スペルミスを疑う。<code class="inline">command not found</code> と表示されたら、打ち間違いの可能性が大</li>
+<li><strong>パスワードを聞かれた</strong>：Mac のログインパスワードを入力。打っても画面に文字が出ないが、入力はできている</li>
+<li><strong>Permission denied と出た</strong>：権限が無い場所を触っている。第13章「Q&amp;A」を参照</li>
+</ul>
+<h2>本章はターミナル.app での話。実務では Cursor の内蔵ターミナルを使う</h2>
+<p>
+    本章で扱った「ターミナル」は、Mac に最初から入っている <strong>ターミナル.app</strong> のことです。
+    第2章で触れた通り、<strong>Poolside の実務では、Cursor の内蔵ターミナルで Claude Code を動かす</strong>のが標準です。
+  </p>
+<p>
+    ご安心を：<strong>Cursor 内蔵ターミナルも、ターミナル.app も、中身は同じ zsh が動いている</strong>ので、本章で覚えたコマンドやショートカット（<code class="inline">cd</code>、<code class="inline">ls</code>、<code class="inline">control + U</code>、<code class="inline">control + C</code> など）はそのまま使えます。
+  </p>
+<ul>
+<li><strong>本章＝ターミナル.app</strong>で「ターミナルそのものに慣れる」</li>
+<li><strong>第6章以降の実務＝Cursor 内蔵ターミナル</strong>で「カレントディレクトリ取り違いの事故を防ぎつつ作業」</li>
+</ul>
+<p>
+    ターミナル.app 単独でも問題なく作業はできるので、好みで使い分けても OK。
+    ただ「フォルダの取り違い事故」は新人で本当に多発するので、本書では Cursor 内蔵ターミナルを推奨します。
+  </p>
+<h2>次の章へ</h2>
+<p>
+    ターミナルが少し身近になったでしょうか。次の第4章では、いよいよ Claude Code と Cursor を Mac にインストールしていきます。
+  </p>
+<nav class="chapter-nav">
+<a class="prev" href="./02_what_is_claude_code.html">第2章 Claude Code とは</a>
+<a class="toc" href="../index.html">目次</a>
+<a class="next" href="./04_install.html">第4章 インストール</a>
+</nav>
+</main>
+<footer class="site-footer">
+  Poolside · AI運用指南書 · 第3章
+</footer>
+</body>
+</html>

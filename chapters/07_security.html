@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head><script>(function(){var ok=false;try{ok=localStorage.getItem("guidebook-access-granted-v1")==="true";}catch(e){}if(!ok){var depth=location.pathname.indexOf("/chapters/")>=0?"../":"./";var back=encodeURIComponent(location.pathname+location.search+location.hash);location.replace(depth+"gate.html?back="+back);}})();</script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>第7章 AI 運用上のセキュリティ — AI運用指南書</title>
+<link href="../assets/style.css" rel="stylesheet"/>
+<link href="../assets/guidebook.css" rel="stylesheet"/>
+<script defer="" src="../assets/guidebook.js"></script>
+</head>
+<body>
+<header class="site-header">
+<div class="inner">
+<div class="brand"><a href="../index.html" style="color:inherit;">AI運用指南書</a></div>
+<div class="nav">第7章 / 全15章 — 必読</div>
+</div>
+</header>
+<main>
+<nav class="chapter-nav">
+<a class="prev" href="./06_first_use.html">第6章 初めて使う</a>
+<a class="toc" href="../index.html">目次</a>
+<a class="next" href="./08_hello_html.html">第8章 HTML 練習</a>
+</nav>
+<header class="chapter-header">
+<span class="num">CHAPTER 07 — 必読</span>
+<h1>AI 運用上のセキュリティ</h1>
+</header>
+<div class="goal">
+<div class="label">この章のゴール</div>
+<div class="content">
+      AI を業務で使う上で <strong>守るべきこと</strong> と <strong>具体的にどうするか</strong>が分かる。<br/>
+      機密情報を扱う場面と、扱わなくていい場面の判断ができる。<br/>
+      開発フォルダをどこに置けばよいか、何をバックアップすればよいか分かる。
+    </div>
+</div>
+<div class="danger">
+    この章は飛ばさないでください。<strong>業務で AI を使う以上、必ず通って欲しい話</strong>です。
+    難しい話はしません。具体的なルールと、その理由だけ書きます。
+  </div>
+<h2>そもそも AI に何を渡しているのか</h2>
+<p>
+    Claude Code に「このファイル直して」と頼むと、AI は<strong>そのファイルの中身を読みます</strong>。
+    会社の Anthropic と契約しているサーバーを経由して内容が処理されるので、
+    <strong>あなたが AI に渡したデータは、瞬間的にせよ会社の外（インターネット）に出ている</strong>と意識してください。
+  </p>
+<p>
+    Anthropic の利用規約では、業務利用プランの場合「学習に利用しない」「短期間でログ削除」などの保護がされていることが一般的ですが、
+    それでも<strong>「会社の外に出した」事実は変わりません</strong>。
+  </p>
+<h2>絶対に AI に渡してはいけないもの</h2>
+<table>
+<tr><th>カテゴリ</th><th>具体例</th></tr>
+<tr>
+<td>顧客・取引先情報</td>
+<td>取引先の社名、担当者名、連絡先、契約金額、未公開の案件名</td>
+</tr>
+<tr>
+<td>個人情報</td>
+<td>本名、住所、電話番号、メールアドレス、マイナンバー、身分証画像</td>
+</tr>
+<tr>
+<td>認証情報</td>
+<td>パスワード、API キー、アクセストークン、SSH 鍵、サーバーの管理者情報</td>
+</tr>
+<tr>
+<td>未公開の業務資産</td>
+<td>未公開の映像・音源、未発表の企画書、内部レビュー前の資料</td>
+</tr>
+<tr>
+<td>NDA 案件の情報</td>
+<td>守秘義務契約のかかっているプロジェクトの内部情報</td>
+</tr>
+</table>
+<h3>「コードに書いた API キー」が一番事故りやすい</h3>
+<p>
+    開発をしていると、外部サービスのキーをコードに直接書いてしまうことがあります。
+    例えば：
+  </p>
+<pre class="code" data-lang="javascript">// ❌ これをやってはいけない
+const apiKey = "sk-abc123def456...";  // 直書きは危険</pre>
+<p>
+    こう書いたファイルを Claude に渡したり、GitHub に push（後述）したりすると、キーが外部に流出する事故になります。
+    対策は <code class="inline">.env</code> ファイルに分離して扱うこと（後述）。
+  </p>
+<h2>AI に渡してよいもの（基本的にOK）</h2>
+<ul>
+<li>一般的なプログラミング質問・コードの書き方</li>
+<li>公開情報のみで構成されたコード</li>
+<li>練習用のダミーデータ</li>
+<li>業務知識の <strong>抽象化された</strong>質問（例：「映像案件の見積もりってどう構成する？」のような一般論）</li>
+</ul>
+<h2>判断に迷ったら</h2>
+<div class="tip">
+<strong>迷ったら社内のメンター・先輩・情シスに聞く</strong>のが一番安全です。<br/>
+    「これって AI に渡してもいい？」と聞くのは、新人なら全く恥ずかしくありません。むしろ評価されます。
+  </div>
+<h2>開発フォルダの適切な場所</h2>
+<h3>結論</h3>
+<p>
+    本書では <strong><code class="inline">~/dev/</code></strong> を推奨します。
+    （<code class="inline">~</code> はホームフォルダ、つまり <code class="inline">/Users/あなたのユーザー名</code> を表す省略記号）
+  </p>
+<div class="note">
+    既に開発に慣れていて、Xcode などを使っている人は <code class="inline">~/Developer/</code>（後述）でも構いません。
+    どちらを採用しても、本書の流れには支障ありません。
+  </div>
+<h3>避けたい置き場所と、その理由</h3>
+<h4>❌ デスクトップ直下（<code class="inline">~/Desktop/</code>）</h4>
+<ul>
+<li><strong>iCloud と同期されている場合がある</strong>：システム設定 →「Apple ID」→「iCloud Drive」→「デスクトップと書類フォルダ」が ON になっていると、デスクトップ全体が iCloud 配下扱い</li>
+<li>大量の小さいファイル（コード・依存パッケージ）が同期キューに入り、<strong>Mac 全体が重くなる</strong></li>
+<li>アイコンが散らかって視認性が落ち、誤操作（うっかり削除）しやすい</li>
+</ul>
+<h4>❌ 書類フォルダ（<code class="inline">~/Documents/</code>）</h4>
+<ul>
+<li>デスクトップと同じく <strong>iCloud 同期の対象</strong>になっていることが多い</li>
+<li>パス名にスペースを含むため、ターミナル操作で扱いにくい場面がある</li>
+</ul>
+<h4>❌ Dropbox / Google Drive 配下</h4>
+<ul>
+<li>同期遅延・ファイル競合が発生する</li>
+<li>機密ファイルが意図せず共有される事故が起きやすい</li>
+</ul>
+<h4>❌ Downloads / Movies / Pictures など</h4>
+<ul>
+<li>用途が違う。混ざると後で見つけにくい</li>
+</ul>
+<div class="warn">
+    iCloud 同期下のフォルダで開発していると、<strong>大量の小さいファイルが同期キューに詰まって Mac が遅くなる</strong>のはよく知られたトラブルです。<br/>
+    開発フォルダは <strong>同期しない場所</strong>に置きましょう。
+  </div>
+<h3>macOS が用意している特別なフォルダ：<code class="inline">~/Developer/</code></h3>
+<p>
+    あまり知られていませんが、macOS には <strong><code class="inline">~/Developer/</code> というホームフォルダ直下の特別なフォルダ</strong>が用意されています。
+  </p>
+<ul>
+<li>自分でこのフォルダを作るだけで、Mac が「開発フォルダ」として認識し、<strong>専用のアイコン（金槌の絵）</strong>に変わります</li>
+<li>ホーム直下なので <strong>iCloud には同期されません</strong>（同期対象は Desktop / Documents のみ）</li>
+<li>Xcode のテンプレート配置場所などにも使われ、Apple のお作法に最も近い場所</li>
+</ul>
+<p>
+    エンジニア寄りの方は <code class="inline">~/Developer/</code> を採用してもいいですし、もっと打ちやすい <code class="inline">~/dev/</code> を採用してもいい。
+    <strong>どちらもホーム直下なので、iCloud に巻き込まれません</strong>。
+  </p>
+<h3>本書が <code class="inline">~/dev/</code> を採用する理由</h3>
+<ol>
+<li><strong>iCloud に同期されない</strong>：ホーム直下なので Desktop/Documents の同期対象から外れる</li>
+<li><strong>3文字で打ちやすい</strong>：何度も <code class="inline">cd</code> で入る場所なので、タイピング数は重要</li>
+<li><strong>英数字のみ</strong>：日本語フォルダ名にまつわる落とし穴を回避（次節）</li>
+<li>エンジニアコミュニティでも広く使われている慣習に近い</li>
+</ol>
+<h3>実際のフォルダ構成イメージ</h3>
+<pre class="code" data-lang="terminal">~/dev/
+├── poolside-website/
+├── client-a-lp/
+└── learning/
+    ├── hello-claude/
+    └── html-practice/</pre>
+<img alt="イラスト④：開発フォルダの推奨配置と避けるべき配置の対比図" class="guide-illustration" src="../assets/illustrations/illust_04_dev_folder.png"/>
+<h3>フォルダ名は極力「英数字＋ハイフン」で</h3>
+<table>
+<tr><th>区分</th><th>例</th></tr>
+<tr><td>✅ 推奨</td><td><code class="inline">poolside-website</code> / <code class="inline">client-a-lp</code> / <code class="inline">hello-world</code></td></tr>
+<tr><td>❌ 避けたい</td><td><code class="inline">動画案件_2026</code> / <code class="inline">マイサイト</code> / <code class="inline">開発フォルダ</code></td></tr>
+</table>
+<p>日本語フォルダ名を避けたほうがよい理由：</p>
+<ul>
+<li>ターミナルで日本語入力に切り替える手間が増える（タイピング速度がガクッと落ちる）</li>
+<li>GitHub・Firebase・各種 SaaS では <strong>URL エンコード</strong>されて読みにくい識別子になる（<code class="inline">%E5%8B%95%E7%94%BB...</code>）</li>
+<li>一部のツール・スクリプトが日本語パスをサポートしておらず、原因不明の不具合の温床になる</li>
+<li>海外メンバーや外注に共有する時の障壁になる</li>
+<li>後で「英語名に直したい」と気づくと、依存しているパス参照を全部書き換える羽目になる</li>
+</ul>
+<div class="tip">
+<strong>例外</strong>：個人メモや社内資料の置き場（git や CLI を経由しないもの）は日本語名でも構いません。<br/>
+    ただし、<strong>コードを置くフォルダだけは英数字</strong> が原則です。
+  </div>
+<h3>案件フォルダの命名ルール（おすすめ）</h3>
+<ul>
+<li><strong>すべて小文字 + ハイフン区切り</strong>：<code class="inline">poolside-website</code>（スペース・アンダースコアより安全）</li>
+<li><strong>機密情報を名前に入れない</strong>：取引先名・契約金額・案件 ID などは避ける（後で GitHub に上げる時に外に出てしまう）</li>
+<li><strong>用途がわかる単語を入れる</strong>：<code class="inline">hello-world</code> ではなく <code class="inline">hello-world-tutorial</code> のように、何のためのものか一目でわかると後で便利</li>
+</ul>
+<h3>初回セットアップ：<code class="inline">~/dev/</code> を作っておく</h3>
+<p>
+    まだ作っていない人は、ターミナルで以下を実行しておきましょう：
+  </p>
+<pre class="code" data-lang="terminal">mkdir -p ~/dev
+cd ~/dev
+pwd</pre>
+<p>
+    最後の <code class="inline">pwd</code>（print working directory）で <code class="inline">/Users/あなた/dev</code> と表示されれば成功。
+    今後、案件ごとのフォルダはこの <code class="inline">~/dev/</code> 配下に作っていきます。
+  </p>
+<h2>機密情報を扱わずに開発するコツ</h2>
+<h3>① <code class="inline">.env</code> ファイルを使う</h3>
+<p>
+    API キーやパスワードは、コードに直書きせず <code class="inline">.env</code> という別ファイルに分けます。
+  </p>
+<pre class="code" data-lang=".env">API_KEY=sk-abc123def456...
+DATABASE_URL=postgres://...</pre>
+<p>
+    そして、コード側ではこのファイルから値を読み取る形にします。
+    こうすれば、コードを共有しても <code class="inline">.env</code> だけ手元に残せます。
+  </p>
+<h3>② <code class="inline">.gitignore</code> ファイルを置く</h3>
+<p>
+    GitHub などにアップロードしないファイルを宣言するファイル。
+    各案件フォルダのルートに置きます。
+  </p>
+<pre class="code" data-lang=".gitignore"># 機密ファイル
+.env
+.env.local
+*.key
+*.pem
+
+# ログ・キャッシュ
+*.log
+node_modules/
+.DS_Store
+
+# OS生成物
+Thumbs.db</pre>
+<p>
+    最低限このテンプレを各案件で置いておけば、機密ファイルを誤って push する事故をかなり防げます。
+  </p>
+<h3>③ ダミーデータで開発する</h3>
+<p>
+    テスト用にデータが要る時は、<strong>本物の顧客データを使わず</strong>に、適当な架空データを作って使います。
+    AI にダミーデータを生成してもらうのも有効：
+  </p>
+<div class="ai-prompt">
+<div class="quote">
+      テスト用のダミーデータを10件作ってください。氏名はカタカナ、メールアドレスは example.com、電話番号は 000-0000-XXXX 形式で。
+    </div>
+</div>
+<h2>リスクヘッジ：何かあった時の備え</h2>
+<h3>① バージョン管理（git）を使う</h3>
+<p>
+    git を使えば、ファイルの過去の状態に戻れます。
+    AI に頼んで「やっぱりさっきの変更、戻したい」と思った時の最後の保険。
+    詳しくは第11章で扱います。
+  </p>
+<h3>② Time Machine を ON にする</h3>
+<p>
+    Mac 標準のバックアップ機能。外付けディスクが要りますが、<strong>これだけで人生が救われた人は数えきれない</strong>です。
+    会社支給端末の場合は情シス担当に確認。
+  </p>
+<h3>③ 大事な作業の前に「コミット」する</h3>
+<p>
+    git でコードの「セーブポイント」を作る作業を <strong>コミット</strong>と呼びます。
+    AI に大きい変更を頼む前に1回コミットしておくと、気軽に「やっぱり戻して」が言えます（git の使い方は第11章）。
+  </p>
+<h2>「やってはいけない」リスト</h2>
+<div class="danger">
+<ul>
+<li><strong>意味の分からないコマンドを実行しない</strong>（特に <code class="inline">sudo</code>、<code class="inline">rm -rf</code>、<code class="inline">curl ... | bash</code>）</li>
+<li><strong>機密情報を AI に貼り付けない</strong>（取引先名・契約金額・実名・連絡先）</li>
+<li><strong>API キーをコードに直書きしない</strong>（必ず <code class="inline">.env</code> 経由）</li>
+<li><strong><code class="inline">.env</code> ファイルを GitHub に上げない</strong>（<code class="inline">.gitignore</code> で除外）</li>
+<li><strong>Cursor / Claude Code の Chat 履歴に機密を貼り付けない</strong>（履歴に残る）</li>
+<li><strong>会社支給アカウントを個人用途で使わない</strong>（混在事故を防ぐ）</li>
+<li><strong>iCloud 同期下に開発フォルダを置かない</strong></li>
+</ul>
+</div>
+<h2>「これやっちゃった！」と思った時</h2>
+<ul>
+<li><strong>機密情報を AI に貼り付けた</strong> → 落ち着いて社内のメンター・情シスに即連絡。隠さない</li>
+<li><strong>API キーを GitHub に上げた</strong> → そのキーを<strong>即無効化</strong>（プロバイダの管理画面で「Revoke」「Rotate」）。新しいキーを発行して差し替え</li>
+<li><strong>大事なファイルを消してしまった</strong> → ゴミ箱・Time Machine・git の順で復元を試みる</li>
+<li><strong>変なコマンドを実行した</strong> → 何が起きたか分からないなら、Mac は触らずにメンターに見せる</li>
+</ul>
+<div class="tip">
+    やらかしを<strong>隠すのが一番のリスク</strong>です。早く言えば、ほぼ全てのケースで対処できます。
+  </div>
+<h2>本章のチェックリスト</h2>
+<p>
+    すべてチェックを付けると「次の章へ」のリンクが解放されます。<strong>本章は必読</strong>なので、確実に理解してから進んでください。
+  </p>
+<ul class="checklist" data-checklist-id="ch07">
+<li><label><input type="checkbox"/> AI に渡してよい情報・だめな情報の境目が分かる</label></li>
+<li><label><input type="checkbox"/> 開発フォルダの推奨置き場所が分かる</label></li>
+<li><label><input type="checkbox"/> <code class="inline">.env</code> と <code class="inline">.gitignore</code> の役割が分かる</label></li>
+<li><label><input type="checkbox"/> 「やってはいけないこと」を読んだ</label></li>
+<li><label><input type="checkbox"/> 事故った時の連絡先（社内メンター・情シス）を確認している</label></li>
+</ul>
+<p class="checklist-status">チェック 0 / 5</p>
+<h2>次の章へ</h2>
+<p>
+    重い話が続きましたが、ここまで読めれば AI を業務で使う土台はできました。
+    次の第8章から、いよいよ実装練習です。最初は HTML で「Hello World」を作ってみます。
+  </p>
+<nav class="chapter-nav">
+<a class="prev" href="./06_first_use.html">第6章 初めて使う</a>
+<a class="toc" href="../index.html">目次</a>
+<a class="next" href="./08_hello_html.html">第8章 HTML 練習</a>
+</nav>
+</main>
+<footer class="site-footer">
+  Poolside · AI運用指南書 · 第7章
+</footer>
+</body>
+</html>

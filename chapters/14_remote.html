@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head><script>(function(){var ok=false;try{ok=localStorage.getItem("guidebook-access-granted-v1")==="true";}catch(e){}if(!ok){var depth=location.pathname.indexOf("/chapters/")>=0?"../":"./";var back=encodeURIComponent(location.pathname+location.search+location.hash);location.replace(depth+"gate.html?back="+back);}})();</script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>第14章 リモート運用 — 出先からスマホで — AI運用指南書</title>
+<link href="../assets/style.css" rel="stylesheet"/>
+<link href="../assets/guidebook.css" rel="stylesheet"/>
+<script defer="" src="../assets/guidebook.js"></script>
+</head>
+<body>
+<header class="site-header">
+<div class="inner">
+<div class="brand"><a href="../index.html" style="color:inherit;">AI運用指南書</a></div>
+<div class="nav">第14章 / 全15章</div>
+</div>
+</header>
+<main>
+<nav class="chapter-nav">
+<a class="prev" href="./13_advanced.html">第13章 Claude を使い倒す</a>
+<a class="toc" href="../index.html">目次</a>
+<a class="next" href="./15_qa.html">第15章 Q&amp;A</a>
+</nav>
+<header class="chapter-header">
+<span class="num">CHAPTER 14</span>
+<h1>リモート運用 — 出先からスマホで AI に動いてもらう</h1>
+</header>
+<div class="goal">
+<div class="label">この章のゴール</div>
+<div class="content">
+      Mac の前にいなくても、<strong>スマホやタブレットから AI に指示を出して作業を進めてもらう</strong>方法を知る。<br/>
+      通勤・出張・商談の合間など、本来は「待ち時間」だった時間を、AI に働いてもらう時間に変える。
+    </div>
+</div>
+<h2>「Mac の前」だけが仕事場じゃなくなる</h2>
+<section class="term-deck">
+<h3>絶対に覚える：リモート運用の用語</h3>
+<p class="lead-text">
+      この章で出てくる、Mac の外から AI を動かす時の用語です。
+    </p>
+<div class="terms">
+<div class="term-card">
+<div class="term-name"><span class="en">Mobile App</span><span class="ja">モバイルアプリ</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>iPhone / Android にインストールして使う <strong>Claude のアプリ</strong>（claude.ai のスマホ最適化版）</dd>
+<dt>たとえると</dt>
+<dd>会話・音声入力・写真認識まで使える、いちばん手軽な相棒</dd>
+<dt>関連</dt>
+<dd>claude.ai / 音声入力</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">claude.ai/code</span><span class="ja">クロード コード（Web 版）</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>ブラウザから使える <strong>Claude Code の Web 版</strong>。スマホでもアクセスできる</dd>
+<dt>たとえると</dt>
+<dd>ターミナル不要で、リポジトリと接続して指示が出せる「クラウド版 Claude Code」</dd>
+<dt>関連</dt>
+<dd>GitHub 連携 / PR 自動生成</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">GitHub Actions</span><span class="ja">ギットハブ アクションズ</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>GitHub に仕込んでおく<strong>自動実行の仕組み</strong>（push されたら何かする、issue が立ったら何かする、など）</dd>
+<dt>たとえると</dt>
+<dd>GitHub に住む「<strong>自動化ロボット</strong>」。Claude を呼べるように設定すると、issue で <code class="inline">@claude</code> と書くだけで動いてくれる</dd>
+<dt>関連</dt>
+<dd>workflow / .github/workflows/ / Secrets</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">@claude (mention)</span><span class="ja">アット クロード／メンション</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>GitHub の issue や PR コメントで <code class="inline">@claude</code> と書くと <strong>Claude を呼び出せる</strong>仕組み</dd>
+<dt>たとえると</dt>
+<dd>Slack で人を呼び出すあのメンションと同じ感覚で、AI を呼べる</dd>
+<dt>関連</dt>
+<dd>GitHub Actions / Anthropic API キー</dd>
+</dl>
+</div>
+<div class="term-card">
+<div class="term-name"><span class="en">Secrets</span><span class="ja">シークレット</span></div>
+<dl>
+<dt>一言で</dt>
+<dd>GitHub に<strong>安全に保管できる秘密情報</strong>（API キーなど）</dd>
+<dt>たとえると</dt>
+<dd>GitHub の中の「金庫」。中身は誰にも見えず、Actions の中だけで使える。<strong>API キーは絶対にここに入れる</strong>（コードに直書き厳禁）</dd>
+<dt>関連</dt>
+<dd>ANTHROPIC_API_KEY / 第7章のセキュリティ</dd>
+</dl>
+</div>
+</div>
+</section>
+<p>
+    ここまでの章では、Mac でターミナルを開いて Claude Code を動かす流れを学んできました。
+    でも実際の仕事は、<strong>移動中・打ち合わせの合間・夜寝る前のベッドの中</strong>でも、ふと「あ、これやっておきたい」と思う場面があるはずです。
+  </p>
+<p>
+    そういう時のために、Claude や AI には<strong>スマホ・タブレットから動かす方法</strong>がいくつか用意されています。
+    全部いきなり使う必要はありませんが、<strong>3つだけ知っておくと一気に楽になります</strong>。
+  </p>
+<img alt="イラスト⑪：Mac／スマホ／GitHub のリモート運用三角図" class="guide-illustration" src="../assets/illustrations/illust_11_remote_triangle.png"/>
+<h2>方法 ①：Claude モバイルアプリ（一番手軽）</h2>
+<h3>これは何？</h3>
+<p>
+    Anthropic が出している <strong>Claude のスマホアプリ</strong>（iOS / Android）。
+    Web ブラウザの <code class="inline">claude.ai</code> と同じものを、スマホで快適に使えるアプリ版です。
+  </p>
+<h3>何ができる</h3>
+<ul>
+<li>普通の Claude との会話（質問・相談・原稿作成）</li>
+<li>音声入力で長文を打ち込む</li>
+<li>カメラで撮った写真を見せて「これ何？」「これ整理して」</li>
+<li>PDF や画像をアップロードして要約・分析</li>
+</ul>
+<h3>セットアップ</h3>
+<ol class="steps">
+<li>App Store / Google Play で「Claude」と検索してインストール</li>
+<li>会社支給アカウントでログイン</li>
+<li>すぐ使える</li>
+</ol>
+<h3>こんな時に効く</h3>
+<ul>
+<li>移動中：「明日のミーティングのアジェンダ案を3つ出して」</li>
+<li>商談直後：「議事録を音声で吹き込むので、要点を整理して」</li>
+<li>就寝前：「明日朝イチで送るメールの下書きを書いて」</li>
+</ul>
+<div class="warn">
+<strong>機密情報の扱いは、Mac で使う時と同じルール</strong>です（第7章）。
+    取引先名・契約金額・顧客の個人情報などは、スマホでも貼り付けない。
+    出先だからといって油断しないこと。
+  </div>
+<h2>方法 ②：Claude Code on the web（コードもスマホから）</h2>
+<h3>これは何？</h3>
+<p>
+    Anthropic が提供している <strong>ブラウザ版の Claude Code</strong>です。
+    URL は <code class="inline">claude.ai/code</code>。
+    <strong>Mac でターミナルから起動する Claude Code と同じことが、ブラウザだけで・スマホからも</strong>できます。
+  </p>
+<h3>何ができる</h3>
+<ul>
+<li>GitHub のリポジトリと接続して、コードを Claude に編集してもらう</li>
+<li>そのままブラウザ上で結果を確認、PR（プルリクエスト）として作成</li>
+<li>Mac が手元になくても、リポジトリに対する変更を依頼できる</li>
+</ul>
+<h3>セットアップ</h3>
+<ol class="steps">
+<li>ブラウザで <code class="inline">claude.ai/code</code> にアクセス</li>
+<li>会社支給アカウントでログイン</li>
+<li>「Connect GitHub」で第11章で作った GitHub アカウントを連携</li>
+<li>連携したリポジトリを選択して、指示を出す</li>
+</ol>
+<h3>こんな時に効く</h3>
+<ul>
+<li>会社のサイトに typo を見つけた → スマホから「<code class="inline">about.html</code> の○○のスペル直して PR 作って」</li>
+<li>商談中にクライアントから依頼があった → その場で「色を青に変えてプレビューを送って」</li>
+<li>家から「忘れてた、〇〇章のリンクが切れてる、直して」</li>
+</ul>
+<div class="ai-prompt">
+<div class="quote">
+      （claude.ai/code のスマホ画面で、リポジトリを選択した状態で）<br/>
+<br/>
+      指南書の第8章 hello-world の例で、見出しの色を深い緑に変えて、ブランチを作って PR にしてください。
+    </div>
+</div>
+<p>
+    数分後、GitHub に PR ができあがります。Mac の前に戻ってから、内容を確認してマージするだけ。
+  </p>
+<h2>方法 ③：GitHub × Claude Code（issue や PR から呼ぶ）</h2>
+<h3>これは何？</h3>
+<p>
+    GitHub のリポジトリに <strong>Claude Code を仕込んでおく</strong>と、
+    issue や PR のコメントで <code class="inline">@claude</code> とメンションするだけで Claude が動いてくれます。
+  </p>
+<h3>何ができる</h3>
+<ul>
+<li>issue に「@claude これを直して」と書くと、自動で PR を作ってくれる</li>
+<li>PR レビューに「@claude このコードのテストを書いて」と書くと、テストを追加した PR を返してくれる</li>
+<li><strong>GitHub のスマホアプリから直接</strong>使えるので、移動中でも操作できる</li>
+</ul>
+<h3>セットアップ（一度だけ・社内エンジニアと一緒に）</h3>
+<p>
+    これは初心者だけで完結させるのは少し手間がかかるので、<strong>社内のエンジニアと一緒に</strong>セットアップすることをおすすめします。
+    大まかな流れだけ紹介します：
+  </p>
+<ol class="steps">
+<li>リポジトリに <code class="inline">.github/workflows/claude.yml</code> を追加</li>
+<li>GitHub Secrets に <code class="inline">ANTHROPIC_API_KEY</code> を登録</li>
+<li>これで <code class="inline">@claude</code> メンションが効くようになる</li>
+</ol>
+<div class="ai-prompt">
+<div class="quote">
+      Claude Code を GitHub Actions として使うための初期設定を、初心者向けに教えてください。<br/>
+      具体的には .github/workflows/claude.yml の最小サンプルと、必要な GitHub Secrets の登録手順をステップごとに。<br/>
+      Poolside ではセキュリティを重視するので、<strong>第7章の方針も踏まえて</strong>注意点を書いてくれると嬉しいです。
+    </div>
+</div>
+<div class="warn">
+    GitHub Actions で Claude を動かす場合、API キーがアクションログに漏れないよう <strong>必ず Secrets として登録</strong>します。
+    社外公開の Public リポジトリでこの仕組みを使う時は、特に慎重に（第7章の「やってはいけない」リストを再確認）。
+  </div>
+<div class="danger">
+<strong>Anthropic API の従量課金は、必ず居村に相談してから</strong>使ってください。<br/>
+    GitHub Actions 経由の利用は、issue が立つたび・PR が作られるたびに API を消費します。
+    悪意ある外部からの spam で大量にトリガーされると<strong>請求が膨らむ事故</strong>が起きえます。
+    第1章の「お約束」のとおり、契約・予算・利用範囲は事前に居村と握ってから動いてください。
+  </div>
+<h2>使い分けの早見表</h2>
+<table>
+<tr><th>シーン</th><th>おすすめの方法</th></tr>
+<tr><td>「考え事の壁打ち」「アイデア出し」「文章の下書き」</td><td>① モバイルアプリ</td></tr>
+<tr><td>「コードを直したい」「PR を作って欲しい」</td><td>② Claude Code on the web</td></tr>
+<tr><td>「issue で指示すると自動で PR が来る運用にしたい」</td><td>③ GitHub × Claude Code</td></tr>
+<tr><td>Mac の前にいる、じっくり腰を据えて作業</td><td>ターミナルの Claude Code（第6章〜）</td></tr>
+</table>
+<h2>具体的な「出先運用」シナリオ</h2>
+<h3>シナリオ A：通勤電車の中で</h3>
+<p>
+    Claude モバイルアプリを開く。<br/>
+<strong>「今日の会議で言うべき、A案件のリスク3点を整理して」</strong>と音声入力。<br/>
+    会社着くまでに整理されている。
+  </p>
+<h3>シナリオ B：商談の合間（5分）</h3>
+<p>
+    たった今クライアントから「サイトの色を秋っぽく変えたい」と言われた。<br/>
+    その場でスマホから claude.ai/code を開き、リポジトリを選んで <strong>「TOP の色を秋色（暖色寄り）に変えて、プレビュー URL を返して」</strong>と頼む。<br/>
+    会議終わりにクライアントへ「こんな感じです」と URL で見せられる。
+  </p>
+<h3>シナリオ C：寝る前のベッド</h3>
+<p>
+    GitHub のスマホアプリから対象リポジトリの issue を開く。<br/>
+<strong>「@claude README に最新の機能の説明を追記してください」</strong>とコメントするだけ。<br/>
+    朝起きると PR ができあがっている。
+  </p>
+<div class="imura-yell">
+<p>
+<strong>「Mac の前にいる時間 = 仕事の時間」じゃない</strong>のがこれからのスタンダードだ。
+      移動中、商談中、お風呂上がり——AI が動ける場面を、自分の生活の中にどんどん組み込んでいけ。
+    </p>
+<p>
+      ただし<strong>機密情報の扱いだけは絶対にゆるめるな</strong>。
+      スマホは Mac よりずっと「人に見られる端末」だ。電車の中で取引先名を打ち込まないように。
+    </p>
+</div>
+<h2>本章のチェックリスト</h2>
+<p>
+    最低限、①は実際にやってみてください。②③は社内環境と相談しながら進めて構いません。
+  </p>
+<ul class="checklist" data-checklist-id="ch14">
+<li><label><input type="checkbox"/> Claude モバイルアプリをインストールして、ログインできた</label></li>
+<li><label><input type="checkbox"/> モバイルアプリで何か1つ質問して、応答を確認できた</label></li>
+<li><label><input type="checkbox"/> <code class="inline">claude.ai/code</code> にアクセスして、画面構成を見た</label></li>
+<li><label><input type="checkbox"/> GitHub × Claude の仕組みの存在を知った（実装は社内エンジニアと相談でOK）</label></li>
+<li><label><input type="checkbox"/> 機密情報の扱いはモバイルでも変わらないことを再確認した</label></li>
+</ul>
+<p class="checklist-status">チェック 0 / 5</p>
+<h2>次の章へ</h2>
+<p>
+    次は最終章の Q&amp;A です。トラブル時の対処と、AI に質問するコツを総ざらいします。
+  </p>
+<nav class="chapter-nav">
+<a class="prev" href="./13_advanced.html">第13章 Claude を使い倒す</a>
+<a class="toc" href="../index.html">目次</a>
+<a class="next" href="./15_qa.html">第15章 Q&amp;A</a>
+</nav>
+</main>
+<footer class="site-footer">
+  Poolside · AI運用指南書 · 第14章
+</footer>
+</body>
+</html>
