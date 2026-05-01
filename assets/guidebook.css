@@ -707,3 +707,49 @@ ul.checklist li:has(input:checked) label {
   border-radius: 18px;
   box-shadow: 0 14px 40px rgba(15, 23, 42, 0.08);
 }
+
+/* トップ最下部の「第1章へ進む」CTA */
+.start-cta {
+  text-align: center;
+  margin: var(--space-8) 0 var(--space-6);
+  padding: var(--space-6) var(--space-5);
+  background: linear-gradient(180deg, var(--accent-soft) 0%, var(--paper) 100%);
+  border: 1px solid var(--hairline);
+  border-radius: 4px;
+}
+.start-cta .lead {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  color: var(--ink);
+  margin: 0 0 var(--space-4);
+  border: 0;
+  padding: 0;
+  letter-spacing: 0.04em;
+}
+.start-cta .start-link {
+  display: inline-block;
+  padding: 14px 36px;
+  background: var(--ink);
+  color: #ece9e0;
+  font-family: var(--font-serif);
+  font-size: 15px;
+  letter-spacing: 0.12em;
+  border-radius: 2px;
+  border: 0;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.1s;
+}
+.start-cta .start-link:hover {
+  background: var(--accent);
+  border-bottom: 0;
+}
+.start-cta .start-link:active {
+  transform: scale(0.99);
+}
+.start-cta .sub {
+  display: block;
+  margin-top: var(--space-3);
+  font-size: 11px;
+  color: var(--ink-mute);
+  letter-spacing: 0.1em;
+}
