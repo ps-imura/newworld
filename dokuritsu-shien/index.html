@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>独立を応援する ―― 個人事業主か、株式会社か | Poolside</title>
+<style>
+:root{
+  --ink:#07113D;        /* darkblue: 見出し・本文濃色 */
+  --accent:#6090BA;     /* lightblue: 法人=アクセント */
+  --accent-d:#3f6f99;   /* accent濃いめ */
+  --accent-bg:#eaf1f7;  /* 法人カラム背景 */
+  --kojin:#7c8694;      /* 個人=グレー系 */
+  --kojin-bg:#f2f3f5;   /* 個人カラム背景 */
+  --gold:#d5bc35;       /* 結論などの強調 */
+  --line:#dfe3e8;
+  --paper:#ffffff;
+  --muted:#6b7686;
+  --bg:#f6f8fa;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{
+  font-family:"Hiragino Kaku Gothic ProN","Yu Gothic","Noto Sans JP",sans-serif;
+  background:#0d1530;
+  color:var(--ink);
+  overflow:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+#deck{position:fixed;inset:0;}
+.slide{
+  position:absolute;inset:0;
+  display:none;
+  flex-direction:column;
+  background:var(--paper);
+  /* 16:9 を画面いっぱいに */
+  padding:4.2vh 5vw 3.2vh;
+}
+.slide.active{display:flex;}
+/* 表紙以外はロゴ（.brand）の安全領域を確保するため上余白を増やす。
+   .brand は top:3.6vh から2行で下端 約7.8vh まで占有するため、
+   コンテンツ開始を 10vh 付近まで下げてロゴと見出しの重なりを防ぐ。 */
+.slide:not(.cover){padding-top:10vh;}
+
+/* 共通ヘッダ帯 */
+.kicker{
+  display:flex;align-items:center;gap:.7em;
+  font-size:1.7vh;font-weight:700;letter-spacing:.04em;
+  color:var(--accent-d);
+  margin-bottom:1.4vh;
+}
+.kicker::before{
+  content:"";display:inline-block;width:2.6vh;height:.5vh;
+  background:var(--accent);border-radius:2px;
+}
+h1.title{font-size:4.6vh;font-weight:800;line-height:1.18;letter-spacing:.01em;}
+h2.head{font-size:3.7vh;font-weight:800;line-height:1.2;letter-spacing:.01em;margin-bottom:.6vh;}
+.lead{font-size:2.25vh;line-height:1.6;color:#2a3550;font-weight:500;}
+.body{flex:1;display:flex;flex-direction:column;justify-content:center;min-height:0;}
+
+/* 出典・脚注 */
+.foot{
+  margin-top:auto;padding-top:1.6vh;border-top:1px solid var(--line);
+  display:flex;justify-content:space-between;align-items:flex-end;gap:2vw;
+}
+.src{font-size:1.45vh;color:var(--muted);line-height:1.5;max-width:78%;}
+.src b{color:#54607a;font-weight:700;}
+.note{
+  font-size:1.45vh;color:#b06a00;background:#fff7e6;
+  border:1px solid #f0dca0;border-radius:6px;padding:.5vh 1vh;
+  line-height:1.45;font-weight:600;flex:0 0 auto;max-width:34%;
+}
+
+/* ページ番号 */
+.pageno{
+  position:fixed;right:2.4vw;bottom:1.8vh;
+  font-size:1.7vh;font-weight:700;color:var(--accent-d);
+  letter-spacing:.05em;z-index:20;
+}
+.pageno .tot{color:#aeb6c2;font-weight:600;}
+
+/* 進捗バー */
+#prog{position:fixed;left:0;top:0;height:.55vh;background:var(--accent);z-index:20;transition:width .3s;}
+
+/* ===== 表紙 ===== */
+.cover{justify-content:center;padding:0 9vw;
+  background:
+    radial-gradient(120vh 80vh at 88% -10%, #eaf1f7 0%, rgba(234,241,247,0) 60%),
+    linear-gradient(180deg,#fff 0%,#f6f8fa 100%);
+}
+.cover .program{font-size:1.9vh;font-weight:700;color:var(--accent-d);letter-spacing:.06em;margin-bottom:2.4vh;
+  display:inline-flex;align-items:center;gap:.7em;}
+.cover .program .dot{width:1.1vh;height:1.1vh;border-radius:50%;background:var(--gold);}
+.cover h1{font-size:6.0vh;font-weight:900;line-height:1.16;letter-spacing:.005em;}
+.cover h1 .vs{color:var(--accent);}
+.cover h1 .vs2{color:var(--kojin);}
+.cover .sub{font-size:2.3vh;color:#42506e;margin-top:2.6vh;font-weight:600;}
+.cover .meta{margin-top:5vh;font-size:1.8vh;color:var(--muted);display:flex;gap:2.4vw;flex-wrap:wrap;}
+.cover .meta span b{color:var(--ink);}
+.brand{position:fixed;left:5vw;top:3.6vh;font-weight:900;font-size:2.2vh;letter-spacing:.02em;color:var(--ink);z-index:5;}
+.brand small{font-weight:600;color:var(--accent-d);font-size:1.4vh;letter-spacing:.18em;display:block;margin-top:.1vh;}
+
+/* ===== 対比2カラム ===== */
+.vs-grid{display:grid;grid-template-columns:1fr 1fr;gap:2.2vw;flex:1;min-height:0;}
+.col{border-radius:14px;padding:2.6vh 2.4vw;display:flex;flex-direction:column;border:1px solid var(--line);}
+.col.kojin{background:var(--kojin-bg);}
+.col.houjin{background:var(--accent-bg);border-color:#cfe0ee;}
+.col .ch{display:flex;align-items:center;gap:.7em;font-size:2.5vh;font-weight:800;margin-bottom:1.6vh;}
+.col .badge{font-size:1.5vh;font-weight:800;color:#fff;padding:.4vh 1.1vh;border-radius:20px;letter-spacing:.04em;}
+.col.kojin .badge{background:var(--kojin);}
+.col.houjin .badge{background:var(--accent-d);}
+.col.kojin .ch{color:#3c4658;}
+.col.houjin .ch{color:var(--accent-d);}
+.col ul{list-style:none;display:flex;flex-direction:column;gap:1.3vh;}
+.col li{font-size:2.05vh;line-height:1.45;padding-left:1.5em;position:relative;color:#2c3650;}
+.col li::before{content:"";position:absolute;left:0;top:.7em;width:.7em;height:.7em;border-radius:3px;}
+.col.kojin li::before{background:var(--kojin);}
+.col.houjin li::before{background:var(--accent);}
+.col li b{font-weight:800;}
+.col li .big{font-size:2.5vh;font-weight:900;display:block;margin:.2vh 0;}
+.col.kojin li .big{color:#3c4658;}
+.col.houjin li .big{color:var(--accent-d);}
+
+/* ===== サマリ比較表 ===== */
+table.cmp{width:100%;border-collapse:collapse;font-size:2.0vh;}
+table.cmp th,table.cmp td{padding:1.5vh 1.4vw;text-align:left;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.4;}
+table.cmp thead th{font-size:2.1vh;font-weight:800;border-bottom:2px solid var(--ink);}
+table.cmp thead th.axis{width:18%;color:var(--muted);}
+table.cmp thead th.k{color:#3c4658;}
+table.cmp thead th.h{color:var(--accent-d);}
+table.cmp td.axis{font-weight:800;color:#3c4658;background:#fafbfc;width:18%;}
+table.cmp td.kc{background:#fafafb;}
+table.cmp td.hc{background:#f3f8fc;}
+table.cmp .yes{color:var(--accent-d);font-weight:800;}
+table.cmp .mid{color:#8a7a2a;font-weight:700;}
+table.cmp small{display:block;color:var(--muted);font-size:1.5vh;margin-top:.3vh;font-weight:500;}
+
+/* ===== 汎用カード列 ===== */
+.cards{display:grid;gap:1.8vh;}
+.cards.c2{grid-template-columns:1fr 1fr;}
+.cards.c3{grid-template-columns:repeat(3,1fr);}
+.cards.c4{grid-template-columns:repeat(4,1fr);}
+.card{background:#fbfcfd;border:1px solid var(--line);border-radius:12px;padding:2.2vh 1.7vw;border-left:5px solid var(--accent);}
+.card.warn{border-left-color:#e0a93a;background:#fffaf0;}
+.card.kojin{border-left-color:var(--kojin);}
+.card h3{font-size:2.2vh;font-weight:800;margin-bottom:1vh;color:var(--ink);display:flex;align-items:baseline;gap:.5em;}
+.card h3 .n{color:var(--accent);font-size:2.6vh;font-weight:900;}
+.card.warn h3 .n{color:#e0a93a;}
+.card p{font-size:1.85vh;line-height:1.55;color:#374256;}
+.card p b{color:var(--ink);font-weight:800;}
+.card .num{font-size:2.9vh;font-weight:900;color:var(--accent-d);display:block;margin:.4vh 0;}
+.card.warn .num{color:#c98000;}
+
+/* ===== お金③/結論などのハイライト行 ===== */
+.flow{display:flex;align-items:stretch;gap:1.4vw;flex-wrap:wrap;}
+.flow .step{flex:1;min-width:0;background:var(--accent-bg);border:1px solid #cfe0ee;border-radius:12px;padding:2vh 1.5vw;}
+.flow .step h4{font-size:2vh;color:var(--accent-d);font-weight:800;margin-bottom:.8vh;}
+.flow .step p{font-size:1.8vh;line-height:1.5;color:#36435c;}
+.arrow{display:flex;align-items:center;color:var(--accent);font-size:3vh;font-weight:900;}
+
+/* 税率帯 */
+.bars{display:flex;flex-direction:column;gap:1.3vh;}
+.bar{display:flex;align-items:center;gap:1.2vw;}
+.bar .lab{flex:0 0 16vw;font-size:1.9vh;font-weight:700;color:#36435c;}
+.bar .track{flex:1;height:3.2vh;background:#eef1f4;border-radius:6px;position:relative;overflow:hidden;}
+.bar .fill{height:100%;border-radius:6px;display:flex;align-items:center;padding-left:1vw;color:#fff;font-weight:800;font-size:1.7vh;}
+.bar.k .fill{background:linear-gradient(90deg,#9aa3b0,#7c8694);}
+.bar.h .fill{background:linear-gradient(90deg,#7aa6cc,#3f6f99);}
+
+/* 結論メッセージ */
+.concl{display:grid;grid-template-columns:1fr 1fr;gap:1.6vh 2vw;}
+.concl .pt{display:flex;gap:1vw;align-items:flex-start;background:#fbfcfd;border:1px solid var(--line);border-radius:10px;padding:1.7vh 1.5vw;}
+.concl .pt .no{flex:0 0 auto;width:3.6vh;height:3.6vh;border-radius:50%;background:var(--accent);color:#fff;font-weight:900;font-size:2vh;display:flex;align-items:center;justify-content:center;}
+.concl .pt.gold .no{background:var(--gold);color:#3a3200;}
+.concl .pt p{font-size:1.95vh;line-height:1.45;color:#2c3650;}
+.concl .pt p b{color:var(--ink);font-weight:800;}
+
+.rocket{margin-top:1.8vh;background:linear-gradient(90deg,var(--ink),#1c2a5a);color:#fff;border-radius:12px;padding:2.2vh 2vw;font-size:2.4vh;font-weight:800;line-height:1.4;text-align:center;letter-spacing:.01em;}
+.rocket b{color:var(--gold);}
+
+/* 次の一歩 */
+.steps2{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4vw;}
+.steps2 .s{background:var(--accent-bg);border:1px solid #cfe0ee;border-radius:12px;padding:2vh 1.3vw;text-align:center;}
+.steps2 .s .ic{font-size:3.4vh;font-weight:900;color:var(--accent-d);}
+.steps2 .s h4{font-size:1.95vh;color:var(--ink);font-weight:800;margin:.8vh 0;}
+.steps2 .s p{font-size:1.6vh;color:#46536c;line-height:1.45;}
+.cta{margin-top:2vh;text-align:center;font-size:2.6vh;font-weight:900;color:var(--ink);}
+.cta b{color:var(--accent-d);}
+.cta .pl{color:var(--gold);}
+
+.hint{position:fixed;left:2.4vw;bottom:1.8vh;font-size:1.4vh;color:#aeb6c2;z-index:20;}
+.pad{height:1.2vh;}
+.subnote{font-size:1.7vh;color:var(--muted);margin-top:1.4vh;line-height:1.5;}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+<div id="deck">
+
+<!-- 1 表紙 -->
+<section class="slide active cover">
+  <div class="program"><span class="dot"></span>Poolside 独立スタッフ応援プログラム 第1弾</div>
+  <h1>独立を応援する<br>―― <span class="vs2">個人事業主</span>か、<span class="vs">株式会社</span>か。</h1>
+  <div class="sub">「いつ・どう法人化するか」を、いっしょに見極める。</div>
+  <div class="meta">
+    <span><b>日付</b>　2026.06.08</span>
+    <span><b>説明</b>　居村（Poolside）＋ 顧問税理士</span>
+    <span><b>形式</b>　社内説明会</span>
+  </div>
+</section>
+
+<!-- 2 はじめに -->
+<section class="slide">
+  <div class="kicker">はじめに</div>
+  <h2 class="head">独立すると、道は大きく2つに分かれる。</h2>
+  <div class="body">
+    <div class="vs-grid" style="flex:0 0 auto;">
+      <div class="col kojin">
+        <div class="ch"><span class="badge">A</span>個人事業主</div>
+        <ul>
+          <li>開業届を出すだけ。<b>今日からでも始められる</b>身軽さ。</li>
+          <li>まずは小さく、自分の手で回す独立のかたち。</li>
+        </ul>
+      </div>
+      <div class="col houjin">
+        <div class="ch"><span class="badge">B</span>株式会社（法人）</div>
+        <ul>
+          <li>会社を「設立」して、事業を法人格で行う。</li>
+          <li>信用・税・将来設計の面で<b>武器が増える</b>選択肢。</li>
+        </ul>
+      </div>
+    </div>
+    <div class="rocket" style="margin-top:2.4vh;">
+      本プログラムの狙いは「どちらが正解か」ではなく、<b>「いつ・どう法人化するか」を見極める</b>こと。
+    </div>
+  </div>
+  <div class="foot">
+    <div class="src">どちらも正しい独立のかたち。事業の規模・利益・取引先によって最適解は変わります。</div>
+    <div class="note">※税・社保の具体額は2026年分の確定額を顧問税理士に確認</div>
+  </div>
+</section>
+
+<!-- 3 全体像サマリ表 -->
+<section class="slide">
+  <div class="kicker">全体像</div>
+  <h2 class="head">個人事業主 vs 株式会社 ― 比較サマリ</h2>
+  <div class="body">
+    <table class="cmp">
+      <thead>
+        <tr><th class="axis">観点</th><th class="k">個人事業主</th><th class="h">株式会社</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="axis">始め方</td>
+          <td class="kc">開業届のみ・<b>無料／即日</b></td>
+          <td class="hc">設立手続き・<span class="mid">約25万円前後</span><small>合同会社なら約7〜11万も選択肢</small></td>
+        </tr>
+        <tr>
+          <td class="axis">税</td>
+          <td class="kc">所得税 累進 <b>5〜45%</b>＋住民税10%</td>
+          <td class="hc">法人税 <span class="yes">15% / 23.2%</span><small>利益が出ると税率が頭打ちになりやすい</small></td>
+        </tr>
+        <tr>
+          <td class="axis">社会保険</td>
+          <td class="kc">国民年金・国民健康保険</td>
+          <td class="hc">厚生年金など<span class="yes">手厚い</span>／<small>事業主負担という固定費が発生</small></td>
+        </tr>
+        <tr>
+          <td class="axis">信用</td>
+          <td class="kc">本人の信用が中心</td>
+          <td class="hc">決算書ベースで<span class="yes">評価材料が揃いやすい傾向</span></td>
+        </tr>
+        <tr>
+          <td class="axis">コスト</td>
+          <td class="kc">事務負担が軽い</td>
+          <td class="hc">赤字でも均等割・税理士報酬など<span class="mid">固定費</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="foot">
+    <div class="src">出典：<b>国税庁 No.2260 / No.5759</b>、<b>中小企業庁</b>、<b>日本年金機構</b>、<b>総務省</b>（各論は以降のスライドで詳述）</div>
+    <div class="note">※税率・料率の確定額は2026年分を顧問税理士に確認</div>
+  </div>
+</section>
+
+<!-- 4 始め方 -->
+<section class="slide">
+  <div class="kicker">始め方の違い</div>
+  <h2 class="head">入口のコスト ― 無料か、約25万円か。</h2>
+  <div class="body">
+    <div class="vs-grid" style="flex:0 0 auto;">
+      <div class="col kojin">
+        <div class="ch"><span class="badge">個人</span>開業届</div>
+        <ul>
+          <li><span class="big">0円・即日</span>税務署に開業届を提出するだけ。</li>
+          <li>登記も定款も不要。思い立った日に始められる。</li>
+        </ul>
+      </div>
+      <div class="col houjin">
+        <div class="ch"><span class="badge">法人</span>株式会社の設立</div>
+        <ul>
+          <li><span class="big">約25万円前後</span>登録免許税（最低15万）＋定款認証＋印紙。</li>
+          <li><b>電子定款なら印紙代4万→0円</b>に。</li>
+          <li>合同会社という選択肢なら<b>約7〜11万</b>（登録免許税 最低6万）。</li>
+        </ul>
+      </div>
+    </div>
+    <div class="subnote">
+      内訳：登録免許税＝「資本金×0.7%」と15万の高い方／定款認証＝資本金により3〜5万（2024/12/1〜 要件充足の資本金100万未満は1.5万に軽減）／定款印紙＝紙4万・電子0円。
+    </div>
+  </div>
+  <div class="foot">
+    <div class="src">出典：<b>中小企業庁（登録免許税の軽減）</b>／<b>日本公証人連合会（定款認証手数料の改定）</b></div>
+    <div class="note">※自社の正確な設立費用は顧問税理士・司法書士に確認</div>
+  </div>
+</section>
+
+<!-- 5 お金① 税金 -->
+<section class="slide">
+  <div class="kicker">お金 ① ― 税金</div>
+  <h2 class="head">所得が増えるほど、税率の伸び方が違う。</h2>
+  <div class="body">
+    <div class="cards c2" style="grid-template-columns:1fr 1fr;align-items:start;">
+      <div class="card kojin">
+        <h3><span class="n">個人</span>所得税は累進（だんだん上がる）</h3>
+        <p>課税所得が大きくなるほど税率が上がる：<b>5% → 10% → 20% → 23% → 33% → 40% → 45%</b>。これに<b>住民税10%</b>と復興特別所得税2.1%が加わる。</p>
+        <div class="bars" style="margin-top:1.4vh;">
+          <div class="bar k"><div class="lab">〜195万</div><div class="track"><div class="fill" style="width:18%">5%</div></div></div>
+          <div class="bar k"><div class="lab">330〜695万</div><div class="track"><div class="fill" style="width:48%">20%</div></div></div>
+          <div class="bar k"><div class="lab">1800〜4000万</div><div class="track"><div class="fill" style="width:88%">40%</div></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3><span class="n">法人</span>法人税は2段階で頭打ち</h3>
+        <p>中小法人の所得にかかる法人税は<b>年800万円以下＝15%</b>（本則19%の軽減特例）、<b>800万円超＝23.2%</b>。一定以上は税率が上がり続けない。</p>
+        <div class="bars" style="margin-top:1.4vh;">
+          <div class="bar h"><div class="lab">800万以下</div><div class="track"><div class="fill" style="width:33%">15%</div></div></div>
+          <div class="bar h"><div class="lab">800万超</div><div class="track"><div class="fill" style="width:51%">23.2%</div></div></div>
+        </div>
+        <p style="margin-top:1.2vh;"><b>有利化の目安は課税所得800〜900万前後</b>とよく言われるが、社保負担・均等割を含めた個別シミュレーションが必須。</p>
+      </div>
+    </div>
+  </div>
+  <div class="foot">
+    <div class="src">出典：<b>国税庁 No.2260（所得税の速算表）</b>／<b>国税庁 No.5759・中小企業庁（中小法人の軽減税率）</b></div>
+    <div class="note">※分岐点は社保・均等割込みで個別シミュレーション必須。確定額は税理士に確認</div>
+  </div>
+</section>
+
+<!-- 6 お金② 役員報酬 -->
+<section class="slide">
+  <div class="kicker">お金 ② ― 役員報酬</div>
+  <h2 class="head">一人法人 最大の合理性 ―「二重の圧縮」。</h2>
+  <div class="body">
+    <div class="flow">
+      <div class="step">
+        <h4>① 会社の利益から</h4>
+        <p>自分への<b>役員報酬</b>を支払うと、その分は会社の<b>損金（経費）</b>になり、法人の利益＝法人税の対象が圧縮される。</p>
+      </div>
+      <div class="arrow">＋</div>
+      <div class="step">
+        <h4>② 受け取った個人側で</h4>
+        <p>役員報酬は給与扱い。だから個人側で<b>「給与所得控除」というもう一つの控除</b>が使える。同じお金に2段階の圧縮がかかる構造。</p>
+      </div>
+      <div class="arrow">＝</div>
+      <div class="step" style="background:#fffaf0;border-color:#f0dca0;">
+        <h4 style="color:#b06a00;">一人法人の核心</h4>
+        <p>個人事業主には無い<b>「給与所得控除という武器」</b>。これが法人化の合理性の中心。</p>
+      </div>
+    </div>
+    <div class="subnote">
+      注意：役員報酬は<b>「定期同額給与」</b>の縛りがあり、原則 期の途中で自由に増減できない（事前に決めて毎月同額）。給与所得控除の<b>具体的な金額は2026年の税制改正の過渡期にあり、ここでは額を出さず構造の説明にとどめる</b>。
+    </div>
+  </div>
+  <div class="foot">
+    <div class="src">役員報酬の損金算入と給与所得控除の「二重構造」が、一人法人を選ぶ最大の合理性とされる。</div>
+    <div class="note">※給与所得控除の額・定期同額給与の設定は必ず顧問税理士に確認</div>
+  </div>
+</section>
+
+<!-- 7 お金③ 消費税・インボイス -->
+<section class="slide">
+  <div class="kicker">お金 ③ ― 消費税・インボイス</div>
+  <h2 class="head">新設法人は原則2期 免税。ただし条件あり。</h2>
+  <div class="body">
+    <div class="cards c2">
+      <div class="card">
+        <h3><span class="n">原則</span>設立から2期は消費税が免税</h3>
+        <p>新しく作った法人は、<b>資本金1000万円未満</b>なら原則として<b>第1期・第2期は消費税が免税</b>。この間は預かった消費税を納めなくてよい。</p>
+      </div>
+      <div class="card warn">
+        <h3><span class="n">例外</span>免税が消えるケース</h3>
+        <p><b>インボイス登録をすると、この免税は消える</b>。ほかにも特定期間の課税売上1000万超／課税事業者選択／特定新規設立法人 などが例外。</p>
+      </div>
+    </div>
+    <div class="rocket" style="margin-top:1.8vh;background:linear-gradient(90deg,#3f6f99,#6090BA);">
+      判断軸は<b>「取引先がBtoB中心か」</b>。取引先が仕入税額控除を求めるなら、免税より<b>インボイス登録を優先</b>する判断になりやすい。
+    </div>
+  </div>
+  <div class="foot">
+    <div class="src">出典：<b>国税庁 No.6503 / No.6531（納税義務の免除・特定新規設立法人）</b></div>
+    <div class="note">※インボイス登録の要否は取引先構成を踏まえ税理士に確認</div>
+  </div>
+</section>
+
+<!-- 8 守りと制度 -->
+<section class="slide">
+  <div class="kicker">守りと制度</div>
+  <h2 class="head">法人だから使える「守り」の制度。</h2>
+  <div class="body">
+    <div class="cards c4">
+      <div class="card">
+        <h3><span class="n">①</span>社会保険</h3>
+        <p>厚生年金で将来の年金が<b>上乗せ</b>。<b>傷病手当金</b>など、働けない時の保障も手厚くなる。</p>
+      </div>
+      <div class="card">
+        <h3><span class="n">②</span>欠損金の繰越</h3>
+        <p>赤字を将来の黒字と相殺できる期間が<span class="num" style="font-size:2.4vh;">個人3年 → 法人10年</span>長く繰り越せる。</p>
+      </div>
+      <div class="card">
+        <h3><span class="n">③</span>決算期の自由</h3>
+        <p>決算月を自分で選べる。繁忙期を避けて<b>事業に合わせた1年</b>を設計できる。</p>
+      </div>
+      <div class="card">
+        <h3><span class="n">④</span>退職金・日当</h3>
+        <p>自分への<b>退職金</b>や<b>出張日当</b>を損金算入できる仕組みが使える。</p>
+      </div>
+    </div>
+  </div>
+  <div class="foot">
+    <div class="src">出典：<b>国税庁 No.2070 / No.5762（欠損金の繰越控除）</b>／<b>日本年金機構（社会保険の適用）</b></div>
+    <div class="note">※適用要件・金額は2026年分を顧問税理士に確認</div>
+  </div>
+</section>
+
+<!-- 9 信用と将来性（主役） -->
+<section class="slide">
+  <div class="kicker">信用と将来性　★ここが法人化の本丸</div>
+  <h2 class="head">「事業と個人を分ける」ことが、信用になる。</h2>
+  <div class="body">
+    <div class="cards c2">
+      <div class="card">
+        <h3><span class="n">A</span>行政・公的案件の入札</h3>
+        <p><b>個人事業主でも入札に参加できます</b>（「法人でないと不可」は誤り）。<br>
+        ただし実務では、一定規模・継続案件で<b>法人格が事実上 有利・要件化しやすい傾向</b>があり、等級格付けでも法人が有利とされます。</p>
+      </div>
+      <div class="card">
+        <h3><span class="n">B</span>銀行・金融の与信</h3>
+        <p><b>日本政策金融公庫の融資も、個人事業主で利用できます</b>（「法人でないと借りられない」は誤り）。<br>
+        一般に法人は<b>決算書ベースで評価材料が揃いやすく</b>、事業と個人の資産が分かれていることが与信にプラス。<b>経営者保証なし融資</b>の道もあります。</p>
+      </div>
+    </div>
+    <div class="subnote">
+      ポイントは「禁止／可能」ではなく<b>傾向の差</b>。個人でも可能だが、規模が大きくなり継続するほど、法人格が信用の<b>共通言語</b>として効いてくる。
+    </div>
+  </div>
+  <div class="foot">
+    <div class="src">出典：<b>経済産業省（入札参加資格）・調達ポータル・総務省</b>／<b>日本政策金融公庫・信用保証協会（スタートアップ創出促進保証ほか）</b></div>
+    <div class="note">※入札要件・融資条件は案件ごとに異なります。個別に確認を</div>
+  </div>
+</section>
+
+<!-- 10 デメリット（厚く） -->
+<section class="slide">
+  <div class="kicker">デメリットも、正直に。</div>
+  <h2 class="head">法人化は「固定コストとの戦い」でもある。</h2>
+  <div class="body">
+    <div class="cards c3" style="gap:1.5vh 1.4vw;">
+      <div class="card warn">
+        <h3><span class="n">①</span>赤字でも税金</h3>
+        <p>法人住民税の<b>均等割</b>は、利益が出ていなくても発生。<span class="num">約7万円/年〜</span>（自治体差あり）。</p>
+      </div>
+      <div class="card warn">
+        <h3><span class="n">②</span>社保の事業主負担</h3>
+        <p>社会保険の<b>会社負担分</b>が固定費に。目安は<span class="num">給与の約15%</span>。人件費が実質増える。</p>
+      </div>
+      <div class="card warn">
+        <h3><span class="n">③</span>事務・申告の負担</h3>
+        <p>設立・解散コスト、毎年の<b>決算申告</b>の手間、<b>税理士報酬</b>が個人時代より増える。</p>
+      </div>
+      <div class="card warn">
+        <h3><span class="n">④</span>会社のお金≠自分のお金</h3>
+        <p>会社の口座から<b>自由に引き出せない</b>。決めた役員報酬以外は私的に使えない。</p>
+      </div>
+      <div class="card warn">
+        <h3><span class="n">⑤</span>小さいうちは個人が有利</h3>
+        <p><b>小規模・低所得のうちは個人事業主が有利なケースが多い</b>。固定費が利益を上回りやすい。</p>
+      </div>
+      <div class="card" style="border-left-color:var(--gold);background:#fffdf2;">
+        <h3 style="color:#3a3200;"><span class="n" style="color:var(--gold);">→</span>だからこそ</h3>
+        <p>「軌道に乗ってから法人化」が、多くの場合の<b>現実的な解</b>。次のスライドで結論へ。</p>
+      </div>
+    </div>
+  </div>
+  <div class="foot">
+    <div class="src">出典：<b>総務省（法人住民税 均等割）</b>／<b>日本年金機構・協会けんぽ 令和8年度料率（社会保険）</b></div>
+    <div class="note">※均等割の額・社保料率は自治体・2026年分の確定値を税理士に確認</div>
+  </div>
+</section>
+
+<!-- 11 結論 -->
+<section class="slide">
+  <div class="kicker">結論</div>
+  <h2 class="head">一人でも法人化するメリットは、どこにある？</h2>
+  <div class="body">
+    <div class="concl">
+      <div class="pt"><div class="no">1</div><p><b>給与所得控除という武器</b>　個人事業主には無い、もう一つの控除が使える。</p></div>
+      <div class="pt"><div class="no">2</div><p><b>利益が出ると税率が頭打ち</b>　累進し続ける所得税に対し、法人税は2段階。</p></div>
+      <div class="pt"><div class="no">3</div><p><b>"分ける"ことが信用になる</b>　事業と個人を分けることが、入札・与信で効く。</p></div>
+      <div class="pt"><div class="no">4</div><p><b>将来への備え</b>　退職金・社会保険など、長く続けるための仕組みが揃う。</p></div>
+      <div class="pt gold" style="grid-column:1 / -1;"><div class="no">5</div><p><b>ただし固定コストとの戦い</b>　均等割・社保負担・事務コストは、利益が支える。</p></div>
+    </div>
+    <div class="rocket">
+      核メッセージ ―「<b>小さく始めて、軌道に乗ったら法人化</b>」という<b>二段ロケット</b>。
+    </div>
+  </div>
+  <div class="foot">
+    <div class="src">どちらが上ではなく、事業のステージに合わせて乗り換える。それが賢い独立。</div>
+    <div class="note">※法人化のタイミングは個別シミュレーションで。2026年分は税理士に確認</div>
+  </div>
+</section>
+
+<!-- 12 次の一歩 -->
+<section class="slide">
+  <div class="kicker">次の一歩</div>
+  <h2 class="head">判断の目安と、まず取る行動。</h2>
+  <div class="body">
+    <div class="steps2">
+      <div class="s"><div class="ic">¥</div><h4>課税所得</h4><p>利益（課税所得）はどのくらい出ているか。800〜900万が一つの目安。</p></div>
+      <div class="s"><div class="ic">↗</div><h4>売上の規模</h4><p>消費税・インボイスの判断に関わる売上水準は。</p></div>
+      <div class="s"><div class="ic">⇄</div><h4>取引先</h4><p>BtoB中心か。入札・与信を見据える取引があるか。</p></div>
+      <div class="s"><div class="ic">◇</div><h4>将来計画</h4><p>人を雇うか、融資を受けるか、事業をどこまで伸ばすか。</p></div>
+    </div>
+    <div class="cta">
+      まずは<b>顧問税理士に「個別シミュレーション」</b>を。<br>
+      その判断に、<span class="pl">Poolsideが伴走します。</span>
+    </div>
+  </div>
+  <div class="foot">
+    <div class="src">本資料は一般的な制度の解説です。最終的な数字・タイミングの判断は、必ず顧問税理士の個別試算に基づいてください。</div>
+    <div class="note">※2026年分の確定額・税制改正の反映は顧問税理士に確認</div>
+  </div>
+</section>
+
+</div>
+
+<div class="brand">Poolside<small>STAFF SUPPORT PROGRAM</small></div>
+<div class="pageno"><span id="cur">1</span> <span class="tot">/ 12</span></div>
+<div class="hint">← → / クリックでスライド送り　|　F で全画面</div>
+
+<script>
+(function(){
+  var slides=Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var total=slides.length;
+  var i=0;
+  var cur=document.getElementById('cur');
+  var prog=document.getElementById('prog');
+  var brand=document.querySelector('.brand');
+  function show(n){
+    i=Math.max(0,Math.min(total-1,n));
+    slides.forEach(function(s,idx){s.classList.toggle('active',idx===i);});
+    cur.textContent=(i+1);
+    prog.style.width=((i+1)/total*100)+'%';
+    // 表紙以外でブランド常時表示、表紙は専用ロゴ位置と重複しないよう薄く
+    brand.style.opacity = (i===0) ? '0' : '1';
+  }
+  function next(){show(i+1);}
+  function prev(){show(i-1);}
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();next();}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();prev();}
+    else if(e.key==='Home'){show(0);}
+    else if(e.key==='End'){show(total-1);}
+    else if(e.key==='f'||e.key==='F'){
+      if(!document.fullscreenElement){document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen();}
+      else{document.exitFullscreen&&document.exitFullscreen();}
+    }
+  });
+  document.getElementById('deck').addEventListener('click',function(e){
+    // 画面左1/4クリックで戻る、それ以外は進む
+    if(e.clientX < window.innerWidth*0.25){prev();}else{next();}
+  });
+  show(0);
+})();
+</script>
+</body>
+</html>
